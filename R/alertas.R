@@ -1,14 +1,16 @@
-#' Title
+#' Identificación de alertas
 #'
-#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
-#'  @param anio Definir el año a ejecutar, ej: 2022
-#'  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#' Función para identificar establecimientos que pueden llegar a ser casos de imputación
 #'
-#'  @return CSV file
-#'  @export
+#' @param mes Definir el mes a ejecutar, ej: 11
+#' @param anio Definir el año a ejecutar, ej: 2022
+#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
-#'  @examples identificacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes="nov",anio=2022)
+#' @return CSV file
+#' @export
+#'
+#' @examples identificacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
 #'
 identificacion_outliers <- function(directorio,year,mes) {
   ### función detección de outliers
@@ -20,7 +22,7 @@ identificacion_outliers <- function(directorio,year,mes) {
   library(forecast)
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
   month <- mes
-  year  <- year
+
 
   base_panel <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[month],year,".csv"))
   variablesinte=c("II_PA_PP_NPERS_EP","AJU_II_PA_PP_SUELD_EP","II_PA_TD_NPERS_ET",
