@@ -1,14 +1,16 @@
-#' Title
+#' Estandarización
 #'
-#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
-#'  @param anio Definir el año a ejecutar, ej: 2022
-#'  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#' Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar el inicio y fin del periodo reportado
 #'
-#'  @return CSV file
-#'  @export
+#' @param mes Definir  mes a ejecutar, ej: 11
+#' @param anio Definir el año a ejecutar, ej: 2022
+#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
-#'  @examples estandarizacion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes="nov",anio=2022)
+#' @return CSV file
+#' @export
+#'
+#' @examples estandarizacion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
 
 
 estandarizacion <- function(directorio,
