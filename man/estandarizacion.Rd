@@ -2,19 +2,24 @@
 % Please edit documentation in R/estandarizacion.R
 \name{estandarizacion}
 \alias{estandarizacion}
-\title{Title}
+\title{Estandarización}
 \usage{
 estandarizacion(directorio, mes, anio)
 }
-\description{
-@param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
- @param anio Definir el año a ejecutar, ej: 2022
- @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
-}
-\details{
-@return CSV file
- @export
+\arguments{
+\item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
 
- @examples estandarizacion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes="nov",anio=2022)
+\item{mes}{Definir  mes a ejecutar, ej: 11}
+
+\item{anio}{Definir el año a ejecutar, ej: 2022}
+}
+\value{
+CSV file
+}
+\description{
+Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar el inicio y fin del periodo reportado
+}
+\examples{
+estandarizacion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+                       mes=11,anio=2022)
 }

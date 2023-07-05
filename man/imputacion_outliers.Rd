@@ -2,19 +2,24 @@
 % Please edit documentation in R/imputacion.R
 \name{imputacion_outliers}
 \alias{imputacion_outliers}
-\title{Title}
+\title{Imputación outliers}
 \usage{
 imputacion_outliers(directorio, year, mes)
 }
-\description{
-@param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
- @param anio Definir el año a ejecutar, ej: 2022
- @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
-}
-\details{
-@return CSV file
- @export
+\arguments{
+\item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
 
- @examples imputacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+\item{mes}{Definir las tres primeras letras del mes a ejecutar, ej: 11}
+
+\item{anio}{Definir el año a ejecutar, ej: 2022}
+}
+\value{
+CSV file
+}
+\description{
+Función para realizar la imputación por deuda y por casos especiales
+}
+\examples{
+imputacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
                        mes="nov",anio=2022)
 }
