@@ -1,10 +1,19 @@
 #' Identificación de alertas
 #'
-#' Función para identificar establecimientos que pueden llegar a ser casos de imputación.
+#' Función para identificar establecimientos que pueden llegar a ser casos de imputación, ya sean imputación deuda o por casos especiales.
 #'
 #' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada.
+#'
+#' @details El procedimiento para identificar posibles establecimientos a imputar es:
+#'
+#' 1.	Si la novedad es igual 5 sabemos que el individuo se va a imputar por deuda en todas sus variables o si el valor reportado en la variable de interés es cero y el mes inmediatamente anterior fue diferente de cero también se identifica como imputación deuda
+#'
+#' 2.	Si la novedad es diferente a 5 se observa la variación con respecto al mes anterior; si es menor o igual a 20\% no se imputa.
+#'
+#' 3.	Si la variación es mayor a 20% y su valor es diferente de cero, entonces, primero se observa si el dato es igual a alguno de los datos reportados por el establecimiento en meses anteriores; en caso de que esté presente, se decide no imputar, si el dato no estuvo anteriormente, entonces se procede a identificar si la variable es referente a capítulo 2, si es así,
+#' se realiza una carta de control con los ultimos 24 meses, si esta identifica el valor como atípico se imputa por caso especial; si la variable es referente a capítulo 3 ,entonces, se realiza una prueba mezclando el comando tso y la carta de control de 24 meses, el comando tso identifica los valores que pueden ser outliers en series de tiempo, si el valor fue identificado como un valor atípico se imputa por caso especial, en caso de que no fuera identificado como un valor atípico no se imputa.
 #'
 #' @return CSV file
 #' @export
@@ -12,7 +21,7 @@
 #' @examples identificacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
-identificacion_outliers <- function(directorio,year,mes) {
+identificacion_outliers <- function(directorio,mes,anio) {
   ### función detección de outliers
 
 
@@ -27,7 +36,7 @@ identificacion_outliers <- function(directorio,year,mes) {
   library(tsoutliers)
   source("R/utils.R")
   month <- mes
-  year  <- year
+  year  <- anio
 
   #cargar la base de datos
   base_panel <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[month],year,".csv"))
