@@ -1,6 +1,6 @@
 #' Estandarización
 #'
-#' Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar el inicio y fin del periodo reportado
+#' Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar las  fechas vacías, tanto de inicio y fin, para que se mantenga el mismo margen de reporte.
 #'
 #' @param mes Definir  mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
@@ -9,7 +9,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples estandarizacion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 
 
@@ -29,13 +29,16 @@ estandarizacion <- function(directorio,
   month <- mes
   year  <- anio
 
-  base_panel2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[month],year,".csv"), sep = ",")
+
+  # Cargar base ------------------------------------------------------------
+
+
+  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[month],year,".csv"), sep = ",")
 
 
   # Cargar base ------------------------------------------------------------
 
-  #base_panel <- read.csv(paste0("data/",year,"/",month,"/EMMET_PANEL_trabajo_original",month,year,".csv"), sheet = "LOGISTICA")
-  #base_panel_2<-base_panel
+
 
   # Estandarizar formato de fechas ------------------------------------------
 
@@ -79,7 +82,7 @@ estandarizacion <- function(directorio,
         mutate(
           fecha_ini_ant = round(as.numeric(lag({{V_Inicial}})),0),
           fecha_fin_ant = round(as.numeric(lag({{V_Final}})),0)) %>%
-        filter((ANIO==year & MES==month & NOVEDAD==99) &
+        filter((ANIO==year & MES==mes & NOVEDAD==99) &
                  (({{V_Inicial}}==0 & {{V_Final}}==0) |
                     (is.na({{V_Inicial}}) & is.na({{V_Final}})))) %>%
         mutate(Variable_Inicial = case_when(
@@ -243,8 +246,9 @@ estandarizacion <- function(directorio,
 
   base_panel<-funcion_global()
 
+
   # Exportacion tabla -------------------------------------------------------
 
   #write.csv(base_panel,"base_pane_estandarizacion.csv")
-  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[month],year,".csv"),row.names=F)
+  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],year,".csv"),row.names=F)
 }
