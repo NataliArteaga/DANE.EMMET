@@ -1,19 +1,99 @@
-#' Title
+#' Tematica
 #'
-#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
-#'  @param anio Definir el año a ejecutar, ej: 2022
-#'  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#' @description
+#'  Esta funcion construye la base tematica. Esta base expone los datos
+#'  procesados, de acuerdo a la metodología de la operación, en ese sentido
+#'  presenta los datos reales a partir de los nominales, sumado a ellos presenta
+#'  la información ponderada y agrega variables de la identificacion de los
+#'  dominios por los cuales se publca. Con esto, se puede presentar la base
+#'  tematica como la base final de cuadros.
+#'  Para construir esta base, se usa como insumo la base Panel con los casos
+#'  de imputacion aplicados. Finalmente exporta un archivo de extension .xlsx .
 #'
-#'  @return CSV file
-#'  @export
 #'
-#'  @examples tematica(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes="nov",anio=2022)
+#'
+#'
+#' @param mes Definir el mes a ejecutar, ej: 11
+#' @param anio Definir el año a ejecutar, ej: 2022
+#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#'
+#' @return CSV file
+#' @export
+#'
+#' @examples tematica(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
+#'
+#'
+#' @details
+#'  Esta funcion crea las variables de la base tematica de la siguiente manera:
+#'
+#'  VentasReales: Suma de, la división entre ventas en el interior e IPP_PYC y,
+#'     la división entre ventas en el exterior e IPP_PYC
+#'
+#'  TotalPersonas: Suma de las variables que contabilizan el número de
+#'     trabajadores en las diferentes categorías.
+#'
+#'  TotalSueldosNominal: Suma de las variables de sueldos nominales
+#'
+#'  TotalSueldosReales: División entre TotalSueldosNominal e IPC
+#'
+#'  SueldosPermanentesNominal: Suma de las variables de sueldos nominales del
+#'     personal contratado por la categoria permanente
+#'
+#'  SueldosPermanentesReales: División entre SueldosPermanentesNominal e IPC
+#'
+#'  SueldosTemporalesNominal: Suma de las variables de sueldos nominales del
+#'     personal contratado por la categoria temporales
+#'
+#'  SueldosTemporalesReales: División entre SueldosTemporalesNominal e IPC
+#'
+#'  SueldosAdmonNominal: Suma de las variables de sueldo nominal del
+#'     personal administrativo nominales
+#'
+#'  SueldosAdmonReal: División entre SueldosAdmonNominal e IPC
+#'
+#'  SueldosAdmonPermReal: División entre AJU_II_PA_PP_SUELD_EP e IPC
+#'
+#'  SueldosAdmonTempNomin: Suma de las variables de sueldo del
+#'     personal administrativos temporales
+#'
+#'  SueldosAdmonTempReal: División entre SueldosAdmonTempNomin e IPC
+#'
+#'  SueldosProducNominal: Suma de las variables del personal de
+#'     producción nominal
+#'
+#'  SueldosProducReal: División entre SueldosProducNominal e IPC
+#'
+#'  SueldosProducPermReal: División entre AJU_II_PP_PP_SUELD_OP e IPC.
+#'
+#'  SueldosProducTempNomin: Suma de las variables del personal de
+#'     producción temporal
+#'
+#'  SueldosProducTempReal: División entre SueldosProducTempNomin e IPC.
+#'
+#'  TotalHoras: Suma de varaibles de horas extras y ordinarias
+#'
+#'  TotalEmpleoPermanente: Suma de varaibles del personal de
+#'     administración y producción
+#'
+#'  TotalEmpleoTemporal: Suma de varaibles del personal temporal
+#'
+#'  TotalEmpleoAdmon: Suma de varaibles del personal administrativo
+#'
+#'  TotalEmpleoProduc: Suma de varaibles del personal de producción
+#'
+#'  EmpleoProducTempor: Suma de varaibles del personal de producción
+#'     temporal
+#'
+#'  TOTAL_VENTAS: Suma de varaibles en el interior y exterior de país
+#'
+#'  DEFLACTOR_NAL: División entre TOTAL_VENTAS y VentasReales
+#'
 
 
 
 tematica <- function(directorio,mes,anio){
-  # Cargar librerías --------------------------------------------------------
+  # Cargar librerC-as --------------------------------------------------------
   library(readxl)
   library(dplyr)
   library(ggplot2)
@@ -28,16 +108,16 @@ tematica <- function(directorio,mes,anio){
   library(seasonal)
   library(stringr)
 
+  source("utils.R")
+
 
   # Cargar bases y variables ------------------------------------------------
 
-  base_panel<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",mes,anio,".csv"))
-
-
-
-  base_panel2<-base_panel
+  base_panel2<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"))
 
   base_panel2<-base_panel2[1:(dim(base_panel)[1]-2),]
+
+  meses <- tolower(meses)
 
 
   # Modificar tipo de variables ---------------------------------------------
@@ -73,6 +153,7 @@ tematica <- function(directorio,mes,anio){
   # Funcion -----------------------------------------------------------------
 
 
+  #Creacion de todas las variables
   base_tematica<-function(base){
     base_tematica<-base %>%
       select(ANIO,MES,NOVEDAD,ID_ESTADO,ID_NUMORD,NOMBREDPTO,II_PA_PP_NPERS_EP,

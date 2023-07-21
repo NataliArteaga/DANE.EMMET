@@ -10,21 +10,21 @@
 #' si están creadas las carpetas donde se guardarán los archivos creados con la librería
 #' en total se crearán siete carpetas, para cada una de las funciones que genera algún archivo de salida.
 #'
-#' 1 \code{\link{integracion}}
+#' 1 S1_integracion:\code{\link{integracion}}
 #'
-#' 2 \code{\link{estandarizacion}}
+#' 2 S2_estandarizacion:\code{\link{estandarizacion}}
 #'
-#' 3 \code{\link{identificacion_outliers}}
+#' 3 S3_identificacion_alertas:\code{\link{identificacion_outliers}}
 #'
-#' 4 \code{\link{imputacion_outliers}}
+#' 4 S4_imputacion:\code{\link{imputacion_outliers}}
 #'
-#' 5 \code{\link{tematica}}
+#' 5 S5_tematica:\code{\link{tematica}}
 #'
-#' 6 \code{\link{anacional}}
+#' 6 S6_anexos:\code{\link{anacional}} y \code{\link{aterritorial}}
 #'
-#' 7 \code{\link{boletin}}
+#' 7 S7_boletin:\code{\link{boletin}}
 #'
-#' @examples inicial(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET")
+#' @examples inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
 
 
 inicial<-function(directorio){
@@ -90,7 +90,7 @@ ruta=paste0(directorio,"/results/S6_anexos")
 crearCarpeta(ruta)
 
 #crear la carpeta boletin
-ruta=paste0(directorio,"/results/boletin")
+ruta=paste0(directorio,"/results/S7_boletin")
 crearCarpeta(ruta)
 
 }

@@ -1,25 +1,252 @@
-#' Anexo_Nacional
+#' Anexo Nacional
 #'
-#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
-#'  @param anio Definir el aC1o a ejecutar, ej: 2022
-#'  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
-#'
-#'  @return CSV file
-#'  @export
-#'
-#'  @examples anacional(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes=11,anio=2022)
-#'
-#'  @description Esta funcion crea el archivo de Anexo Nacional. Tiene como argumentos, la base
-#'  de datos Temetica, el mes y anio del que desea generar el reporte. EL cuerpo de la funcion
-#'  crea cada una de las hojas del reporte, seleccionando las columnas a decuadas de la base tematica
+#'@description Esta funcion crea el archivo de Anexo Nacional. Tiene como insumo, la base
+#'  de datos Tematic. EL cuerpo de la funcion
+#'  crea cada una de las hojas del reporte, seleccionando las columnas adecuadas de la base tematica
 #'  para la construcion de los diferentes calculos desagregados por las variables.
 #'  Finalmente exporta un archivo con extension .xlsx en donde podra observar cada una de las
 #'  hojas con las que cuenta el anexo.
 #'
+#' @param mes Definir el mes a ejecutar, ej: 11
+#' @param anio Definir el año a ejecutar, ej: 2022
+#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#'
+#' @return CSV file
+#' @export
+#'
+#' @examples anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
+#'
+#'
+#' @details En los anexos nacionales se calculan las contribuciones y variaciones
+#'  en tres diferentes periodos. A continuación se muestran los  periodos
+#'  y las formulas para realizar el cálculo de estos:
+#'
+#'  Contribución anual:
+#'
+#'   \deqn{
+#'  CA_{trj} = \frac{(V_{trj} - V_{(t-12)rj)}}{\sum_{1}^n V_{(t-12)rj)}} *100
+#'  }
+#'
+#'
+#'  Donde:
+#'
+#'  t: Mes de referencia de la publicación de la operación estadística
+#'
+#'  \eqn{V_{trj}}: Valor en el periodo t para el territorio r en el dominio j.
+#'
+#'  \eqn{V_{(t-12)rj}}: Valor en el periodo t-12 o en el año anterior, en el
+#'  territorio r en el dominio j.
+#'
+#'  \eqn{\sum_{1}^n V_{(t-12)rj)}}: Sumatoria de los valores en el periodo t-12,
+#'  en el territorio r y en el dominio j
+#'
+#'  Esta contribución anual se interpreta como el aporte del domino j
+#'  en el territorio r a la variación anual del mes de referencia en el
+#'  domino j en el territorio r
+#'
+#'  Contribución año corrido:
+#'
+#'  \deqn{
+#'  CAC_{Trj} = \frac{\sum_{i}^T(V_{trj} - \sum_{b}^{T-12} V_{trj)}}{\sum_{b}^{T-12} V_{trj)}} *100
+#'  }
+#'
+#'
+#'  Donde:
+#'  t: Mes variando de enero a diciembre
+#'
+#'  T: Mes de referencia.
+#'
+#'  i: Siempre es el mes de enero.
+#'
+#'  b=i-12: Corresponde a enero del año anterior
+#'
+#'  \eqn{V_{trj}}: Valor de la variable en el periodo t en el territorio r
+#'  en el dominio j
+#'
+#'  Esta contribucion de año corrido se interpreta como el aporte del domino j
+#'  en el territorio r a la variación año corrido del mes de referencia en el
+#'  domino j en el territorio r.
+#'
+#'
+#'  Contribución año acumulado:
+#'
+#'  \deqn{
+#'  CAA_{Trj} = \frac{\sum_{a+1}^T(V_{trj} - \sum_{b+1}^{a} V_{trj)}}{\sum_{b+1}^{a} V_{trj)}} *100
+#'  }
+#'
+#'  Donde:
+#'
+#'  t: Mes variando de enero a diciembre
+#'
+#'  T: Mes de referencia.
+#'
+#'  a=T-12
+#'
+#'  b=a-12: Corresponde al mes a del año anterior
+#'
+#'  \eqn{V_{trj}}: Valor de la variable en el periodo t en el territorio r en el
+#'  dominio j
+#'
+#'  Nota: cuando las variables que denotan meses (a, b) son negativas representan
+#'  el mes del año inmediatamente anterior.
+#'
+#'  Esta contribución de año acumulado se interpreta como el aporte del domino
+#'  j en el territorio r a la variación acumulada anual del mes de referencia
+#'  en el domino j en el territorio r.
+#'
+#'
+#'  Variación anual:
+#'
+#'  Es la relación del índice o valor (para producción y ventas, categoría de
+#'  contratación, sueldos, horas) en el mes de referencia (ti) con el índice o
+#'  valor absoluto del mismo mes en el año anterior (t^{i-12}), menos 1 por 100.
+#'
+#'  \deqn{
+#'  VA = \frac{\text{índice o valor del mes de referencia}}
+#'  {\text{índice o valor del mismo mes del año anterior}} -1 *100
+#'  }
+#'
+#'  Se interpreta como el crecimiento o disminución porcentual, dependiendo de
+#'  si el resultado es negativo o positivo, de la variable correspondiente en
+#'  el mes de referencia, en relación al mismo mes del año anterior
+#'
+#'
+#'  Variación Año Corrido:
+#'
+#'  \deqn{
+#'  VAC = \frac{\sum \text{índice o valor de enero al mes de referencia del año actual}}
+#'  {\sum \text{índice o valor de enero al mes de referencia del mismo mes del año anterior}} -1 *100
+#'  }
+#'
+#'  Se interpreta como el crecimiento o disminución porcentual, dependiendo de
+#'  si el resultado es negativo o positivo, de la variable correspondiente en lo
+#'  corrido del año hasta el mes de referencia, en relación al mismo periodo del
+#'  año anterior
+#'
+#'
+#'  Variación Acumulado Anual:
+#'
+#'\deqn{
+#'  VAA = \frac{\sum \text{índice o valor desde} a_{+1} \text{hasta el mes de referencia}}
+#'  {\sum \text{índice o valor en el año anterior desde} a_{+1} \text{ hasta el mes de referencia}} -1 *100
+#'  }
+#'
+#'  Donde:
+#'
+#'  t=mes de referencia
+#'
+#'  a=t-12
+#'
+#'  Se interpreta como el crecimiento o disminución porcentual, dependiendo de
+#'  si el resultado es negativo o positivo, de la variable correspondiente en
+#'  los últimos 12 meses hasta el mes de referencia, en relación al mismo periodo
+#'  del año anterior.
+#'
+#'  Contribuciones porcentuales: aporte en puntos porcentuales de las variaciones
+#'  individuales a la variación de un agregado.
+#'
+#'
+#'  La función escribe, en formato excel, las hojas:
+#'
+#'  1. Var y cont_Anual:
+#'  Se caclcula la Variación anual (%) y contribución, del valor
+#'  de la producción, ventas, y empleo, según las clase industrial
+#'
+#'  2. Var Anual_Emp_Sueldos_Horas:
+#'  Se caclculan las Variaciones anuales, según clase industrial,
+#'  producción, ventas, personal ocupado, sueldos y horas totales
+#'  trabajadas
+#'
+#'  3. Var y cont_año corrido:
+#'  Se caclcula la Variación año corrido (%) y contribución, del valor de
+#'  la producción, ventas, y empleo, según las clase industrial
+#'
+#'  4. Var año corr Emp_Sueldos_Hor:
+#'  Se caclculan las variaciones año corrido, según clase industrial
+#'  producción, ventas, personal ocupado, sueldos y horas totales
+#'  trabajadas
+#'
+#'
+#'  5. Var y cont_doce meses:
+#'  Se caclcula la  aariación doce meses (%) y contribución, del valor
+#'  de la producción, ventas, y empleo, según las clase industrial
+#'
+#'
+#'  6. Var doce meses Emp_Sueldos_H:
+#'  Se caclculan las variaciones doce meses, según clase industrial,
+#'  producción, ventas, personal ocupado, sueldos y horas totales trabajadas .
+#'
+#'
+#'  7. Indices total por clase:
+#'  Se calculan los índices de producción nominal y real, ventas nominal y real,
+#'  empleo, sueldos y  horas Totales trabajadas, según clase industrial para
+#'  cada uno de los dominios que se encuentran en la encuesta mensual
+#'  manufacturera.
+#'
+#'  8. Índices Desestacionalizados:
+#'  Para la contrucción de la desestacionalización se usa la librería: seasonal.
+#'  Esta libreria es una adaptacion del programa X13 seasonal, para el programa
+#'  de R.
+#'
+#'  Para esta función se crea un calendario en donde se ingresan los festivos
+#'  fijos y los de fecha variables, para asignar la ponderación a los días, en
+#'  donde finalmente quedan expresadas los días de Lunes a Sábados.
+#'
+#'  Posteriormente para realizar la desestacionalización en las variables de
+#'  producción, ventas y empleo, se escoge de manera individual la variable de
+#'  interés con la columna de las fechas, este nuevo data frame
+#'  (ej: producción, fecha) se convierte en una serie de tiempo, con frecuencia
+#'  mensual.
+#'
+#'  Para la desestacionalización, se usa la serie de tiempo construida
+#'  anteriormente, y se especifican:
+#'
+#'  * fecha de inicio y fin de la serie (ej: 2001.1,2021.11).
+#'
+#'  * variables regresoras: el calendario, construido anteriormente,
+#'
+#'  * variables dicotomicas de outliers: estas son festivos patrios,
+#'       años bisiesto, y fechas de alto impacto, como:
+#'
+#'       2016.Jul: Paro camionero
+#'
+#'       2016.Aug:
+#'
+#'       2020.Mar: Inicio de pandemia Covid-19
+#'
+#'       2020.Apr: Inicio de la cuarentena
+#'
+#'       2021.May: Paro Nacional
+#'
+#'  Adicionalmente se especifican los parámetros estacionales y la informacion
+#'  de la serie que se desea observar.
+#'
+#'  Finalmente se crea una tabla con la fecha y los datos desestacionalizados.
+#'
+#'  Esto, por cada una de las variables de interés.
+#'
+#'
+#'  9. Enlace legal hasta 2014:
+#'  Se realiza una conexión entre la serie de la metodología actual, con las
+#'  variaciones de los indices de la metedología anterior con el fin de tener una
+#'  serie más larga de comparación de la información.
+#'
+#'
+#'  10. Enlace legal hasta 2001:
+#'  Se realiza una conexión entre la serie de la metodología actual, con las
+#'  variaciones de los indices de la metedología anterior con el fin de tener una
+#'  serie más larga de comparación de la información.
+#'
+#'  11. Var y cont_Trienal:
+#'  Se caclcula la contribución y variación trienal, es decir usando como año
+#'  base los datos del año 2019, del valor de la producción, ventas, y empleo,
+#'  según clase industrial.
+#'
+#'
 anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
                       mes=11,
-                      year=2022){
+                      anio=2022){
   # Cargar librerC-as --------------------------------------------------------
   library(readxl)
   library(dplyr)
@@ -37,14 +264,15 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   library(xlsx)
   library(data.table)
 
+  source("utils.R")
+
 
   # Cargar bases y variables ------------------------------------------------
 
-  meses <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio",
-             "Agosto","Septiembre","Octubre","Noviembre","Diciembre")
+
 
   meses <- tolower(meses)
-  data <- fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_nov2022.csv"))
+  data <- fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"))
   indices_14<- read_xlsx(paste0(directorio,"/data/Indices_2014.xlsx"))
   indices_01<- read_xlsx(paste0(directorio,"/data/Indices_2001.xlsx"))
 
@@ -52,7 +280,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   # Archivos de entrada y salida --------------------------------------------
 
   formato<-paste0(directorio,"/data/",year,"/",substr(mes,1,3),"/anexos_nacional_emmet_",mes,"_formato.xlsx")
-  Salida<-paste0(directorio,"/results/S6_anexonal/anexos_nacional_emmet_",mes,"_formato.xlsx")
+  Salida<-paste0(directorio,"/results/S6_anexos/anexos_nacional_emmet_",mes,"_formato.xlsx")
 
 
 
@@ -82,6 +310,8 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   # Funcion -----------------------------------------------------------------
 
 
+  #Funcion para crear las variables produccion_total, ventas_total y personal_total
+
   contr_sum_an <- function(tabla){
     tabla1 <- tabla %>% summarise(produccion_total = sum(PRODUCCIONREALPOND),
                                   ventas_total=sum(VENTASREALESPOND),
@@ -89,6 +319,10 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
     return(tabla1)
   }
+
+
+  #Funcion para crear las variavles pro,vent,per de acuerdo al periodo que se
+  #esté manejando
 
   contr_fin <- function(periodo,tabla){
     if(periodo==6){
@@ -118,6 +352,8 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   }
 
 
+  #Funcion para realizar los pivotes en las tablas de acuerdo al periodo que
+  #se esté trabajando
   tabla_pivot <- function(periodo,tabla){
     if(periodo==5){
       tabla1 <- tabla %>%
@@ -131,6 +367,9 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     return(tabla1)
   }
 
+
+  #Funcion para crear las nuevas variables concatenando columnas específicas del
+  # data frame, según el periodo que se esté manejando
   tabla_paste_an <- function(periodo,base){
     if(periodo==11){
       base[paste0("varprodnom_",year)] <- (base[paste0("produccionNom_",year)]-base[paste0("produccionNom_",2019)])/base[paste0("produccionNom_",2019)]
@@ -163,7 +402,8 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     return(base)
   }
 
-
+  #Funcion para crear variables en las tablas finales,
+  #según el periodo que se esté manejando
   tabla_summarise <- function(periodo,tabla){
     if(periodo==2 | periodo==4 | periodo==6){
       tabla1 <- tabla  %>%
@@ -206,17 +446,19 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 1. Var y cont_Anual -----------------------------------------------------
 
+  #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(year-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
+  #Calculo de la contribucion por meses
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(year,year-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(1,contribucion)
 
-
+  #Calculo de la variación por dominos
   tabla1 <- data %>%
     filter(ANIO%in%c(year,year-1) & MES%in%mes) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -231,6 +473,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   tabla1 <- tabla_acople(tabla1)
 
+  #Empalme de la variacion y contribucion anual por dominios
   tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
   tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprodnom",
                       "varprod","produccion","varventasnom","varventas",
@@ -254,6 +497,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 2. Var Anual_Emp_Sueldos_Horas  -----------------------------------------
 
+  #Calculo de la variación por dominos
   tabla1 <- data %>%
     filter(ANIO%in%c(year,year-1) & MES%in%mes) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -272,6 +516,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   tabla1 <- tabla_acople(tabla1)
 
+  #Empalme de la variacion y contribucion anual por dominios
   tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
   tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod",
                       "varventas","varpersonas","varempleo","varemptem",
@@ -295,18 +540,21 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
                startRow = 9, startColumn = 1)
 
 
-  # 3. Var y cont_aC1o corrido -----------------------------------------------
+  # 3. Var y cont_anio corrido -----------------------------------------------
 
+  #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(year-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
+  #Calculo de la contribucion mensual por dominio
   contribucion <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(year,year-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(3,contribucion)
 
+  #Calculo de la variacion por dominio
   tabla1 <- data %>%
     filter(ANIO%in%c(year,year-1) & MES%in%c(1:mes)) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -320,6 +568,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   tabla1 <- tabla_acople(tabla1)
 
+  #Empalme de la contribucion y variacion por dominio
   tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
   tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprodnom","varprod","produccion",
                       "varventasnom","varventas","ventas","varpersonas","personal")]
@@ -340,8 +589,9 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
                startRow = 9, startColumn = 1)
 
 
-  # 4. Var aC1o corr Emp_Sueldos_Hor -----------------------------------------
+  # 4. Var anio corr Emp_Sueldos_Hor -----------------------------------------
 
+  #Calculo de la variación por dominos
   tabla1 <- data %>%
     filter(ANIO%in%c(year,year-1) & MES%in%c(1:mes)) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -349,9 +599,11 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
 
   tabla1 <- tabla1 %>%
-    pivot_wider(names_from = c("ANIO"),values_from = c("produccion","ventas","personas","empleo","emptem",
-                                                       "empleados","operarios","sueldos","suelemplper",
-                                                       "suelempltem","sueltotemp","sueltotope","horas"))
+    pivot_wider(names_from = c("ANIO"),
+                values_from = c("produccion","ventas","personas","empleo",
+                                "emptem","empleados","operarios","sueldos",
+                                "suelemplper","suelempltem","sueltotemp",
+                                "sueltotope","horas"))
 
   tabla1 <- tabla_paste_an(4,tabla1)
 
@@ -371,6 +623,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   }
 
   #Exportar
+
   sheet <- sheets[[6]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 15, startColumn = 1)
@@ -382,19 +635,22 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 5. Var y cont_doce meses ------------------------------------------------
 
+  #Creacion de la variable para anio corrido
   data$ANIO2 <- as.numeric(ifelse(data$MES%in%c((mes+1):12),data$ANIO+1,data$ANIO))
 
+  #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(ANIO2%in%(year-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
+  #Calculo de la contribucion mensual por dominio
   contribucion <- data %>%
     filter(ANIO2%in%c(year-1,year)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(5,contribucion)
 
-
+  #Calculo de la variación por dominio
   tabla1 <- data %>%
     filter(ANIO2%in%c(year,year-1)) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -408,6 +664,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   tabla1 <- tabla_acople(tabla1)
 
+  #Empalme de la contribucion y la variacion
   tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
   tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprodnom",
                       "varprod","produccion","varventasnom","varventas","ventas",
@@ -434,18 +691,22 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 6. Var doce meses Emp_Sueldos_H -----------------------------------------
 
+  #Creacion de la variable para anio corrido
   data$ANIO2 <- as.numeric(ifelse(data$MES%in%c((mes+1):12),data$ANIO+1,data$ANIO))
 
+  #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(ANIO2%in%(year-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
+  #Calculo de la contribucion mensual por departamento
   contribucion <- data %>%
     filter(ANIO2%in%c(year-1,year)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,INCLUSION_NOMBRE_DEPTO)
   contribucion <- contr_fin(6,contribucion)
 
+  #Calculo de la variacion
   tabla1 <- data %>%
     filter(ANIO2%in%c(year,year-1)) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -457,6 +718,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     summarise(produccionNom=sum(PRODUCCIONNOMPOND),
               ventasNom = sum(VENTASNOMINPOND))
 
+  #Empalme de la variacion y contribucion
   tabla1 <- tabla1 %>% left_join(tabla1_6,by=c("ANIO2"="ANIO2","DOMINIO_39"="DOMINIO_39",
                                                "DESCRIPCIONDOMINIOEMMET39"="DESCRIPCIONDOMINIOEMMET39"))
 
@@ -504,6 +766,8 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 7. Indices total por clase  ---------------------------------------------
 
+  #Creacion  de las variables nominales y totales y con estas se realiza el
+  #calculo de la contribucion mensual por dominio
   contribucion_mensual <- data %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) %>%
     summarise(produccionNom_mensual=sum(PRODUCCIONNOMPOND),
@@ -522,7 +786,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
               sueltotope_mensual=sum(SUELDOSPRODUCREAL),
               horas_mensual=sum(TOTALHORAS))
 
-
+  #Calculo de la contribucion con el anio base
   contribucion_base<- contribucion_mensual %>%
     filter(ANIO==2018) %>%
     group_by(ANIO,DOMINIO_39) %>%
@@ -549,6 +813,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_base,by=c("DOMINIO_39"="DOMINIO_39"))
 
+  #Calculo de la variacion
   tabla1<-contribucion %>%
     mutate(produccionNom =round((produccionNom_mensual/produccionNom_total)*100,1),
            produccion    =round((produccion_mensual/produccion_total)*100,1),
@@ -570,6 +835,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
            operarios,sueldos,suelemplper,suelempltem,sueltotemp,sueltotope,
            horas)
 
+  #Calculo de la contribucion mensual
   contribucion_mensual <- data %>%
     group_by(ANIO,MES) %>%
     summarise(produccionNom_mensual=sum(PRODUCCIONNOMPOND),
@@ -588,6 +854,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
               sueltotope_mensual=sum(SUELDOSPRODUCREAL),
               horas_mensual=sum(TOTALHORAS))
 
+  #Calculo de la contribucion por el anio base
   contribucion_base <- contribucion_mensual %>%
     filter(ANIO==2018) %>%
     group_by(ANIO) %>%
@@ -627,6 +894,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
            horas_total=contribucion_base$horas_total)
 
 
+  #Calculo de la variables nominales y totales
   tabla1_1<-contribucion_mensual %>%
     mutate(produccionNom =round((produccionNom_mensual/produccionNom_total)*100,1),
            produccion    =round((produccion_mensual/produccion_total)*100,1),
@@ -666,9 +934,12 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 9. Enlace legal hasta 2014 ----------------------------------------------
 
+  #Creacion de una matriz con 12 filas y el mismo numero de columnas del archivo
+  # indices del 2014
   N<-as.data.frame(matrix(NA,ncol = ncol(indices_14),nrow = 12),colnames=FALSE)
   colnames(N)<-colnames(indices_14)
 
+  #Se une la matriz N con los índices, cada 60 datos
   in_prue<-NULL
   for(i in seq(from=60, to = nrow(indices_14), by =60)){
     if(i==60){
@@ -680,11 +951,14 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   }
 
+  #Se acomoda de nuevo la base seleccionando algunas variables de in_prueba,
+  # con otras seleccionadas de la base N
   indices_lag<-rbind(in_prue[13:nrow(in_prue),5:ncol(in_prue)],N[,5:ncol(N)])
   colnames(indices_lag) <- paste("R", colnames(indices_lag), sep = "")
   indices_lag<-cbind(in_prue,indices_lag)
   indices_lag<-indices_lag[-c((nrow(indices_lag)-11):nrow(indices_lag)),]
 
+  #Creacion de las variables de la tabla anteriormente construida
   variacion<-within(indices_lag,{
     VHORASTOTALESTRABAJADAS=HORASTOTALESTRABAJADAS/RHORASTOTALESTRABAJADAS
     VSUELDOTOTALOPERARIOS  =SUELDOTOTALOPERARIOS/RSUELDOTOTALOPERARIOS
@@ -705,6 +979,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   variacion <- variacion[!is.na(variacion$DOMINIOS),]
 
+  #Se crea la base de los indices con el anio base, previamente calculada
   tabla2<-tabla1_7 %>%
     filter(ANIO==2018)
   tabla2<-as.data.frame(tabla2)
@@ -712,10 +987,11 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   tabla2 <- select(tabla2, -"ICLASESINDUSTRIALES" )
   tabla2$IANO<-as.numeric(tabla2$IANO)
 
+  #Empalme de las variaciones y los indices
   varia<-variacion %>% left_join(tabla2,by=c("DOMINIOS"="IDOMINIOS",
                                              "ANO"="IANO","MES"="IMES"))
 
-
+  #Calculo de los enlaces
   varia<-varia %>%
     arrange(DOMINIOS,desc(ANO),desc(MES))
 
@@ -756,6 +1032,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # 10. Enlace legal Hasta 2001 ---------------------------------------------
 
+  #Definicion de nuevos dominios
   data2<-data %>%
     filter(CLASE_CIIU4!=1922) %>%
     mutate(DOMINIO_39_ENLACE=
@@ -772,8 +1049,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
                              ifelse(DOMINIO_39_ENLACE==2020 , "FabricaciC3n de otros productos quC-micos",
                                     ifelse(DOMINIO_39_ENLACE==1900 , "RefinaciC3n de petrC3leo",DESCRIPCIONDOMINIOEMMET39))))))
 
-
-
+  #Calculo de la contribucion mensual
   contribucion_mensual <- data2 %>%
     group_by(ANIO,MES,DOMINIO_39_ENLACE,DESCRIPCIONDOMINIOEMMET39_ENLACE) %>%
     summarise(produccionNom_mensual=sum(PRODUCCIONNOMPOND),
@@ -784,6 +1060,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
               personal_admon=sum(TOTALEMPLEOADMON),
               personal_operario=sum(TOTALEMPLEOPRODUC))
 
+  #Calculo de la contribucion con el anio base
   contribucion_base<- contribucion_mensual  %>%
     filter(ANIO==2018) %>%
     group_by(ANIO,DOMINIO_39_ENLACE) %>%
@@ -797,9 +1074,11 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   contribucion_base<-subset(contribucion_base, select = -ANIO)
 
+  #Empalme de la contribucion base con la contribucion mensual
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_base,by=c("DOMINIO_39_ENLACE"="DOMINIO_39_ENLACE"))
 
+  #Creacion de variables
   tabla1<-contribucion %>%
     mutate(produccionNom =round((produccionNom_mensual/produccionNom_total)*100,1),
            produccion    =round((produccion_mensual/produccion_total)*100,1),
@@ -811,7 +1090,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     select(DOMINIO_39_ENLACE,ANIO,MES,DESCRIPCIONDOMINIOEMMET39_ENLACE,produccionNom,
            produccion,ventasNom,ventas,personas,admon,operarios)
 
-
+  #Calculo de variables de contribucion mensual
   contribucion_mensual <- data2 %>%
     group_by(ANIO,MES) %>%
     summarise(produccionNom_mensual=sum(PRODUCCIONNOMPOND),
@@ -822,6 +1101,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
               personal_admon=sum(TOTALEMPLEOADMON),
               personal_operario=sum(TOTALEMPLEOPRODUC))
 
+  #Calculo de variables de contribucion con el anio base
   contribucion_base <- contribucion_mensual %>%
     filter(ANIO==2018) %>%
     group_by(ANIO) %>%
@@ -833,7 +1113,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
               personal_admon_total=mean(personal_admon),
               personal_operario_total=mean(personal_operario))
 
-
+  #Creacion de variables nominales y totales
   contribucion_mensual<-contribucion_mensual %>%
     mutate(produccionNom_total=contribucion_base$produccionNom_total,
            produccion_total=contribucion_base$produccion_total,
@@ -843,8 +1123,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
            personal_admon_total=contribucion_base$personal_admon_total,
            personal_operario_total=contribucion_base$personal_operario_total)
 
-
-
+  #Calculo de variables nominales y totales
   tabla1_1<-contribucion_mensual %>%
     mutate(produccionNom =round((produccionNom_mensual/produccionNom_total)*100,1),
            produccion    =round((produccion_mensual/produccion_total)*100,1),
@@ -860,9 +1139,12 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   tabla1$DOMINIO_39_ENLACE<-as.character(tabla1$DOMINIO_39_ENLACE)
   tabla1<-rbind(tabla1,tabla1_1)
 
+  #Creacion de una matriz con 12 filas y el mismo numero de columnas del archivo
+  # indices del 2001
   N<-as.data.frame(matrix(NA,ncol = ncol(indices_01),nrow = 12),colnames=FALSE)
   colnames(N)<-colnames(indices_01)
 
+  #Se une la matriz N con los índices, cada 216 datos
   in_prue<-NULL
   for(i in seq(from=216, to = nrow(indices_01), by =216)){
     if(i==216){
@@ -874,11 +1156,14 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   }
 
+  #Se acomoda de nuevo la base seleccionando algunas variables de in_prueba,
+  # con otras seleccionadas de la base N
   indices_lag<-rbind(in_prue[13:nrow(in_prue),5:ncol(in_prue)],N[,5:ncol(N)])
   colnames(indices_lag) <- paste("R", colnames(indices_lag), sep = "")
   indices_lag<-cbind(in_prue,indices_lag)
   indices_lag<-indices_lag[-c((nrow(indices_lag)-11):nrow(indices_lag)),]
 
+  #Creacion de las variables de la tabla anteriormente construida
   variacion<-within(indices_lag,{
     VPERSONALDEPRODUCCION  =PERSONALDEPRODUCCION/RPERSONALDEPRODUCCION
     VPERSONALDEADMINISTRACION=PERSONALDEADMINISTRACION/RPERSONALDEADMINISTRACION
@@ -891,6 +1176,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   variacion <- variacion[!is.na(variacion$DOMINIOS),]
 
+  #Se crea la base de los indices con el anio base, previamente calculada
   tabla2<-tabla1_7 %>%
     filter(ANIO==2018)
   tabla2<-as.data.frame(tabla2[,1:ncol(indices_01)])
@@ -902,6 +1188,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   varia<-varia %>%
     arrange(DOMINIOS,desc(ANO),desc(MES))
 
+  #Calculo de los enlaces
   vector<-unique(varia$DOMINIOS)
   variac<-NULL
   for (k in vector) {
@@ -928,6 +1215,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
 
   #Exportar
+
   names(sheets)
   sheet <- sheets[[13]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE,
@@ -953,7 +1241,8 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     calendar$day   <- day(calendar$dates)
     calendar$wday  <- days[wday(calendar$dates)]
 
-    # Incluir los dC-as festivos que no se mueven cuC!ndo caen en fin de semana + antes de 2011
+    # Incluir los dias festivos que no se mueven cuC!ndo caen en fin de semana +
+    # antes de 2011
     add_holidays <- c(paste0(From_year:To_year,"-01-01"),
                       paste0(From_year:To_year,"-05-01"),
                       paste0(From_year:To_year,"-07-20"),
@@ -964,7 +1253,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     holidays <- c(as.POSIXct(add_holidays,format="%Y-%m-%d",tz="GMT"),as.POSIXct(festivos$FESTIVOS,format="%Y-%m-%d",tz="GMT"))
     holidays <- sort(holidays[!duplicated(holidays)])
 
-    # Incluir domingo de ramos y domingo de resurrecciC3n
+    # Incluir domingo de ramos y domingo de resurreccion
     holidays <- c(holidays,holidays[diff(holidays)==1]-ddays(4),holidays[diff(holidays)==1]+ddays(3))
     holidays <- sort(holidays[!duplicated(holidays)])
 
@@ -986,6 +1275,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # Produccion Real ---------------------------------------------------------
 
+  #Seleccion de variables de produccion real
   produccionreal<-tabla1[,c("DOMNOS","ANO","MES","PRODUCCONREAL")]
   produccionreal<-produccionreal %>% filter(DOMNOS=="T_IND")
 
@@ -994,13 +1284,13 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   produccionreal<-produccionreal[,c("PRODUCCONREAL","Monday","Tuesday","Wednesday",
                                     "Thursday","Friday","Saturday")]
 
-
-
+  #Convertir la tabla en una serie de tiempo
   produccionreal_ts <- ts(produccionreal$PRODUCCONREAL, start = c(2001,1),frequency = 12)
   calendar_ts<-ts(produccionreal[,2:ncol(produccionreal)],start = c(2001,1),frequency = 12)
   colnames(calendar_ts)<-NULL
 
 
+  #Destacionalizacion
   produccionreal_desest <-seas(
     x = produccionreal_ts,
     #arima.model = " ",
@@ -1024,7 +1314,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     na.action = na.omit
   )
 
-
+  #Tabla  con los resultados de la desestacionalizacion
   tabla_prod<-as.data.frame(produccionreal_desest$data)
   tabla_prod<-tabla_prod$final
   deses<-tabla1[,c("DOMNOS","ANO","MES","PRODUCCONREAL")]
@@ -1033,7 +1323,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # Ventas Reales -----------------------------------------------------------
 
-
+  #Seleccion de variables de ventas real
   ventasreales<-tabla1[,c("DOMNOS","ANO","MES","VENTASREALES")]
   ventasreales<-ventasreales %>% filter(DOMNOS=="T_IND")
 
@@ -1043,12 +1333,13 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
                                 "Thursday","Friday","Saturday")]
 
 
-
+  #Convertir la tabla en una serie de tiempo
   ventasreales_ts <- ts(ventasreales$VENTASREALES, start = c(2001,1),frequency = 12)
   calendar_ts<-ts(ventasreales[,2:ncol(ventasreales)],start = c(2001,1),frequency = 12)
   colnames(calendar_ts)<-NULL
 
 
+  #Destacionalizacion
   ventasreales_desest <-seas(
     x = ventasreales_ts,
     #arima.model = " ",
@@ -1071,7 +1362,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     na.action = na.omit
   )
 
-
+  #Tabla  con los resultados de la desestacionalizacion
   tabla_vent<-as.data.frame(ventasreales_desest$data)
   tabla_vent<-tabla_vent$final
   deses<-cbind(deses,tabla_vent)
@@ -1080,6 +1371,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   # Empleo Total ------------------------------------------------------------
 
+  #Seleccion de variables de empleo
   empleototal<-tabla1[,c("DOMNOS","ANO","MES","EMPLEOTOTAL")]
   empleototal<-empleototal %>% filter(DOMNOS=="T_IND")
 
@@ -1088,13 +1380,13 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   empleototal<-empleototal[,c("EMPLEOTOTAL","Monday","Tuesday","Wednesday",
                               "Thursday","Friday","Saturday")]
 
-
-
+  #Convertir la tabla en una serie de tiempo
   empleototal_ts <- ts(empleototal$EMPLEOTOTAL, start = c(2001,1),frequency = 12)
   calendar_ts<-ts(empleototal[,2:ncol(empleototal)],start = c(2001,1),frequency = 12)
   colnames(calendar_ts)<-NULL
 
 
+  #Destacionalizacion
   empleototal_desest <-seas(
     x = empleototal_ts,
     #arima.model = " ",
@@ -1117,12 +1409,14 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
     na.action = na.omit
   )
 
+  #Tabla  con los resultados de la desestacionalizacion
   tabla_empl<-as.data.frame(empleototal_desest$data)
   tabla_empl<-tabla_empl$final
   deses<-cbind(deses,tabla_empl)
 
 
   #Exportar
+
   names(sheets)
   sheet <- sheets[[11]]
   addDataFrame(data.frame(deses), sheet, col.names=FALSE,
@@ -1137,17 +1431,19 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   # 11. Var y cont_Trienal --------------------------------------------------
 
 
+  #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(2019))
   contribucion_total <- contr_sum_an(contribucion_total)
 
+  #Calculo de la contribucion mensual
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(year,2019)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(11,contribucion)
 
-
+  #Calculo de la variacion
   tabla1 <- data %>%
     filter(ANIO%in%c(year,2019) & MES%in%mes) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
@@ -1162,6 +1458,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
 
   tabla1 <- tabla_acople(tabla1)
 
+  #Empalme de la variacion y contribucion
   tabla1 <- tabla1 %>%
     left_join(contribucion,by=c("DOMINIO_39"="DOMINIO_39",
                                 "DESCRIPCIONDOMINIOEMMET39"="DESCRIPCIONDOMINIOEMMET39"))

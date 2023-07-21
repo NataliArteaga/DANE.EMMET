@@ -1,43 +1,77 @@
-#' Estandarización
+#' Estandarizacion
 #'
-#' Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar las  fechas vacías, tanto de inicio y fin, para que se mantenga el mismo margen de reporte.
+#' @description Esta funcion utiliza como insumo la base de datos integrada, es decir la
+#'  base que denominamos: "Base Panel". Tiene  como objetivo analizar el periodo de tiempo
+#'  en el que cada empresas reporta la producción, en la encuesta, y con ello estandarizar
+#'  las  fechas vacías, tanto de inicio y fin, para que se mantenga el mismo margen de reporte.
+#'  Adicionalmente, en las variables numeticas, los datos faltantes se cambian por cero.
+#'  A estas mismas variables se es establece un formato numerico para la porterior manipulación.
+#'  Finalmente se exporta un archivo de tipo .csv con la información actualizada de las fechas.
 #'
-#' @param mes Definir  mes a ejecutar, ej: 11
+#'
+#' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
 #' @return CSV file
 #' @export
 #'
-#' @examples estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
+#'
+#' @details
+#'  Esta funcion recorre las siguiente variables de fecha de inicio y fin:
+#'
+#'  II_PA_PP_IEP, II_PA_PP_FEP.
+#'  II_PA_TD_IET, II_PA_TD_FET.
+#'  II_PA_TI_IETA, II_PA_TI_FETA.
+#'  II_PA_AP_AI_AP, II_PA_AP_AF_AP.
+#'  II_PP_PP_IOP, II_PP_PP_FOP.
+#'  II_PP_TD_IOT, II_PP_TD_FOT.
+#'  II_PP_TI_IOTA, II_PP_TI_FOTA.
+#'  II_PP_AP_AI_PP, II_PP_AP_AF_PP.
+#'  II_HORAS_HORDI_D, II_HORAS_HORDI_H.
+#'  III_PE_IV, III_PE_FV.
+#'
+#'
+#'
+#'  La finalidad de la funcion es estandarizar el periodo de las fechas
+#'  en que las empresas generan el reporte mensual.
+#'
+#'  Para ello, se analiza el reporte del mes anretior y se calculan el numero de
+#'  días de este. Con ese dato se reemplazan las fehas faltantes del mes presente,
+#'  o las reportados como cero.
+#'
+#'  Con esto se logra una unificación del periodo de repote de las empresas.
+#'  En caso dado de no tener reporte del mes anterior se asigna un reporte mensual.
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
 
 
 estandarizacion <- function(directorio,
-                            mes,
-                            anio){
-  # librerias ---------------------------------------------------------------
-
+                            mes=11,
+                            anio=2022){
   library(readr)
   library(readxl)
   library(dplyr)
   library(stringr)
   library(lubridate)
-  source("R/utils.R")
+
+  source("utils.R")
+
   # Base Panel --------------------------------------------------------------
 
-  month <- mes
-  year  <- anio
+  #meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
 
-
-  # Cargar base ------------------------------------------------------------
-
-
-  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[month],year,".csv"), sep = ",")
-
-
-  # Cargar base ------------------------------------------------------------
-
+  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",mesese[mes],anio,".csv"), sep = ",")
 
 
   # Estandarizar formato de fechas ------------------------------------------
@@ -82,7 +116,7 @@ estandarizacion <- function(directorio,
         mutate(
           fecha_ini_ant = round(as.numeric(lag({{V_Inicial}})),0),
           fecha_fin_ant = round(as.numeric(lag({{V_Final}})),0)) %>%
-        filter((ANIO==year & MES==mes & NOVEDAD==99) &
+        filter((ANIO==anio & MES==mes & NOVEDAD==99) &
                  (({{V_Inicial}}==0 & {{V_Final}}==0) |
                     (is.na({{V_Inicial}}) & is.na({{V_Final}})))) %>%
         mutate(Variable_Inicial = case_when(
@@ -246,9 +280,8 @@ estandarizacion <- function(directorio,
 
   base_panel<-funcion_global()
 
-
   # Exportacion tabla -------------------------------------------------------
 
   #write.csv(base_panel,"base_pane_estandarizacion.csv")
-  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],year,".csv"),row.names=F)
+  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",mes,anio,".csv"),row.names=F)
 }
