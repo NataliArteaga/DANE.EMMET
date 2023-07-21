@@ -65,7 +65,7 @@ estandarizacion <- function(directorio,
   library(stringr)
   library(lubridate)
 
-  source("utils.R")
+  source("R/utils.R")
 
   # Base Panel --------------------------------------------------------------
 
