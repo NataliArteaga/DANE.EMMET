@@ -10,12 +10,12 @@
 #'  Para construir esta base, se usa como insumo la base Panel con los casos
 #'  de imputacion aplicados. Finalmente exporta un archivo de extension .xlsx .
 #'
+#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
+#'  @param anio Definir el año a ejecutar, ej: 2022
+#'  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
 #'
 #'
-#' @param mes Definir el mes a ejecutar, ej: 11
-#' @param anio Definir el año a ejecutar, ej: 2022
-#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
 #' @return CSV file
 #' @export
@@ -92,6 +92,7 @@
 
 
 
+
 tematica <- function(directorio,mes,anio){
   # Cargar librerC-as --------------------------------------------------------
   library(readxl)
@@ -107,17 +108,15 @@ tematica <- function(directorio,mes,anio){
   library(openxlsx)
   library(seasonal)
   library(stringr)
-
   source("utils.R")
+
 
 
   # Cargar bases y variables ------------------------------------------------
 
   base_panel2<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"))
 
-  base_panel2<-base_panel2[1:(dim(base_panel)[1]-2),]
 
-  meses <- tolower(meses)
 
 
   # Modificar tipo de variables ---------------------------------------------

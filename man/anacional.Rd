@@ -2,12 +2,20 @@
 % Please edit documentation in R/f6_anexo_nacional.R
 \name{anacional}
 \alias{anacional}
+<<<<<<< HEAD
 \title{Anexo Nacional}
+=======
+\title{Anexo_Nacional}
+>>>>>>> f6d0ca7ed1c609c7759a440726eaca194e4fe752
 \usage{
 anacional(
   directorio = "/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
   mes = 11,
+<<<<<<< HEAD
   anio = 2022
+=======
+  year = 2022
+>>>>>>> f6d0ca7ed1c609c7759a440726eaca194e4fe752
 )
 }
 \arguments{
@@ -21,12 +29,18 @@ anacional(
 CSV file
 }
 \description{
+<<<<<<< HEAD
 Esta funcion crea el archivo de Anexo Nacional. Tiene como insumo, la base
  de datos Tematic. EL cuerpo de la funcion
  crea cada una de las hojas del reporte, seleccionando las columnas adecuadas de la base tematica
  para la construcion de los diferentes calculos desagregados por las variables.
  Finalmente exporta un archivo con extension .xlsx en donde podra observar cada una de las
  hojas con las que cuenta el anexo.
+=======
+@param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
+ @param anio Definir el aC1o a ejecutar, ej: 2022
+ @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+>>>>>>> f6d0ca7ed1c609c7759a440726eaca194e4fe752
 }
 \details{
 En los anexos nacionales se calculan las contribuciones y variaciones
@@ -259,4 +273,16 @@ anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
                        mes=11,anio=2022)
 
 
+<<<<<<< HEAD
+=======
+ @examples anacional(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+                       mes=11,anio=2022)
+
+ @description Esta funcion crea el archivo de Anexo Nacional. Tiene como argumentos, la base
+ de datos Temetica, el mes y anio del que desea generar el reporte. EL cuerpo de la funcion
+ crea cada una de las hojas del reporte, seleccionando las columnas a decuadas de la base tematica
+ para la construcion de los diferentes calculos desagregados por las variables.
+ Finalmente exporta un archivo con extension .xlsx en donde podra observar cada una de las
+ hojas con las que cuenta el anexo.
+>>>>>>> f6d0ca7ed1c609c7759a440726eaca194e4fe752
 }

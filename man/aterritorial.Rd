@@ -17,11 +17,21 @@ aterritorial(directorio, mes = 11, anio = 2022)
 CSV file
 }
 \description{
-Esta funcion utiliza como insumo la base de datos integrada, es decir la
- base que denominamos: "Base Panel". Tiene  como objetivo analizar el periodo de tiempo
- en el que cada empresas reporta la producción, en la encuesta, y con ello estandarizar
- las  fechas vacías, tanto de inicio y fin, para que se mantenga el mismo margen de reporte.
- Finalmente se exporta un archivo de tipo .csv con la información actualizada de las fuechas
+Esta funcion crea el archivo de Anexo Territorial.
+ Tiene como insumo, la base de datos Tematica. El cuerpo de la función
+ crea cada una de las hojas del reporte.
+
+ Los cuadros de salida muestran información complementaria a la registrada
+ en el boletín de prensa con el fin de brindar la información a un nivel más
+ desagregado tanto total nacional como a nivel de departamental, áreas
+ metropolitanas y principales ciudades del país.
+
+ Los resultados se muestran con variaciones anuales, año corrido y doce meses,
+ junto con sus respectivas contribuciones, según dominios, por las principales
+ variables que se recolectan en el proceso: Producción (real y nominal),
+ ventas (real y nominal) y empleo.
+ De igual manera se presentan los resultados de sueldos causados y horas
+ totales trabajadas para los dominios nacionales.
 }
 \details{
 En los anexos territoriales se calculan las contribuciones y variaciones
@@ -138,7 +148,9 @@ En los anexos territoriales se calculan las contribuciones y variaciones
  }
 
  Donde:
+
  t=mes de referencia
+
  a=t-12
 
  Se interpreta como el crecimiento o disminución porcentual, dependiendo de

@@ -6,13 +6,6 @@
 \usage{
 tematica(directorio, mes, anio)
 }
-\arguments{
-\item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
-
-\item{mes}{Definir el mes a ejecutar, ej: 11}
-
-\item{anio}{Definir el año a ejecutar, ej: 2022}
-}
 \value{
 CSV file
 }
@@ -25,6 +18,10 @@ Esta funcion construye la base tematica. Esta base expone los datos
  tematica como la base final de cuadros.
  Para construir esta base, se usa como insumo la base Panel con los casos
  de imputacion aplicados. Finalmente exporta un archivo de extension .xlsx .
+
+ @param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
+ @param anio Definir el año a ejecutar, ej: 2022
+ @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 }
 \details{
 Esta funcion crea las variables de la base tematica de la siguiente manera:
