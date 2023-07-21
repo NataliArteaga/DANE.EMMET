@@ -1,11 +1,24 @@
 #' Anexo Nacional
 #'
-#'@description Esta funcion crea el archivo de Anexo Nacional. Tiene como insumo, la base
-#'  de datos Tematic. EL cuerpo de la funcion
-#'  crea cada una de las hojas del reporte, seleccionando las columnas adecuadas de la base tematica
-#'  para la construcion de los diferentes calculos desagregados por las variables.
-#'  Finalmente exporta un archivo con extension .xlsx en donde podra observar cada una de las
-#'  hojas con las que cuenta el anexo.
+#' @description Esta funcion crea el archivo de Anexo Nacional.
+#'  Tiene como insumo, la base de datos Tematica. El cuerpo de la función
+#'  crea cada una de las hojas del reporte.
+#'
+#'  Los cuadros de salida o anexos estadísticos de EMMET, muestran información
+#'  complementaria a la registrada en el boletín de prensa con el fin de brindar
+#'  la información a un nivel más desagregado tanto total nacional como
+#'  desagregada a nivel de departamentos, áreas metropolitanas y principales
+#'  ciudades del país.
+#'
+#'  Los resultados se muestran con variaciones anuales, año corrido y doce meses,
+#'  junto con sus respectivas contribuciones, según dominios, por las principales
+#'  variables que se recolectan en el proceso: Producción (real y nominal),
+#'  ventas (real y nominal) y empleo, desagregando a su vez esta última variable
+#'  por área funcional y tipo de contrato.
+#'  De igual manera se presentan los resultados de sueldos causados y horas
+#'  totales trabajadas para los dominios nacionales.
+#'
+#'
 #'
 #' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
