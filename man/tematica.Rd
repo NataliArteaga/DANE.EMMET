@@ -7,12 +7,17 @@
 tematica(directorio, mes, anio)
 }
 \description{
-@param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
- @param anio Definir el año a ejecutar, ej: 2022
- @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+Esta funcion construye la base tematica. Tiene como insumo la base
+Panel con los casos de imputacion aplicados. El cuerpo de la funion, crea todas
+ las columnas de la base tematica y finalmete exporta un archivo de
+extension . xlsx.
 }
 \details{
-@return CSV file
+@param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
+ @param anio Definir el año a ejecutar, ej: 2022
+ @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+
+ @return CSV file
  @export
 
  @examples tematica(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",

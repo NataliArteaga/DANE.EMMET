@@ -4,7 +4,7 @@
 \alias{imputacion_outliers}
 \title{Imputación outliers}
 \usage{
-imputacion_outliers(directorio, year, mes)
+imputacion_outliers(directorio, mes, anio)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
@@ -17,9 +17,39 @@ imputacion_outliers(directorio, year, mes)
 CSV file
 }
 \description{
-Función para realizar la imputación por deuda y por casos especiales
+Función para realizar la imputación por deuda y por casos especiales.
+}
+\details{
+La metodologia de imputación es la siguiente:
+
+1.	Para las variables de capitulo 2 la metodología a usar es la imputación por el mes anterior.
+
+2.	Para las variables de capitulo 3 la metodología a usar para imputación por casos especiales
+ es el KNN combinado con variación mes anterior. Para la imputación por deuda en variables pertenecientes
+ a capitulo 3 se realiza un proceso similiar.
+
+El KNN combinado consta de los siguientes pasos:
+
+1. Realizar un primer KNN imputando los individuos atípicos en las variables de interés (KNN1).
+
+2. Calcular la variación con respecto al mes anterior.
+
+3. Realizar un segundo KNN para la variación con respecto al mes anterior de los
+establecimientos del mismo dominio (KNN2).
+
+4. Calcular el valor final de la siguiente manera:
+\deqn{ \hat{y} = KNN_1*(1+KNN_2)}
+Donde \eqn{ \hat{y}} es el valor resultante con el que se imputara la variable de interes.
+
+Para el caso de imputación deuda en capitulo 3 se sigue la siguiente formula:
+\deqn{ \hat{y} = MA*(1+KNN_2)}
+Esto es que el valor resultante con el que se imputara la variable de interes es igual al valor
+del mes anterior, multiplicado por 1 más la variacion con respecto al mes anterior de los establecimientos
+del mismo dominio.
+
+Para conocer más sobre la imputación por el metodo k-Nearest Neighbors ver \code{\link[VIM:kNN]{KNN_VIM}}.
 }
 \examples{
-imputacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes="nov",anio=2022)
+imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+                       mes=11,anio=2022)
 }

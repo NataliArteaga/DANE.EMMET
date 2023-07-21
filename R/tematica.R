@@ -1,6 +1,6 @@
 #' Title
 #'
-#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
+#'  @param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
 #'  @param anio Definir el año a ejecutar, ej: 2022
 #'  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
@@ -9,11 +9,19 @@
 #'
 #'  @examples tematica(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes="nov",anio=2022)
+#'
+#'
+#' @description Esta funcion construye la base tematica. Tiene como insumo la base
+#' Panel con los casos de imputacion aplicados. El cuerpo de la funion, crea todas
+#'  las columnas de la base tematica y finalmete exporta un archivo de
+#' extension . xlsx.
+#'
+#'
 
 
 
 tematica <- function(directorio,mes,anio){
-  # Cargar librerías --------------------------------------------------------
+  # Cargar librerC-as --------------------------------------------------------
   library(readxl)
   library(dplyr)
   library(ggplot2)
@@ -28,16 +36,16 @@ tematica <- function(directorio,mes,anio){
   library(seasonal)
   library(stringr)
 
+  source("R/utils.R")
+
 
   # Cargar bases y variables ------------------------------------------------
 
-  base_panel<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",mes,anio,".csv"))
+  base_panel2<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"))
 
+  base_panel2<-base_panel2[1:(dim(base_panel2)[1]-2),]
 
-
-  base_panel2<-base_panel
-
-  base_panel2<-base_panel2[1:(dim(base_panel)[1]-2),]
+  meses <- tolower(meses)
 
 
   # Modificar tipo de variables ---------------------------------------------

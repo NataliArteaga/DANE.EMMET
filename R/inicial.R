@@ -24,7 +24,7 @@
 #'
 #' 7 \code{\link{boletin}}
 #'
-#' @examples inicial(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET")
+#' @examples inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
 
 
 inicial<-function(directorio){

@@ -17,9 +17,9 @@ estandarizacion(directorio, mes, anio)
 CSV file
 }
 \description{
-Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar el inicio y fin del periodo reportado
+Analizar el periodo de tiempo reportado por cada establecimiento, para estandarizar las  fechas vacías, tanto de inicio y fin, para que se mantenga el mismo margen de reporte.
 }
 \examples{
-estandarizacion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
                        mes=11,anio=2022)
 }

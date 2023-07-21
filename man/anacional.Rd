@@ -2,23 +2,30 @@
 % Please edit documentation in R/anexonal.R
 \name{anacional}
 \alias{anacional}
-\title{Title}
+\title{Anexo_Nacional}
 \usage{
 anacional(
   directorio = "/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-  mes = "noviembre",
+  mes = 11,
   year = 2022
 )
 }
 \description{
-@param mes Definir las tres primeras letras del mes a ejecutar, ej: Nov
- @param anio Definir el año a ejecutar, ej: 2022
+@param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
+ @param anio Definir el aC1o a ejecutar, ej: 2022
  @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 }
 \details{
 @return CSV file
  @export
 
- @examples identificacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes="nov",anio=2022)
+ @examples anacional(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+                       mes=11,anio=2022)
+
+ @description Esta funcion crea el archivo de Anexo Nacional. Tiene como argumentos, la base
+ de datos Temetica, el mes y anio del que desea generar el reporte. EL cuerpo de la funcion
+ crea cada una de las hojas del reporte, seleccionando las columnas a decuadas de la base tematica
+ para la construcion de los diferentes calculos desagregados por las variables.
+ Finalmente exporta un archivo con extension .xlsx en donde podra observar cada una de las
+ hojas con las que cuenta el anexo.
 }

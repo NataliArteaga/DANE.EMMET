@@ -17,10 +17,36 @@ integracion(directorio, mes, anio)
 CSV file
 }
 \description{
-Con esta función se unificarán todas las bases de datos que son necesarias en el proceso, para
- al final exportar en una única base
+Con esta función se integraran los archivos de entrada que son necesarios en el proceso EMMET, con el fin
+ de trabajar con una base llamada "base panel.csv".
+}
+\details{
+En esta función se leen las siguientes bases:
+
+1 Base logistica: Es la base con todos los datos desde enero de 2018 hasta el mes
+anterior al indicado en el parametro mes.
+
+2 Base Original: Es la base con los registros de los 3000 establecimientos para el mes y año
+indicados en los parametros.
+
+3 Base parametrica: Base con las caracteristicas de cada establecimiento.
+
+4 Base deflactor: base con los datos de IPP e IPC para cada CIIU4.
+
+5 Base divipola: base con los codigos de los departamentos y municipios, con sus nombres estandarizados.
+
+El procedimiento para unificar las bases es el siguiente:
+
+1 Se pegan las filas de la base original debajo de la base logistica y se nombra como base panel.
+
+2 Se agregan las columnas de la base parametrica a la base panel por medio del ID_NUMORD.
+
+3 Adicionar las columas de la base deflactor a partir del CIIU4,mes y año.
+
+4 Finalmente se estandarizan los nombres de  los departamentos y minicipios, uniendo las columnas de la base
+divipola por el ID_municipio.
 }
 \examples{
-integracion(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
                        mes=11,anio=2022)
 }

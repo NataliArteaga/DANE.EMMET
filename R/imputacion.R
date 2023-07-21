@@ -1,20 +1,52 @@
 #' Imputación outliers
 #'
-#' Función para realizar la imputación por deuda y por casos especiales
+#' Función para realizar la imputación por deuda y por casos especiales.
+#'
 #' @param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
+#' @details La metodología de imputación es la siguiente:
+#'
+#' 1.	Para las variables de capítulo 2 la metodología a usar es la imputación por el mes anterior.
+#'
+#' 2.	Para las variables de capítulo 3 la metodología a usar para imputación por casos especiales
+#'  es el KNN combinado con variación mes anterior. Para la imputación por deuda en variables pertenecientes
+#'  a capítulo 3 se realiza un proceso similar.
+#'
+#' El KNN combinado consta de los siguientes pasos:
+#'
+#' 1. Realizar un primer KNN imputando los individuos atípicos en las variables de interés (KNN1).
+#'
+#' 2. Calcular la variación con respecto al mes anterior.
+#'
+#' 3. Realizar un segundo KNN para la variación con respecto al mes anterior de los
+#' establecimientos del mismo dominio (KNN2).
+#'
+#' 4. Calcular el valor final de la siguiente manera:
+#' \deqn{ \hat{y} = KNN_1*(1+KNN_2)}
+#' Donde \eqn{ \hat{y}} es el valor resultante con el que se imputara la variable de interés.
+#'
+#' Para el caso de imputación deuda en capítulo 3 se sigue la siguiente formula:
+#' \deqn{ \hat{y} = MA*(1+KNN_2)}
+#' Esto es que el valor resultante con el que se imputara la variable de interés es igual al valor
+#' del mes anterior, multiplicado por 1 más la variación con respecto al mes anterior de los establecimientos
+#' del mismo dominio.
+#'
+#' Para conocer más sobre la imputación por el método k-Nearest Neighbors ver \code{\link[VIM:kNN]{KNN_VIM}}.
+#'
 #' @return CSV file
 #' @export
 #'
-#' @examples imputacion_outliers(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes="nov",anio=2022)
+#' @examples imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
+
+
 # Función identificación e imputación de outliers ------------------------------------------
 
 
 
-imputacion_outliers <- function(directorio,year,mes) {
+imputacion_outliers <- function(directorio,mes,anio) {
 
 
   # librerias ---------------------------------------------------------------
@@ -27,7 +59,7 @@ imputacion_outliers <- function(directorio,year,mes) {
   library(VIM)
   source("R/utils.R")
   month <- mes
-  year  <- year
+  year  <- anio
 
   #cargar base estandarizada
   datos <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[month],year,".csv"))
@@ -52,9 +84,10 @@ imputacion_outliers <- function(directorio,year,mes) {
   datos <- filter(datos, !(ANIO == year & MES == mes))
   #cargar la base de alertas
   wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[month],year,".csv"))
+  wowimp=as.data.frame(wowimp)
   # Convertir los datos que son casos de imputación en NA
   for (i in variablesinte) {
-    wowimp[wowimp[,paste0(i,"_caso de imputacion")]!="continua",i] <- NA
+    wowimp[wowimp[,paste0(i,"_caso_de_imputacion")]!="continua",i] <- NA
   }
   wowimp=wowimp %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
                            AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
