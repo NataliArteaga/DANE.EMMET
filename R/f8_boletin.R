@@ -1,6 +1,7 @@
 f8_boletin <- function(directorio,
                     mes,
-                    anio){
+                    anio,
+                    tipo="pdf"){
   library(rmarkdown)
   rmarkdown::render(paste0(directorio,"boletin/boletin.Rmd"),paste0(tipo,"_document"),
                     params = list(month= mes,
