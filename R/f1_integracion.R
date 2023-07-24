@@ -37,11 +37,11 @@
 #'
 #'
 #'
-#' @examples integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f1_integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 
 
-integracion <- function(directorio,
+f1_integracion <- function(directorio,
                         mes,
                         anio){
   error_dire <- "El valor de 'directorio' debe ser proporcionado.Ej: \"Documents/DANE/Procesos DIMPE /PilotoEMMET\"."
