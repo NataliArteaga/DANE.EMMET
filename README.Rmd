@@ -24,7 +24,7 @@ Este paquete tiene como objetivo optimizar los tiempos del proceso que se realiz
 ## Instalación
 
 Para instalar la libreria de "DANE.EMMET" se realiza con el comando
-```{r}
+```{r,eval=FALSE}
 #instalar la libreria
 remotes::install_github("NataliArteaga/DANE.EMMET")
 #cargar la libreria
@@ -59,7 +59,7 @@ Las cuales se puden correr una a una para asi poder revisar los archivos de sali
 
 1. Ejemplo de usar las funciones de manera individual, se deben correr en orden ya que las funciones cargan la salida de la función respectivamente anterior
 
-```{r example}
+```{r example,eval=FALSE}
 #cargar la libreria
 library(DANE.EMMET)
 #correr funcion inicial
@@ -85,7 +85,7 @@ Se puede revisar el archivo de salida despues de cada función
 
 2. Ejemplo de como usar las macro funciones
 
-```{r macro}
+```{r macro,eval=FALSE}
 #cargar la libreria
 library(DANE.EMMET)
 #correr funcion macro1

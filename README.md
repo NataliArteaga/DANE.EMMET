@@ -6,48 +6,89 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of DANE.EMMET is to …
+Este paquete tiene como objetivo optimizar los tiempos del proceso que
+se realiza para la encuesta mensual manufacturera con enfoque
+territorial (EMMET). La cual sigue el siguiente flujo: ![Flujo del
+proceso](imagenes/flujo.jfif)
 
-## Installation
+## Instalación
 
-You can install the development version of DANE.EMMET like so:
-
-``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+Para instalar la libreria de “DANE.EMMET” se realiza con el comando
 
 ``` r
+#instalar la libreria
+remotes::install_github("NataliArteaga/DANE.EMMET")
+#cargar la libreria
 library(DANE.EMMET)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+## Instalación Java
+
+## Uso
+
+Esta libreria se puede usar de 2 maneras
+
+1.  Funciones individuales: la librera consta de las siguientes
+    funciones individuales -inicial(directorio)
+    -integracion(directorio,mes,anio)
+    -estandarizacion(directorio,mes,anio)
+    -identificacion_outliers(directorio,mes,anio)
+    -imputacion_outliers(directorio,mes,anio)
+    -anacional(directorio,mes,anio) -aterritorial(directorio,mes,anio)
+    -boletin(directorio,mes,anio)
+
+Las cuales se puden correr una a una para asi poder revisar los archivos
+de salida de cada función.
+
+2.  Funciones macro: la libreria cuenta con dos macro funciones
+
+-macro1(directorio,mes,anio): la cual corre las funciones
+inicial,integracion,estandarizacion e identificacion_outliers, para que
+asi el usuario pueda verificar y modificar las alertas, y luego
+continuar con el proceso.
+
+-macro2(directorio,mes,anio): una vez modificado el archivo de alertas
+podemos continuar con el proceso, con esta macro funcion se corren las
+funciones imputacion_outliers, anacional,aterritorial y boletin.
+
+## Ejemplos
+
+1.  Ejemplo de usar las funciones de manera individual, se deben correr
+    en orden ya que las funciones cargan la salida de la función
+    respectivamente anterior
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+#cargar la libreria
+library(DANE.EMMET)
+#correr funcion inicial
+inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
+# correr funcion integracion
+integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion estandarizacion
+estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion identificacion_outliers
+identificacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion imputacion_outliers
+imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion anacional
+anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion aterritorial
+aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion boletin
+boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
+Se puede revisar el archivo de salida despues de cada función
 
-You can also embed plots, for example:
+2.  Ejemplo de como usar las macro funciones
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+``` r
+#cargar la libreria
+library(DANE.EMMET)
+#correr funcion macro1
+macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+#verificar y/o modificar el archivo de alertas para continuar con el proceso
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+#correr funcion macro2
+macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,fecha="24/12/2022",guardar="Documents/DANE/Procesos DIMPE /PilotoEMMET/results/boletin")
+```
