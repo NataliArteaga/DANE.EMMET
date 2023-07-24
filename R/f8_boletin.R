@@ -2,7 +2,7 @@ f8_boletin <- function(directorio,
                     mes,
                     anio){
   library(rmarkdown)
-  rmarkdown::render("/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /Functions/S4_boletin/boletin.Rmd", "pdf_document",
+  rmarkdown::render(paste0(directorio,"boletin/boletin.Rmd"),paste0(tipo,"_document"),
                     params = list(month= mes,
                                   year= anio,
                                   fecha_publicacion= Sys.Date(),
