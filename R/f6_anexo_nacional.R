@@ -277,7 +277,7 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   library(xlsx)
   library(data.table)
 
-  source("utils.R")
+  source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
 
   # Cargar bases y variables ------------------------------------------------

@@ -263,7 +263,7 @@ aterritorial <- function(directorio,
   library(openxlsx)
   library(xlsx)
 
-  source("utils.R")
+  source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
   # Cargar bases y variables ------------------------------------------------
 
