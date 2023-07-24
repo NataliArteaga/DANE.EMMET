@@ -3,7 +3,7 @@ f8_boletin <- function(directorio,
                     anio,
                     tipo="pdf"){
   library(rmarkdown)
-  link="https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/boletin/boletin.Rmd"
+  link="https://github.com/NataliArteaga/DANE.EMMET/raw/main/boletin/boletin.Rmd"
   rmarkdown::render(link,paste0(tipo,"_document"),
                     params = list(month= mes,
                                   year= anio,
