@@ -10,24 +10,24 @@
 #' si están creadas las carpetas donde se guardarán los archivos creados con la librería
 #' en total se crearán siete carpetas, para cada una de las funciones que genera algún archivo de salida.
 #'
-#' 1 S1_integracion:\code{\link{integracion}}
+#' 1 S1_integracion:\code{\link{f1_integracion}}
 #'
-#' 2 S2_estandarizacion:\code{\link{estandarizacion}}
+#' 2 S2_estandarizacion:\code{\link{f2_estandarizacion}}
 #'
-#' 3 S3_identificacion_alertas:\code{\link{identificacion_outliers}}
+#' 3 S3_identificacion_alertas:\code{\link{f3_identificacion_alertas}}
 #'
-#' 4 S4_imputacion:\code{\link{imputacion_outliers}}
+#' 4 S4_imputacion:\code{\link{f4_imputacion}}
 #'
-#' 5 S5_tematica:\code{\link{tematica}}
+#' 5 S5_tematica:\code{\link{f5_tematica}}
 #'
-#' 6 S6_anexos:\code{\link{anacional}} y \code{\link{aterritorial}}
+#' 6 S6_anexos:\code{\link{f6_anacional}} y \code{\link{f7_aterritorial}}
 #'
-#' 7 S7_boletin:\code{\link{boletin}}
+#' 7 S7_boletin:\code{\link{f8_boletin}}
 #'
 #' @examples inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
 
 
-inicial<-function(directorio){
+f0_inicial<-function(directorio){
 
 #instalar todas las librerias necesarias para el proceso
 
