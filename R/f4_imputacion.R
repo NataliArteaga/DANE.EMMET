@@ -87,7 +87,7 @@ f4_imputacion <- function(directorio,mes,anio) {
   wowimp=as.data.frame(wowimp)
   # Convertir los datos que son casos de imputación en NA
   for (i in variablesinte) {
-    wowimp[!grepl("continua", tolower(wowimp[, paste0(i, "_reg")])),i]<- NA
+    wowimp[!grepl("continua", tolower(wowimp[, paste0(i, "_caso_de_imputacion")])),i]<- NA
   }
 
   wowimp=wowimp %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
