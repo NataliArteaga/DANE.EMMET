@@ -16,7 +16,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f2_integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
 #' @details
@@ -56,7 +56,7 @@
 #'
 
 
-estandarizacion <- function(directorio,
+f2_estandarizacion <- function(directorio,
                             mes=11,
                             anio=2022){
   library(readr)
