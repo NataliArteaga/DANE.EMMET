@@ -65,24 +65,19 @@ estandarizacion <- function(directorio,
   library(stringr)
   library(lubridate)
 
-  source("R/utils.R")
+  source("utils.R")
 
   # Base Panel --------------------------------------------------------------
 
-  #meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
 
-  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",mesese[mes],anio,".csv"), sep = ",")
+
+  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"), sep = ",")
 
 
   # Estandarizar formato de fechas ------------------------------------------
 
 
-  cols_to_date <- c("II_PA_PP_IEP","II_PA_PP_FEP","II_PA_TD_IET","II_PA_TD_FET",
-                    "II_PA_TI_IETA","II_PA_TI_FETA","II_PA_AP_AI_AP","II_PA_AP_AF_AP",
-                    "II_PP_PP_IOP","II_PP_PP_FOP","II_PP_TD_IOT","II_PP_TD_FOT",
-                    "II_PP_TI_IOTA","II_PP_TI_FOTA","II_PP_AP_AI_PP","II_PP_AP_AF_PP",
-                    "II_HORAS_HORDI_D","II_HORAS_HORDI_H",
-                    "III_PE_IV","III_PE_FV")
+
   base_panel_2[cols_to_date] <- apply(base_panel_2[cols_to_date], 2, as.numeric)
 
   # Estandarizar Fechas -----------------------------------------------------
