@@ -278,5 +278,5 @@ estandarizacion <- function(directorio,
   # Exportacion tabla -------------------------------------------------------
 
   #write.csv(base_panel,"base_pane_estandarizacion.csv")
-  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",mes,anio,".csv"),row.names=F)
+  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"),row.names=F)
 }

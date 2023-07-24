@@ -283,7 +283,6 @@ anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos 
   # Cargar bases y variables ------------------------------------------------
 
 
-
   meses <- tolower(meses)
   data <- fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"))
   indices_14<- read_xlsx(paste0(directorio,"/data/Indices_2014.xlsx"))

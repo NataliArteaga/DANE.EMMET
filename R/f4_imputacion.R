@@ -58,11 +58,11 @@ imputacion_outliers <- function(directorio,mes,anio) {
   library(data.table)
   library(VIM)
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
-  month <- mes
-  year  <- anio
+
+  anio  <- anio
 
   #cargar base estandarizada
-  datos <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[month],year,".csv"))
+  datos <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"))
 
   #crear una copia de la base de datos
   datoscom=datos
@@ -81,9 +81,9 @@ imputacion_outliers <- function(directorio,mes,anio) {
     datos[,i] <- ifelse(is.na(datos[,i]),0,datos[,i])
   }
   #Dejar la base sin los datos del mes actual
-  datos <- filter(datos, !(ANIO == year & MES == mes))
+  datos <- filter(datos, !(ANIO == anio & MES == mes))
   #cargar la base de alertas
-  wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[month],year,".csv"))
+  wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"))
   wowimp=as.data.frame(wowimp)
   # Convertir los datos que son casos de imputación en NA
   for (i in variablesinte) {
@@ -102,8 +102,8 @@ imputacion_outliers <- function(directorio,mes,anio) {
 
   #crear un data frame con el valor del mes anterior y del año anterior
   tra <- base_imputar  %>% group_by(ID_NUMORD) %>%
-    mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.),mes_anio_ant=~ifelse(sum(MES==mes & ANIO==(year-1))>=1,.[MES==mes & ANIO==year-1],NA)))#,
-  tra <- tra  %>% filter(ANIO==year & MES==mes)%>%
+    mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.),mes_anio_ant=~ifelse(sum(MES==mes & ANIO==(anio-1))>=1,.[MES==mes & ANIO==anio-1],NA)))#,
+  tra <- tra  %>% filter(ANIO==anio & MES==mes)%>%
     as.data.frame()
 
   #calcular la variación que hubo con respecto al mes anterior
@@ -126,7 +126,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
     group_modify(~ kNN(.x,numFun = mean,k=4))
 
   #filtrar por los valores del mes actual y ordenar por "ID_NUMORD"
-  wowKNN4md=wowKNN4md%>% filter(MES==mes & ANIO==year) %>%
+  wowKNN4md=wowKNN4md%>% filter(MES==mes & ANIO==anio) %>%
     arrange(ID_NUMORD) %>%
     as.data.frame()
 
@@ -145,7 +145,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
     group_by(DOMINIOEMMET39) %>%
     group_modify(~ kNN(.x,numFun = median,k=6))
 
-  wowKNNci3=wowKNNci3%>% filter(MES==mes & ANIO==year) %>%
+  wowKNNci3=wowKNNci3%>% filter(MES==mes & ANIO==anio) %>%
     arrange(ID_NUMORD) %>%
     as.data.frame()
 
@@ -180,7 +180,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
   tra <- base_imputar  %>% group_by(ID_NUMORD) %>%
     mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.)))#,
 
-  mes_ant <- tra  %>% filter(MES==mes & ANIO==year)
+  mes_ant <- tra  %>% filter(MES==mes & ANIO==anio)
 
   mes_ant=as.data.frame(mes_ant)
 
@@ -195,7 +195,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
   }
 
   #filtrar solo por el mes de interés y dejar las variables importantes
-  mes_ant=mes_ant%>% filter(MES==mes & ANIO==year) %>%
+  mes_ant=mes_ant%>% filter(MES==mes & ANIO==anio) %>%
     arrange(ID_NUMORD)
 
   mes_ant=mes_ant %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
@@ -211,7 +211,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
   mes_ant <- cbind(mes_ant, wowKNNciu3[, cap3])
 
   #crear una base con el mes de interes y ordenar por el id_numord
-  novtem=filter(datoscom, (ANIO == year & MES == mes))
+  novtem=filter(datoscom, (ANIO == anio & MES == mes))
   novtem=arrange(novtem,novtem$ID_NUMORD)
 
   #convertir algunas variables en numericas
@@ -221,7 +221,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
   novtem=as.data.frame(novtem)
 
   #Modificar la base copia para que no tenga el mes de interes
-  datoscom <- filter(datoscom, !(ANIO == year & MES == mes))
+  datoscom <- filter(datoscom, !(ANIO == anio & MES == mes))
   datoscom<- as.data.frame(datoscom)
   datoscom$MES=as.numeric(datoscom$MES)
   datoscom$ANIO=as.numeric(datoscom$ANIO)
@@ -249,7 +249,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
 
   # Exportar la base imputada -------------------------------
 
-  write.csv(imputa,paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[month],year,".csv"),row.names=F)
+  write.csv(imputa,paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F)
 }
 
 

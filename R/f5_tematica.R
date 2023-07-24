@@ -231,6 +231,6 @@ tematica <- function(directorio,mes,anio){
 
 
   base_tematica<-base_tematica(base_panel2)
-  write.csv(base_tematica,paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",mes,anio,".csv"),row.names=F)
+  write.csv(base_tematica,paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),row.names=F)
 
 }

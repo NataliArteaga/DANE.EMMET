@@ -77,16 +77,14 @@ integracion <- function(directorio,
   library(dplyr)
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
-  month <- mes
-  year  <- anio
 
 
 
   # Cargar bases necesarias y aplicar funcion de formato de nombres
 
-  base_logistica          <- read_csv(paste0(directorio,"/data/",year,"/",meses[month-1],"/EMMET_PANEL_imputada_",meses[month-1],year,".csv"))
+  base_logistica          <- read_csv(paste0(directorio,"/data/",anio,"/",meses[mes-1],"/EMMET_PANEL_imputada_",meses[mes-1],anio,".csv"))
 
-  base_original           <- read_excel(paste0(directorio,"/data/",year,"/",meses[month],"/EMMET_original_",meses[month],year,".xlsx"))
+  base_original           <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_original_",meses[mes],anio,".xlsx"))
   colnames(base_original) <- colnames_format(base_original)
   colnames(base_original)[!colnames(base_original)%in%colnames(base_logistica)] <- c("IMP_IMPUTACION","TOTAL_VENTAS","LOGISTICO_NUEVO","OBSERVACION_DE_AJUSTES")
   #cambia en las columnas que contienen la palabra "OBSE" cualquier caracter que no sea alfanumerico por un espacio
@@ -95,7 +93,7 @@ integracion <- function(directorio,
 
   base_parametrica           <- read_excel(paste0(directorio,"/data/EMMET_parametrica.xlsx"),sheet = "Paramétrica")
   colnames(base_parametrica) <- colnames_format(base_parametrica)
-  base_deflactor             <- read_excel(paste0(directorio,"/data/",year,"/",meses[month],"/DEFLACTOR_",meses[month],year,".xlsx"))
+  base_deflactor             <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/DEFLACTOR_",meses[mes],anio,".xlsx"))
   colnames(base_deflactor)   <- colnames_format(base_deflactor)
   divipola                   <- read_excel(paste0(directorio,"/data/DIVIPOLA.xlsx"))
   colnames(divipola)         <- colnames_format(divipola)
@@ -131,7 +129,7 @@ integracion <- function(directorio,
 
   # Exportar bases de Datos integradas -------------------------------------------------
 
-  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[month],year,".csv"),row.names=F)
+  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F)
 
 }
 

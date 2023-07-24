@@ -97,11 +97,10 @@ identificacion_outliers <- function(directorio,mes,anio) {
   library(forecast)
   library(tsoutliers)
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
-  month <- mes
-  year  <- anio
+
 
   #cargar la base de datos
-  base_panel <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[month],year,".csv"))
+  base_panel <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"))
 
 
   #convertir la base en data frame y convertir variables de año y mes en numéricas
@@ -124,13 +123,13 @@ identificacion_outliers <- function(directorio,mes,anio) {
                          AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS)
 
   #Calcular métricas de interés como el promedio, la desviación estándar,etc; en los últimos 2 años
-  tra <- tra  %>% group_by(ID_NUMORD) %>%  filter((MES>=mes & ANIO==year-2) |(ANIO==year-1)|(MES<=mes & ANIO==year)) %>%
-    mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.),mes_anio_ant=~ifelse(sum(MES==mes & ANIO==(year-1))>=1,.[MES==mes & ANIO==year-1],NA),
-                                          promedio=~mean(.,na.rm = T),devest=~sd(.,na.rm=T),moda_value=~sum(.%in%.[MES==mes & ANIO==year])))#,
+  tra <- tra  %>% group_by(ID_NUMORD) %>%  filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
+    mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.),mes_anio_ant=~ifelse(sum(MES==mes & ANIO==(anio-1))>=1,.[MES==mes & ANIO==anio-1],NA),
+                                          promedio=~mean(.,na.rm = T),devest=~sd(.,na.rm=T),moda_value=~sum(.%in%.[MES==mes & ANIO==anio])))#,
 
 
   #filtrar solo por el periodo actual
-  tra <- tra  %>% filter(MES==mes & ANIO==year)
+  tra <- tra  %>% filter(MES==mes & ANIO==anio)
 
   #crear métricas para la carta de control que servirá para definir la regla de identificación de
   #individuos a imputar
@@ -149,7 +148,7 @@ identificacion_outliers <- function(directorio,mes,anio) {
   # identificación individuos a imputar para las variables del capitulo 3 -----------------------------------------------
 
   #crear un data frame del mes actual
-  novorg=datos %>% filter(ANIO==year & MES==mes) %>% arrange(ID_NUMORD)
+  novorg=datos %>% filter(ANIO==anio & MES==mes) %>% arrange(ID_NUMORD)
   #vector con el id del establecimiento del mes actual
   id_estab=novorg$ID_NUMORD
   #crea un data frame vacio
@@ -175,24 +174,24 @@ identificacion_outliers <- function(directorio,mes,anio) {
             order = arimaorder(fit)
             seasonal=fit$arma[4:6]
             ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "arima",
-                           args.tsmethod = list(order=c(order),seasonal=list(order=seasonal)))$outliers$time==which(mmm$MES==mes & mmm$ANIO==year))>=1,1,0)
+                           args.tsmethod = list(order=c(order),seasonal=list(order=seasonal)))$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
 
           },  # Segunda opción en caso de error, usa tso con el metodo auto.arima
           error = function(e) {
-            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "auto.arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==year))>=1,1,0)
+            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "auto.arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
           },  # Tercera opción en caso de error, utiliza tso con order y seasonal calculados por defecto
           error = function(e) {
 
-            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==year))>=1,1,0)
+            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
           },
           error = function(e) {
 
             # cuarta opción en caso de error, utiliza tso con los datos escalados
-            ifelse(sum(tso(as.ts(scale(mmm[,j])), tsmethod = "arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==year))>=1,1,0)
+            ifelse(sum(tso(as.ts(scale(mmm[,j])), tsmethod = "arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
           }
         )
       }else{#en dado caso que no se cumpla la condición del 30%, realizar carta control 24 meses
-        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==year-2) |(ANIO==year-1)|(MES<=mes & ANIO==year)) %>%
+        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
           as.data.frame()
         prueba[1,paste0(j,"_metodo_de_imputacion")]="IC"
         #calcula el limite superior e inferior de la carta control
@@ -228,6 +227,6 @@ identificacion_outliers <- function(directorio,mes,anio) {
   # Exportar data frame con la identificación de posibles casos de imputación -------------------------------
 
 
-  write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[month],year,".csv"),row.names=F)
+  write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"),row.names=F)
 }
 
