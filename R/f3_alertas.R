@@ -75,17 +75,43 @@
 #'
 #' Donde \eqn{\bar{x}} es el promedio de la serie de los últimos 24 meses de la variable y establecimiento de interés y \eqn{S} es la desviación estándar de la serie de los últimos 24 meses de la variable y establecimiento de interés.
 #'
+#' @section Guia para actualizar archivo de alertas:
+#'
+#' Luego de ejecutar esta función se creara un archivo de excel tipo csv, este contiene variables
+#' de identificación de los establecimientos, los valores en cada una de las variables de interes
+#' (capitulo 2 y capitulo 3), y si son posibles casos de imputación, las variables en las que
+#' tengan un valor diferente a continua son los que en la función de imputación pasaran por ese proceso
+#'
+#' Para modificar el archivo debe modifcar el valor en la variable que desee y busque la columna
+#' cuyo nombre es nombrevariable_caso_de_imputacion y modifique el valor por "continua_critica",para
+#' tener registro de que valores se modificaron por una critica, si desea, en la ultima columna
+#' puede realizar un comentario
+#'
+#' Ejemplo, queremos modificar en valor de la producción del establecimiento con ID_numord 23;
+#' por lo tanto primero se busca la fila cuyo valor de id_numord es 23, en la columna "AJU_III_PE_PRODUCCION"
+#' cambiaremos el valor numerico por el valor que deseamos (evite usar decimales), luego proceda
+#' a buscar la columna "AJU_III_PE_PRODUCCION_caso_de_imputacion", ahi modifique el valor de la casilla
+#' por "continua_critica", sin importar si el valor anterior era "continua", "imputacion_deuda"
+#'  o "imputacion_caso_especial".
 #'
 #' @return CSV file
 #'
 #'
 #'
-#' @examples identificacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f3_identificacion_alertas(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
-identificacion_outliers <- function(directorio,mes,anio) {
+f3_identificacion_alertas <- function(directorio,mes,anio) {
   ### función detección de outliers
 
+  archivo=paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv")
+  if (file.exists(archivo)) {
+    respuesta <- readline(paste("El archivo", archivo, "ya existe. ¿Desea sobreescribirlo? (S/N): "))
+    if (toupper(respuesta) != "S") {
+      cat("Operación cancelada. El archivo no ha sido sobrescrito.\n")
+      return(invisible())
+    }
+  }
 
 
   # librerias ---------------------------------------------------------------
@@ -219,7 +245,7 @@ identificacion_outliers <- function(directorio,mes,anio) {
            AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
            II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
            AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
-           AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS,ends_with("imputacion")) %>% arrange(ID_NUMORD) %>% as.data.frame()
+           AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS,ends_with("caso_de_imputacion")) %>% arrange(ID_NUMORD) %>% as.data.frame()
 
 
 
