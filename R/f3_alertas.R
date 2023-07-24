@@ -96,7 +96,7 @@ identificacion_outliers <- function(directorio,mes,anio) {
   library(data.table)
   library(forecast)
   library(tsoutliers)
-  source("utils.R")
+  source("https://github.com/NataliArteaga/DANE.EMMET/blob/main/R/utils.R")
   month <- mes
   year  <- anio
 

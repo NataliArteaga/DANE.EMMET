@@ -65,7 +65,7 @@ estandarizacion <- function(directorio,
   library(stringr)
   library(lubridate)
 
-  source("utils.R")
+  source("https://github.com/NataliArteaga/DANE.EMMET/blob/main/R/utils.R")
 
   # Base Panel --------------------------------------------------------------
 

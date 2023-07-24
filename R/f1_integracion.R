@@ -75,7 +75,7 @@ integracion <- function(directorio,
   library(stringr)
   library(tidyr)
   library(dplyr)
-  source("utils.R")
+  source("https://github.com/NataliArteaga/DANE.EMMET/blob/main/R/utils.R")
 
   month <- mes
   year  <- anio

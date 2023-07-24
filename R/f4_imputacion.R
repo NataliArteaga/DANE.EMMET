@@ -57,7 +57,7 @@ imputacion_outliers <- function(directorio,mes,anio) {
   library(readr)
   library(data.table)
   library(VIM)
-  source("R/utils.R")
+  source("https://github.com/NataliArteaga/DANE.EMMET/blob/main/R/utils.R")
   month <- mes
   year  <- anio
 
