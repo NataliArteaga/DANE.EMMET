@@ -38,7 +38,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f4_imputacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 
 
@@ -46,7 +46,7 @@
 
 
 
-imputacion_outliers <- function(directorio,mes,anio) {
+f4_imputacion <- function(directorio,mes,anio) {
 
 
   # librerias ---------------------------------------------------------------
@@ -87,8 +87,9 @@ imputacion_outliers <- function(directorio,mes,anio) {
   wowimp=as.data.frame(wowimp)
   # Convertir los datos que son casos de imputación en NA
   for (i in variablesinte) {
-    wowimp[wowimp[,paste0(i,"_caso_de_imputacion")]!="continua",i] <- NA
+    wowimp[!grepl("continua", tolower(wowimp[, paste0(i, "_reg")])),i]<- NA
   }
+
   wowimp=wowimp %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
                            AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
                            II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,

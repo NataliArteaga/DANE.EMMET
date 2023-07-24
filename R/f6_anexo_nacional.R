@@ -27,7 +27,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f6_anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
 #'
@@ -257,7 +257,7 @@
 #'  según clase industrial.
 #'
 #'
-anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
+f6_anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
                       mes=11,
                       anio=2022){
   # Cargar librerC-as --------------------------------------------------------

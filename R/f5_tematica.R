@@ -20,7 +20,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples tematica(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f5_tematica(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
 #'
@@ -93,7 +93,7 @@
 
 
 
-tematica <- function(directorio,mes,anio){
+f5_tematica <- function(directorio,mes,anio){
   # Cargar librerC-as --------------------------------------------------------
   library(readxl)
   library(dplyr)

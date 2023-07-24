@@ -23,7 +23,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f7_aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
 #' @details
@@ -243,7 +243,7 @@
 #'  19 hojas.
 
 
-aterritorial <- function(directorio,
+f7_aterritorial <- function(directorio,
                             mes=11,
                             anio=2022){
 
