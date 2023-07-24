@@ -1,43 +1,39 @@
-#' Función inicial
+#' Macro 1
 #'
-#' Funcion que instala las librerias necesarias para todo el proceso y crea las carpetas en donde se guardaran los archivos.
+#' Con esta función realizaremos la primera parte del proceso, en donde se correran las 4
+#' primeras funciones.
 #'
-
-#' @param directorio definir el directorio donde se crearan las carpetas.
 #'
-#' @details Se revisa si las funciones están instaladas en el entorno, en caso de
-#' que no estén instaladas se procederán a instalar, luego se procede a revisar
-#' si están creadas las carpetas donde se guardarán los archivos creados con la librería
-#' en total se crearán siete carpetas, para cada una de las funciones que genera algún archivo de salida.
+#' @param mes Definir el mes a ejecutar, ej: 11
+#' @param anio Definir el año a ejecutar, ej: 2022
+#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #'
-#' 1 S1_integracion:\code{\link{integracion}}
+#' @details  Esta funcion tiene como objetivo correr desde la función inicial hasta la función
+#' de identificacion de alertas, con el fin de que el usuario pueda obtener rapidamente el
+#' archivo de salida de la función de alertas y poder realizar el proceso de critica.
+#' Recuerde que si el archivo de alertas ya está creado, al correr esta función le pedira que
+#' responda S si quiere sobreescribirlo, de lo contrario otro valor para cancelar la función
 #'
-#' 2 S2_estandarizacion:\code{\link{estandarizacion}}
+#' Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}}, \code{\link{f2_estandarizacion}},
+#' \code{\link{f3_identificacion_outliers}}
 #'
-#' 3 S3_identificacion_alertas:\code{\link{identificacion_outliers}}
 #'
-#' 4 S4_imputacion:\code{\link{imputacion_outliers}}
-#'
-#' 5 S5_tematica:\code{\link{tematica}}
-#'
-#' 6 S6_anexos:\code{\link{anacional}} y \code{\link{aterritorial}}
-#'
-#' 7 S7_boletin:\code{\link{boletin}}
-#'
-#' @examples inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
+#' @examples macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
 
 
 macro1<-function(directorio,mes,anio){
-inicial(directorio)
+f0_inicial(directorio)
   print("Se ejecuto la funcion inicial")
-integracion(directorio,mes,anio)
+f1_integracion(directorio,mes,anio)
 print("Se ejecuto la funcion integracion")
-estandarizacion(directorio,mes,anio)
+f2_estandarizacion(directorio,mes,anio)
 print("Se ejecuto la funcion estandarizacion")
-identificacion_outliers(directorio,mes,anio)
-print("Se ejecuto la funcion identificacion_outliers, por favor verifique el archivo en la
-      carpeta results/S3_identificacion_alertas")
-print("Una vez listo el archivo continue el proceso llamando la función macro2(directorio,mes,anio) ")
+f3_identificacion_outliers(directorio,mes,anio)
+print(paste0("Se ejecuto la funcion identificacion outliers, por favor verifique el archivo en la
+      carpeta",directorio,"results/S3_identificacion_alertas y realice el proceso de critica."))
+print("Recuerde seguir las instrucciones para guardar el archivo y continue con el
+      proceso llamando la funcion macro2(directorio,mes,anio) ")
 }
 
 
@@ -46,19 +42,6 @@ print("Una vez listo el archivo continue el proceso llamando la función macro2(
 
 
 
-guardar_con_confirmacion <- function(datos, archivo) {
-  if (file.exists(archivo)) {
-    respuesta <- readline(paste("El archivo", archivo, "ya existe. ¿Desea sobreescribirlo? (S/N): "))
-    if (toupper(respuesta) != "S") {
-      cat("Operación cancelada. El archivo no ha sido sobrescrito.\n")
-      return(invisible())
-    }
-  }
-  write.csv(datos, archivo, row.names = FALSE)
-  cat("Los datos han sido guardados exitosamente en", archivo, "\n")
-}
 
-# Uso de la función
-mis_datos <- data.frame(x = 1:11, y = letters[1:11])
-archivo_guardado <- "datos.csv"
-guardar_con_confirmacion(mis_datos, archivo_guardado)
+
+
