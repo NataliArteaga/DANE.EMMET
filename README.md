@@ -24,6 +24,66 @@ library(DANE.EMMET)
 
 ## Instalación Java
 
+Esta función requiere que su computador cuente con Java, pues se usa la
+librería xlsx, y ésta con la ayuda de Java sobre-escribe algunos
+archivos de excel, y genera varias hojas dentro del mismo y, con ellos,
+genera el archivo final de los anexos.
+
+La instalación de Java se puede realizar para Windows, Linux y Mac.
+
+Para Windows:
+
+1.  Entre el sitio web oficial de Java en <https://www.oracle.com/java/>
+    y haga clic en “Descargar” o “Get Java”.
+
+2.  En la página de descargas, asegúrase de seleccionar la versión
+    correcta de Java para Windows, ya sea de 32 o 64 bits, dependiendo
+    de su sistema operativo.
+
+3.  Haga clic en el enlace de descarga correspondiente y acepte los
+    términos y condiciones de Oracle.
+
+4.  Una vez que se complete la descarga, haga doble clic en el archivo
+    de instalación y siga las instrucciones del asistente de
+    instalación.
+
+5.  Durante la instalación, es posible que se le solicite elegir una
+    ubicación para instalar Java. Por lo general, se recomienda utilizar
+    la ubicación predeterminada.
+
+6.  Una vez finalizada la instalación, verifique que Java se haya
+    instalado correctamente abriendo la línea de comandos y ejecutando
+    el comando “java -version”. Debería ver la versión de Java instalada
+    en su sistema.
+
+Para Mac:
+
+1.  En su Mac, abra un navegador web e ingrese al sitio web oficial de
+    Java en <https://www.oracle.com/java/> y haga clic en “Descargar” o
+    “Get Java”.
+
+2.  En la página de descargas, asegúrase de seleccionar la versión
+    correcta de Java para macOS.
+
+3.  Haga clic en el enlace de descarga correspondiente y acepte los
+    términos y condiciones de Oracle.
+
+4.  Una vez que se complete la descarga, haga doble clic en el archivo
+    de instalación y siga las instrucciones del asistente de
+    instalación.
+
+5.  Durante la instalación, es posible que se le solicite ingresar la
+    contraseña de administrador de su Mac.
+
+6.  Una vez finalizada la instalación, verifique que Java se haya
+    instalado correctamente abriendo la Terminal y ejecutando el comando
+    “java -version”. Debería ver la versión de Java instalada en su
+    sistema.
+
+Dependiendo de las versiones específicas de Java y de los sistemas
+operativos que estés utilizando, algunos pasos o detalles podrían
+variar.
+
 ## Uso
 
 Esta libreria se puede usar de 2 maneras
