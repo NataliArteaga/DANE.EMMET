@@ -32,7 +32,7 @@ f0_inicial<-function(directorio){
 #instalar todas las librerias necesarias para el proceso
 
   # Lista de librerías que deseas instalar o cargar
-  librerias <- c("tidyverse", "ggplot2", "dplyr","readr","readxl","stringr","tidyr","lubridate","forecast","tsoutliers","data.table","VIM","scales","kableExtra","formattable","htmltools","webshot","openxlsx","seasonal","xlsx","rmarkdown","roxygen2","plotly")
+  librerias <- c("tidyverse", "ggplot2", "dplyr","readr","readxl","stringr","tidyr","lubridate","forecast","tsoutliers","data.table","VIM","scales","kableExtra","formattable","htmltools","webshot","openxlsx","seasonal","xlsx","rmarkdown","roxygen2","plotly","gt","purrr","knitr","tinytex","webshot2")
 
   # Verificar si las librerías están instaladas
   librerias_faltantes <- librerias[!sapply(librerias, requireNamespace, quietly = TRUE)]
