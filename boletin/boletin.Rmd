@@ -1,11 +1,11 @@
 ---
 output:
+  html_document:
+    df_print: paged
   pdf_document:
     latex_engine: pdflatex
     keep_tex: yes
     number_sections: true
-  html_document:
-    df_print: paged
   word_document: default
   classoption: landscape
 geometry:
@@ -25,7 +25,7 @@ params:
   TI_ven: 0.025
   TI_empl: 0.027
   fecha_publicacion: 14 de Diciembre de 2022
-  directorio: /Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET/results/S5_tematica/EMMET_PANEL_tematica_nov2022.csv
+  directorio: "C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET"
 header-includes: 
   - \usepackage{titling}
   - \usepackage{graphicx}
@@ -35,12 +35,7 @@ header-includes:
   - \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\
      {\fontfamily{put}\selectfont
      \textcolor{gray}{\Large `r paste(params$month,params$year)`}}}
-  - \fancyhead[L]{ {\fontfamily{put}\selectfont
      \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
-  - \setlength{\headheight}{70.83125pt}
-  - \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\
-    \thepage}
-  - \renewcommand{\footrulewidth}{0pt}
 ---
 
 
@@ -59,13 +54,13 @@ library(gt)
 library(purrr)
 library(knitr)
 library(tinytex)
-
+library(webshot2)
 
 meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
 
-data<-read_xlsx("D:/Documentos/CAMILA/DANE/EMMET Base Temática definitiva Nov2022....xlsx")
+data<-read.csv(paste0(params$directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"))
 
 #data <- fread(params$directorio)
 
