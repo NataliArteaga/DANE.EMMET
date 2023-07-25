@@ -40,7 +40,7 @@ header-includes:
   - \setlength{\headheight}{70.83125pt}
   - \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\
     \thepage}
-  - \renewcommand{\footrulewidth}{0pt}
+  - \renewcommand{\footrulewidth}{0pt}    
 ---
 
 
