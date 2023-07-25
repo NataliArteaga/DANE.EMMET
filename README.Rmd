@@ -72,14 +72,24 @@ Dependiendo de las versiones específicas de Java y de los sistemas operativos q
 Esta libreria se puede usar de 2 maneras
 
 1. Funciones individuales: la librera consta de las siguientes funciones individuales
--inicial(directorio)
--integracion(directorio,mes,anio)
--estandarizacion(directorio,mes,anio)
--identificacion_outliers(directorio,mes,anio)
--imputacion_outliers(directorio,mes,anio)
--anacional(directorio,mes,anio)
--aterritorial(directorio,mes,anio)
--boletin(directorio,mes,anio)
+
+-f0_inicial(directorio)
+
+-f1_integracion(directorio,mes,anio)
+
+-f2_estandarizacion(directorio,mes,anio)
+
+-f3_identificacion_outliers(directorio,mes,anio)
+
+-f4_imputacion_outliers(directorio,mes,anio)
+
+-f5_tematica(directorio,mes,anio)
+
+-f6_anacional(directorio,mes,anio)
+
+-f7_aterritorial(directorio,mes,anio)
+
+-f8_boletin(directorio,mes,anio)
 
 Las cuales se puden correr una a una para asi poder revisar los archivos de salida de cada función.
 
@@ -97,21 +107,23 @@ Las cuales se puden correr una a una para asi poder revisar los archivos de sali
 #cargar la libreria
 library(DANE.EMMET)
 #correr funcion inicial
-inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
+f0_inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
 # correr funcion integracion
-integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f1_integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion estandarizacion
-estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f2_estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion identificacion_outliers
-identificacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f3_identificacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion imputacion_outliers
-imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f4_imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion tematica
+f5_tematica(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion anacional
-anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f6_anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion aterritorial
-aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f7_aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion boletin
-boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f8_boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 
 ```
 
@@ -127,6 +139,6 @@ macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 #verificar y/o modificar el archivo de alertas para continuar con el proceso
 
 #correr funcion macro2
-macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,fecha="24/12/2022",guardar="Documents/DANE/Procesos DIMPE /PilotoEMMET/results/boletin")
+macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,tipo="pdf")
 ```
 

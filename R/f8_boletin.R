@@ -1,3 +1,37 @@
+#' Macro 1
+#'
+#' Con esta función realizaremos la primera parte del proceso, en donde se correran las 4
+#' primeras funciones.
+#'
+#'
+#' @param mes Definir el mes a ejecutar, ej: 11
+#' @param anio Definir el año a ejecutar, ej: 2022
+#' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#'
+#' @details  Esta funcion tiene como objetivo correr desde la función inicial hasta la función
+#' de identificacion de alertas, con el fin de que el usuario pueda obtener rapidamente el
+#' archivo de salida de la función de alertas y poder realizar el proceso de critica.
+#' Recuerde que si el archivo de alertas ya está creado, al correr esta función le pedira que
+#' responda S si quiere sobreescribirlo, de lo contrario otro valor para cancelar la función
+#'
+#' Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}}, \code{\link{f2_estandarizacion}},
+#' \code{\link{f3_identificacion_outliers}}
+#'
+#'
+#' @examples macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#'                        mes=11,anio=2022)
+
+
+
+
+
+
+
+
+
+
+
+
 f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   library(rmarkdown)
   library(readxl)

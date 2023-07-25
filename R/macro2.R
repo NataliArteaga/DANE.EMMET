@@ -37,7 +37,7 @@ macro2<-function(directorio,mes,anio,fecha,guardar){
   print("Se ejecuto la funcion construccion anexo nacional")
   f7_aterritorial(directorio,mes,anio)
   print("Se ejecuto la funcion construccion anexo territorial")
-  f8_boletin(directorio,mes,anio,fecha,guardar)
+  f8_boletin(directorio,mes,anio,tipo="pdf")
   print("Se ejecuto la funcion construccion  boletin")
   print(paste0("por favor consulte ",directorio,"/results encontrara los archivos para la
                publicacion de los resultados EMMET"))

@@ -29,7 +29,7 @@ f1_integracion(directorio,mes,anio)
 print("Se ejecuto la funcion integracion")
 f2_estandarizacion(directorio,mes,anio)
 print("Se ejecuto la funcion estandarizacion")
-f3_identificacion_outliers(directorio,mes,anio)
+f3_identificacion_alertas(directorio,mes,anio)
 print(paste0("Se ejecuto la funcion identificacion outliers, por favor verifique el archivo en la
       carpeta",directorio,"results/S3_identificacion_alertas y realice el proceso de critica."))
 print("Recuerde seguir las instrucciones para guardar el archivo y continue con el
