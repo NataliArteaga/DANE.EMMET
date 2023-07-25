@@ -1,6 +1,6 @@
 f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   library(rmarkdown)
-
+  library(readxl)
   # Definir la URL de la carpeta boletin en GitHub
   url_boletin <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/boletin.zip"
 
@@ -11,13 +11,21 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
 
   # Definir la ruta del archivo boletin.Rmd en la carpeta descargada
   ruta_boletin_rmd <- file.path(directorio, "boletin","boletin", "boletin.Rmd")
-
+  parametros <- as.data.frame(read_excel(paste0(directorio,"/results/S7_boletin/parametros_boletin.xlsx")))
   # Renderizar el archivo Rmd localmente
   rmarkdown::render(ruta_boletin_rmd, paste0(tipo, "_document"),
                     params = list(month = mes,
                                   year = anio,
                                   fecha_publicacion = Sys.Date(),
-                                  directorio = directorio),
+                                  directorio = directorio,
+                                  IC_prod= parametros[1,2],
+                                  IC_ven= parametros[2,2],
+                                  IC_empl= parametros[3,2],
+                                  TNR= parametros[4,2],
+                                  TI_prod= parametros[5,2],
+                                  TI_ven=parametros[6,2],
+                                  TI_empl= parametros[7,2],
+                                  ),
                     output_file = paste0("boletin_", Sys.Date()),
                     output_dir = file.path(directorio, "results", "S7_boletin"))
 }
