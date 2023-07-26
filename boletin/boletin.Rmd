@@ -1,11 +1,11 @@
 ---
 output:
-  html_document:
-    df_print: paged
   pdf_document:
     latex_engine: pdflatex
     keep_tex: yes
     number_sections: true
+  html_document:
+    df_print: paged
   word_document: default
   classoption: landscape
 geometry:
@@ -17,15 +17,16 @@ geometry:
 params:
   month: 11
   year: 2022
-  IC_prod: 0.981
-  IC_ven: 0.981
-  IC_empl: 0.985
-  TNR: 0.02
-  TI_prod: 0.026
-  TI_ven: 0.025
-  TI_empl: 0.027
+  month_b: Noviembre
+  IC_prod: 98.1
+  IC_ven: 98.1
+  IC_empl: 98.5
+  TNR: 2.0
+  TI_prod: 2.6
+  TI_ven: 2.5
+  TI_empl: 2.7
   fecha_publicacion: 14 de Diciembre de 2022
-  directorio: "C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET"
+  directorio: /Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET/results/S5_tematica/EMMET_PANEL_tematica_nov2022.csv
 header-includes: 
   - \usepackage{titling}
   - \usepackage{graphicx}
@@ -34,13 +35,13 @@ header-includes:
   - \pagestyle{fancy}
   - \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\
      {\fontfamily{put}\selectfont
-     \textcolor{gray}{\Large `r paste(params$month,params$year)`}}}
+     \textcolor{gray}{\Large `r paste(params$month_b,params$year)`}}}
   - \fancyhead[L]{ {\fontfamily{put}\selectfont
      \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
   - \setlength{\headheight}{70.83125pt}
   - \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\
     \thepage}
-  - \renewcommand{\footrulewidth}{0pt}    
+  - \renewcommand{\footrulewidth}{0pt}
 ---
 
 
@@ -61,6 +62,7 @@ library(knitr)
 library(tinytex)
 library(webshot2)
 
+
 meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
@@ -78,6 +80,15 @@ colnames_format <- function(base){
 }
 colnames(data) <- colnames_format(data)
 data <-  data %>% mutate_at(vars(contains("OBSE")),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+
+bar_chart <- function(label, height = "10px", fill = "#00bfc4", background = "white") {
+    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
+    chart <- glue::glue("<div style='flex-grow:1;margin-left:1px;background:{background};'>{bar}</div>")
+    glue::glue("<div style='display:flex;align-items:center';>{chart}</div>") %>%
+        gt::html()
+}
+
+colores <- c("#f83796","#0875a5","#80c175")
 ```
 
 ```{r Funciones,echo=FALSE}
@@ -155,11 +166,10 @@ tab_acople <- function(base){
   return(base)
 }
 
-
 ```
 
 
-# Encuesta Mensual Manufacturera con Enfoque Territorial – EMMET  `r paste0(params$month," ",params$year)`{.unlisted .unnumbered}
+# Encuesta Mensual Manufacturera con Enfoque Territorial – EMMET  `r paste0(meses_b[params$month]," ",params$year)`{.unlisted .unnumbered}
 
 **Gráfico 1. Variación anual y trienal de la producción real, ventas y personal ocupado de la industria manufacturera**\
 **Total nacional**\
@@ -167,7 +177,7 @@ tab_acople <- function(base){
 \
 
 
-```{r variacion,echo=F,eval=TRUE,warning=FALSE,message=F}
+```{r variacion,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3.2,fig.width=4}
 #1
 variacion <- data %>% 
   group_by(ANIO,MES)
@@ -197,17 +207,17 @@ variaciones$tipo <- factor(variaciones$tipo,
                            levels=c(paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")"),
                                     paste0(meses_b[params$month], " (",params$year," / 2019)")))
 
-colores <- c("#f83796","#0875a5","#80c175")
+
 ggplot(variaciones,aes(x=variable,y=variacion,fill=variable))+geom_bar(stat="identity")+
   theme_classic()+facet_grid(~tipo)+
-  geom_text(aes(x=variable,y=variacion,label=paste0(round(variacion*100,1),"%")),vjust=-0.5)+
+  geom_text(aes(x=variable,y=variacion,label=paste0(round(variacion*100,1),"%")),vjust=-0.5, size=2.3)+
   scale_y_continuous(breaks = function(x)pretty_breaks(n=15)(c(as.numeric(x)[1],as.numeric(x)[2])),labels=percent)+
-  scale_fill_manual(values = colores)+theme(legend.position = "none")+labs(y="Variación (%)",x="")+
+  scale_fill_manual(values = colores)+theme(legend.position = "none",axis.text.x=element_text(size=7),axis.text.y = element_text(size=6.5))+labs(y="Variación (%)",x="",y.size=5)+
   theme(strip.background.x=element_rect(color = NA,  fill=NA))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P: Cifras provisionales. Se presentan variaciones respecto al año 2020 para considerar el efecto base de comparación del periodo de pandemia.
  
 \newpage
@@ -224,15 +234,17 @@ La EMMET mide la evolución mensual del sector manufactrero del país, a través
 
 Tomando como marco la Encuesta Anual Manufacturera de 2017, se realizó el último rediseño de la operación estadística. Sobre este año base, se obtuvo una encuesta por muestreo no probabilístico de 3.100 establecimientos; con ellos se presentan los resultados a nivel total nacional y su desagregación para 12 departamentos, Bogotá y otros departamentos, 3 áreas metropolitanas y 8 ciudades del país, para los diferentes usuarios públicos y privado. En el contexto nacional, se mantienen 39 dominios industriales manufactureros de publicación establecidos con base en la Clasificación Industrial Internacional Uniforme (CIIU) de toas las actividades económicas Rev. 4 adaptada para Colombia.De esta forma es posible obtener la información necesaria para construir indicadores confiables de la industria manufacturera, los cuales son herramientas importantes para la toma de decisiones económicas en el país.
 
-# Evolución general de las principales variables total nacional `r paste0(meses_b[params$month]," ",params$year)`
+\newpage
+# Evolución general de las principales variables total nacional 
+`r paste0(meses_b[params$month]," ",params$year)`
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Producción\nReal","variacion"]*100,1),"%")`, las ventas reales de de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Ventas\nReales","variacion"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Personal\nOcupado","variacion"]*100,1),"%")`.\
+En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Producción\nReal","variacion"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Ventas\nReales","variacion"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Personal\nOcupado","variacion"]*100,1),"%")`.\
 \
-\textbf{Gráfico 2. Variación anual de la producción real, ventas y personas ocupado de la industria manufacturera}\
+\textbf{Gráfico 2. Variación anual de la producción real, ventas y personal ocupado de la industria manufacturera}\
 \textbf{Total Nacional}\
 \textbf{Enero 2020 – `r paste0(meses_b[params$month]," ",params$year,"p")`}\
 
-```{r historico,echo=F,eval=TRUE,warning=FALSE,message=F,fig.height=3,fig.width=5}
+```{r historico,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3,fig.width=5}
 #2
 variaciones_totales <- data %>% 
   group_by(ANIO,MES)
@@ -285,8 +297,8 @@ ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=vari
 P: Cifras provisionales\
 
 ## Variación anual (%) y contribución, del valor de la producción, ventas y empleo total, según clase industrial {.unlisted }
+\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"p")`}\
 
-\textbf{`r paste0(params$month," ",params$year,"/",params$year-1,"p")`}\
 ```{r tabla1,echo=F,eval=TRUE,warning=FALSE,message=F} 
 #c1
 contribucion_total <- data %>%
@@ -330,24 +342,16 @@ tabla1 <- tabla1 %>% arrange(desc(produccion))
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
-
     
 ```
 
+De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r paste0(sum(tabla1$produccion[tabla1$varprod>=0]))` puntos porcentuales a la variación total anual y `r paste0(sum(tabla1$varprod<0))` subsectores con variaciones negativas restaron en conjunto `r abs(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total (Tabla 1).
 
-De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r paste0(sum(tabla1$produccion[tabla1$varprod>=0]))` puntos porcentuales a la variación total anual y `r paste0(sum(tabla1$varprod<0))` subsectores con variaciones negativas restaron en conjunto `r paste0(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total (Tabla1).
 
-
-```{r tabla1_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla1_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.height=7,fig.width=5, fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 20  # Define el número de filas por página
+num_rows_per_page <- 13  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
 
@@ -374,15 +378,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(110),
+    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
     DOMINIO_39 ~ px(25),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
-    everything() ~ px(50)
+    everything() ~ px(48)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -393,8 +397,8 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla1_",i,".png"))
 }
@@ -402,21 +406,29 @@ gtsave(tabla_paginada[[i]],paste0("tabla1_",i,".png"))
 
 knitr::include_graphics(paste0("tabla1_", 1, ".png"))
 cat("\n\n")
-knitr::include_graphics(paste0("tabla1_", 2, ".png"))
 
 ```
 
+```{r tabla1_2,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla1_", 2, ".png"))
+cat("\n\n")
+```
+
+
+```{r tabla1_3,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla1_", 3, ".png"))
+```
 
 
 **Fuente:** DANE- EMMET\
 P: Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
-PP. Puntos porcentuales
+PP. Puntos porcentuales\
 
-## Variación año corrido (%) y contribución, del valor de la producción, ventas y empleo total, segúun clase industrial {.unlisted }
+\newpage
 
-\textbf{`r paste0("Enero - ",meses_b[params$month],"", params$year,"/",params$year-1,"p")`}\
-\
+## Variación año corrido (%) y contribución, del valor de la producción, ventas y empleo total, según clase industrial {.unlisted }
+\textbf{`r paste0("Enero - ",meses_b[params$month],"", params$year,"/",params$year-1,"p")`}
 ```{r anio_corrido,echo=F,eval=TRUE,warning=FALSE,message=F}
 #3
 variaciones_totales <- data %>% 
@@ -453,17 +465,12 @@ variaciones_totales$periodo <- paste0(substr(meses,1,3)[as.numeric(variaciones_t
 variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste0(rep(substr(meses,1,3),length(c(2018:params$year))),"-",rep(18:substr(params$year,3,4),each=12))))
 
 ```
-
-
 En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real","value"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales","value"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado","value"]*100,1),"%")`.\
 
 **Gráfico 3. Variación año corrido de la producción real, ventas y personal ocupado de la industria manufacturera**\
-
 **Total nacional**\
-
-\textbf{`r paste0("Enero - 2020",meses_b[params$month]," ",params$year,"p")`}\
-
-```{r anio_corrido_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.height=3,fig.width=4.89}
+\textbf{`r paste0("Enero - 2020 ",meses_b[params$month]," - ",params$year,"p")`}\
+```{r anio_corrido_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3,fig.width=4.89}
 ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=variables))+geom_line(size=0.8)+
   geom_point(aes(x=max(value)+1,y=0),color="transparent")+facet_grid(~ANIO,scales = "free_x")+
   theme_classic()+theme(axis.text.x=element_text(angle=90,size = 7),axis.text.y=element_text(size = 7),legend.direction = "horizontal",legend.position="bottom")+
@@ -478,12 +485,11 @@ ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=vari
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 
 ```{r tabla2,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c2
-
 contribucion_total <- data %>% 
   filter(MES%in%c(1:params$month) & ANIO%in%c(params$year-1)) 
 contribucion_total <- cont_sum(contribucion_total)
@@ -526,24 +532,17 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
 ```
 
-De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r paste0(sum(tabla1$produccion[tabla1$varprod>=0]))` puntos porcentuales a la variación total anual y `r paste0(sum(tabla1$varprod<0))` subsectores con variaciones negativas restaron en conjunto `r paste0(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total (Tabla2).
+\newpage
+De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación año corrido y `r paste0(sum(tabla1$varprod<0))` subsectores con variaciones negativas restaron en conjunto `r abs(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total (Tabla 2).
 
-```{r tabla2_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla2_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 20  # Define el número de filas por página
+num_rows_per_page <- 13  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
-
 
 for (i in 1:num_pages) {
   start_row <- (i - 1) * num_rows_per_page + 1
@@ -568,15 +567,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(110),
+    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
     DOMINIO_39 ~ px(25),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
-    everything() ~ px(50)
+    everything() ~ px(48)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -587,18 +586,28 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
-gtsave(tabla_paginada[[i]],paste0("tabla2_",i,".png"))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
+gtsave(tabla_paginada[[i]],paste0("tabla2_",i,".png"))
 }
 
 
 knitr::include_graphics(paste0("tabla2_", 1, ".png"))
 cat("\n\n")
-knitr::include_graphics(paste0("tabla2_", 2, ".png"))
-  
 
+```
+
+
+
+```{r tabla2_2,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla2_", 2, ".png"))
+cat("\n\n")
+```
+
+
+```{r tabla2_3,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla2_", 3, ".png"))
 ```
 
 
@@ -607,15 +616,14 @@ P:Cifras provisionales\
 Nota: La diferencia en la suma se da  por aproximaciones decimales\
 PP. Puntos porcentuales\
 
-## 1.3 Variación doce meses (%) y contribución, del valor de la producción, ventas y empleo total según clase industrial {.unlisted }
-
+\newpage
+## Variación doce meses (%) y contribución, del valor de la producción, ventas y empleo total según clase industrial {.unlisted }
 \textbf{`r paste0(meses_b[params$month+1]," ",params$year-1," - ",meses_b[params$month]," ", params$year," / ",meses_b[params$month+1]," ",params$year-2," - ",meses_b[params$month]," ", params$year-1,"P")`}\
 
-**Gráfico 4. Variación doce meses de la producción real, ventas y personal ocupado de la industria manufacturera**\
+**Gráfico 4. Variación doce meses de la producción real, ventas y personal ocupado de la industria manufacturera**
+**Total nacional**
+\textbf{`r paste0("Enero ",params$year-2," - ",meses_b[params$month]," ",params$year,"P")`}
 
-**Total nacional**\
-
-\textbf{`r paste0("Enero ",params$year-2," - ",meses_b[params$month]," ",params$year,"P")`}\
 
 ```{r anio_corrido_2,echo=F,eval=TRUE,warning=FALSE,message=F}
 #4
@@ -660,27 +668,23 @@ variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste
 ```
 
 
-En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real","value"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales","value"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado","value"]*100,1),"%")`.\
+Durante los últimos doce meses hasta `r paste0(meses_b[params$month]," de ",params$year)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real","value"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales","value"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado","value"]*100,1),"%")`.\
 
-**Gráfico 3. Variación año corrido de la producción real, ventas y personal ocupado de la industria manufacturera**\
-**Total nacional**\
-\textbf{`r paste0("Enero - 2020",meses_b[params$month]," ",params$year,"p")`}\
-
-```{r anio_corrido_view_2,echo=F,eval=TRUE,warning=FALSE,message=F}
-ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=variables))+geom_line(size=1)+
+```{r anio_corrido_view_2,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3,fig.width=4.8}
+ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=variables))+geom_line(size=0.89)+
   geom_point(aes(x=max(value)+1,y=0),color="transparent")+
-  theme_classic()+theme(axis.text.x=element_text(angle=90),legend.direction = "horizontal",legend.position="bottom")+
+  theme_classic()+theme(axis.text.x=element_text(angle=90,size = 7),axis.text.y=element_text(size = 7),legend.direction = "horizontal",legend.position="bottom")+
   scale_color_manual(values = colores)+labs(x="",y="Variación (%)",color="")+
   scale_y_continuous(breaks=function(x)pretty_breaks(n=20)(c(as.numeric(x)[1],as.numeric(x)[2])),labels = percent)+
   geom_hline(aes(yintercept=0),color="gray",size=0.5)+
-  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.11,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=3.5)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.09,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=3.5)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.06,label=round(value*100,1),color=variables),show.legend = F,hjust=-0,size=3.5)+
+  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.11,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=2.2)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.09,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=2.2)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.06,label=round(value*100,1),color=variables),show.legend = F,hjust=-0,size=2.5)+
   theme(strip.background.x=element_rect(color = NA,  fill=NA),strip.text = element_text(color="transparent"))
   
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 
 ```{r tabla3,echo=F,eval=TRUE,warning=FALSE,message=F}
@@ -729,32 +733,21 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
-
 ```
 
-De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` puntos porcentuales a la variación total doce meses y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r round(sum(tabla1$varprod[tabla1$varprod<0])*100,1)` puntos porcentuales a la variación total. (tabla 3)
-\textbf{Tabla3. Variación doce meses y contribución de la producción real, ventas reales, y personal ocupado, según actividad manufacturera}\
+De las 39 actividades industriales representadas por la encuesta, un total de `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación total doce meses y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r sum(tabla1$produccion[tabla1$varprod<0])` puntos porcentuales a la variación total. (Tabla 3)\
 
+\newpage
+\textbf{Tabla 3. Variación doce meses y contribución de la producción real, ventas reales, y personal ocupado, según actividad manufacturera}\
 \textbf{Total Nacional}\
 \textbf{`r paste0(meses_b[params$month+1]," ",params$year-1," - ",meses_b[params$month]," ", params$year," / ",meses_b[params$month+1]," ",params$year-2," - ",meses_b[params$month]," ", params$year-1," P")`}
 
-```{r tabla3_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
-
-
+```{r tabla3_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 20  # Define el número de filas por página
+num_rows_per_page <- 13  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
-
 
 for (i in 1:num_pages) {
   start_row <- (i - 1) * num_rows_per_page + 1
@@ -766,28 +759,28 @@ for (i in 1:num_pages) {
     tabla1$varpersonas[is.na(tabla1$varpersonas)] <- 0
     end_row <- i*num_rows_per_page
   }
-
-
+  
+  
   tabla_paginada[[i]] <- tabla1[start_row:end_row, ] %>%
-    mutate(varprod_plot = purrr::map(varprod_por,
+    mutate(varprod_plot = purrr::map(varprod_por, 
                                      ~bar_chart(label = .x, fill = colores[1])),
-        varventas_plot = purrr::map(varventas_por,
+        varventas_plot = purrr::map(varventas_por, 
                                      ~bar_chart(label = .x, fill = colores[2])),
-        varpersonas_plot = purrr::map(varpersonas_por,
-                                     ~bar_chart(label = .x, fill = colores[3])))  %>%
-     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal)
+        varpersonas_plot = purrr::map(varpersonas_por, 
+                                     ~bar_chart(label = .x, fill = colores[3])))  %>% 
+     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
 
-
+  
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(110),
+    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
     DOMINIO_39 ~ px(25),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
-    everything() ~ px(50)
+    everything() ~ px(48)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -798,8 +791,8 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla3_",i,".png"))
 }
@@ -807,8 +800,18 @@ gtsave(tabla_paginada[[i]],paste0("tabla3_",i,".png"))
 
 knitr::include_graphics(paste0("tabla3_", 1, ".png"))
 cat("\n\n")
-knitr::include_graphics(paste0("tabla3_", 2, ".png"))
 
+```
+
+
+```{r tabla3_2,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla3_", 2, ".png"))
+cat("\n\n")
+```
+
+
+```{r tabla3_3,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla3_", 3, ".png"))
 ```
 
 
@@ -867,23 +870,15 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
-De los 14 dominios de departamentos representado por la encuesta, `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0]),1)` p.p. a la variación total nacional.\
-\
+De los 14 dominios de departamentos representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional.\
+\newpage
 \textbf{Tabla 4. Variación anual y contribución de la producción real, ventas reales y personal ocupado}\
-\textbf{Departamentos}
-`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`
+\textbf{Departamentos}\
+\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}
 
-```{r tabla4_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla4_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
   # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -913,11 +908,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(110),
+    INCLUSION_NOMBRE_DEPTO ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -930,18 +925,17 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla4_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla4_", 1, ".png"))
 
-
 ```
 
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -949,8 +943,6 @@ P.P. puntos porcentuales\
 
 ## Variación anual (%) y contribución, del valor de la producción, ventas y empleo total según áreas metropolitanas {.unlisted }
 \textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`}
-
-
 
 ```{r tabl5,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c5
@@ -998,22 +990,14 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
-En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," ",params$year-1)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r round(tabla1$varprod[which.max(tabla1$varprod)]*100,1)`%, sumando `r round(tabla1$produccion[which.max(tabla1$varprod)]*100,1)` p.p. a la variación total nacional.\
+
+En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," ",params$year-1)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional.\
 \
-
 **Tabla 5. Variación anual y contribución de la producción real, ventas reales y personal ocupado en Áreas Metropolitanas**\
-`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`
+\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}
 
-```{r tabla5_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla5_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1043,11 +1027,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(110),
+    AREA_METROPOLITANA ~ px(100),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1060,22 +1044,20 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla5_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla5_", 1, ".png"))
 
-
 ```
 
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
-P.P. puntos porcentuales\
-
+P.P. puntos porcentuales
 ```{r tabla6,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c6
 contribucion_total <- data %>% 
@@ -1121,28 +1103,17 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
-
 ## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,")P")`}\
+\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`}\
 \
+En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)` de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>0])` p.p. de la variación total nacional (Tabla 6)\
+\newpage
+**Tabla 6. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
+\textbf{Ciudades}\
+\textbf{`r paste0(meses_b[params$month],"  (",params$year,"/",params$year-1,")P")`}
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)` de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` p.p. de la variación total nacional (tabla 6)\
-\
-**Tabla 6. Variación anual y contribución de la producción real, ventas reales y personal ocupado Ciudades**\
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,")P")`}\
-
-
-```{r tabla6_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
-
+```{r tabla6_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1172,11 +1143,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(110),
+    CIUDAD ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1189,18 +1160,17 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla6_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla6_", 1, ".png"))
 
-
 ```
 
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1253,29 +1223,17 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
 ## Variación año corrido (\%) y contribución, del valor de la producción, ventas y empleo total, según departamentos{.unlisted }
 **`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
-\
 
-De los 14 dominios de departamentos representado por la encuesta,`r sum(tabla1$varprod>=0)` registraton variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` p.p. a la variación total nacional (Tabla 7)\
-\
+De los 14 dominios de departamentos representado por la encuesta, `r sum(tabla1$varprod>0)` registraton variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional. (Tabla 7)\
+
 **Tabla 7. Variación año corrido y contribución de la producción real, ventas reales y personal ocupado**\
 **Departamentos**\
-**`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
-
-
-
-```{r tabla7_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+**`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**\
+```{r tabla7_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
   # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1305,7 +1263,7 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(110),
+    INCLUSION_NOMBRE_DEPTO ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
@@ -1322,28 +1280,22 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla7_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla7_", 1, ".png"))
 
-
 ```
-
-
-
-
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
 * Otros departamentos: Amazonas, Caquetá, Casanare, Cesar, Chocó, Huila, La Guajira, Magdalena, Meta, Nariño, Norte de Santander, Putumayo, Quindío, San Andrés, Sucre.\
 
 ## Variación año corrido (\%) y contribución, del valor de la producción, ventas, y empleo total, según áreas metropolitanas {.unlisted }
-**`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
-
+**`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**
 
 ```{r tabla8,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c8
@@ -1390,26 +1342,15 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
-En lo corrido del año hasta`r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r round(tabla1$varprod[which.max(tabla1$varprod)]*100,1)`%, sumando `r round(tabla1$produccion[which.max(tabla1$varprod)]*100,1)` p.p. a la variación total nacional. (tabla 8)\
-\
+En lo corrido del año hasta`r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 8)\
 
 **Tabla 8. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Áreas Metropolitanas**\
-`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`\
+\textbf{`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}
 
-
-
-```{r tabla8_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla8_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1439,11 +1380,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(110),
+    AREA_METROPOLITANA ~ px(100),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1456,8 +1397,8 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla8_",i,".png"))
 }
@@ -1465,7 +1406,7 @@ knitr::include_graphics(paste0("tabla8_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1515,27 +1456,19 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
+\newpage
 
 ## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
-\textbf{`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,")P")`}\
-\
+\textbf{`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`}\
 
-En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` p.p. de la variación total nacional (tabla 9)\
-\
+En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 9)\
+
 **Tabla 9. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
-\textbf{`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,")P")`}\
+\textbf{`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}\
 
-```{r tabla9_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla9_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1565,11 +1498,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(110),
+    CIUDAD ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1582,15 +1515,15 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla9_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla9_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1641,28 +1574,19 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
-## Variación año corrido (\%) y contribución, del valor de la producción, ventas y empleo total, según departamentos {.unlisted }
+## Variación doce meses (\%) y contribución, del valor de la producción, ventas y empleo total, según departamentos {.unlisted }
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
-\
 
-De los 14 dominios de departamentos representado por la encuesta,`r sum(tabla1$varprod>=0)` registraton variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` p.p. a la variación total nacional (Tabla 10)\
+De los 14 dominios de departamentos representado por la encuesta, `r sum(tabla1$varprod>0)` registraton variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional (Tabla 10)\
 \
-**Tabla 10. Variación año corrido y contribución de la producción real, ventas reales y personal ocupado**\
+**Tabla 10. Variación doce meses y contribución de la producción real, ventas reales y personal ocupado**\
 **Departamentos**\
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
 
 
-```{r tabla10_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla10_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1692,11 +1616,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(110),
+    INCLUSION_NOMBRE_DEPTO ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1709,15 +1633,15 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla10_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla10_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -1725,8 +1649,6 @@ P.P. puntos porcentuales\
 
 ## Variación año corrido (\%) y contribución, del valor de la producción, ventas, y empleo total, según áreas metropolitanas {.unlisted }
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
-
-
 
 ```{r tabla11,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c11
@@ -1774,25 +1696,16 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
-Durante los últimos doce meses hasta el mes de `r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r round(tabla1$varprod[which.max(tabla1$varprod)]*100,1)`%, sumando `r round(tabla1$produccion[which.max(tabla1$varprod)]*100,1)` p.p. a la variación total nacional. (tabla 11)\
-\
+Durante los últimos doce meses hasta el mes de `r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 11)\
 
 **Tabla 11. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Áreas Metropolitanas**\
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
 
 
-```{r tabla11_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla11_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1822,11 +1735,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(110),
+    AREA_METROPOLITANA ~ px(100),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1839,15 +1752,15 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla11_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla11_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1897,29 +1810,19 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
-## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
+## Variación doce meses (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
 
-\
+Durante los últimos doce meses hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 12)\
 
-Durante los últimos doce meses hasta `r paste0(params$month," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` p.p. de la variación total nacional (tabla 12)\
-\
-**Tabla 12. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
+**Tabla 12. Variación doce meses y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
 
 
-```{r tabla12_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla12_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -1949,11 +1852,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(110),
+    CIUDAD ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -1966,15 +1869,15 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla12_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla12_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1983,7 +1886,6 @@ P.P. Puntos porcentuales\
 
 ```{r variacion_trienal,echo=F,eval=TRUE,warning=FALSE,message=F}
 #5
-
 variacion <- data %>% 
   group_by(ANIO,MES)
 variacion <- var_cont(variacion)
@@ -2007,22 +1909,22 @@ variaciones$variable <- factor(variaciones$variable,levels=c("varprod","varventa
 variaciones$tipo <- factor(variaciones$tipo,levels=c(paste0(meses_b[params$month], 
 " (",params$year," / ",params$year-1,")"),paste0(meses_b[params$month], " (",params$year," / 2019)")))
 
-colores <- c("#f83796","#0875a5","#80c175")
-
 ```
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019, la producción real de la industria manufacturera presentó una variación de frente al mismo mes de 2019, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones$variacion[variaciones$variable%in%c("Producción\nReal")]*100,1)," %")`, las ventas reales de `r paste0(round(variaciones$variacion[variaciones$variable%in%c("Ventas\nReales")]*100,1)," %")` y el personal ocupado   `r paste0(round(variaciones$variacion[variaciones$variable%in%c("Personal\nOcupado")]*100,1)," %")`.\
-\
+En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variacion$varprod2019[variacion$ANIO==params$year]*100,1)," %")`, las ventas reales de `r paste0(round(variacion$varventa2019[variacion$ANIO==params$year]*100,1)," %")` y el personal ocupado   `r paste0(round(variacion$varpersonas2019[variacion$ANIO==params$year]*100,1)," %")`.\
+
 **Gráfico 5. Variación trienal de la producción real, ventas y personal ocupado de la industria manufacturera**\
 **Total Nacional**\
 **`r paste0(meses_b[params$month], " (",params$year,"/",params$year-1,")P")`**\
 
-```{r variacion_trienal_plot,echo=F,eval=TRUE,warning=FALSE,message=F}
+```{r variacion_trienal_plot,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3.3,fig.width=3.8}
 ggplot(variaciones[variaciones$tipo==paste0(meses_b[params$month], " (",params$year," / 2019)"),],aes(x=variable,y=variacion,fill=variable))+geom_bar(stat="identity")+
-  theme_classic()+facet_grid(~tipo)+geom_text(aes(x=variable,y=variacion,label=paste0(round(variacion*100,1),"%")),vjust=-0.5)+
+  theme_classic()+
+  facet_grid(~tipo)+geom_text(aes(x=variable,y=variacion,label=paste0(round(variacion*100,1),"%")),vjust=-0.5,size=2.5)+
   scale_y_continuous(breaks = function(x)pretty_breaks(n=15)(c(as.numeric(x)[1],as.numeric(x)[2])),labels=percent)+
-  scale_fill_manual(values = colores)+theme(legend.position = "none")+labs(y="Variación (%)",x="")+
+  scale_fill_manual(values = colores)+theme(legend.position = "none",axis.text.x=element_text(size=7),axis.text.y = element_text(size=6.5))+labs(y="Variación (%)",x="")+
   theme(strip.background.x=element_rect(color = NA,  fill=NA))
+  
 
 ```
 
@@ -2075,31 +1977,23 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
 ## Variación trienal (\%) y contribución, del valor de la producción, ventas y empleo total según clase industrial {.unlisted }
 **`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`**\
-\
-De las 39 actividades industriales representadas por la encuesta, un total de `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` puntos porcentuales a la variación trienal y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r round(sum(tabla1$varprod[tabla1$varprod<0])*100,1)` puntos porcentuales a la variación total (tabla 13).\
+
+De las 39 actividades industriales representadas por la encuesta, un total de `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación trienal y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r abs(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total. (Tabla 13).\
+\newpage
 **Tabla 13. variación trienal y contribución de la producción real, ventas reales y personal ocupado, según actividad manufacturera**\
 **Total nacional**\
 **`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`**\
 
-```{r tabla13_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla13_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 20  # Define el número de filas por página
+num_rows_per_page <- 13  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
-
 
 for (i in 1:num_pages) {
   start_row <- (i - 1) * num_rows_per_page + 1
@@ -2111,28 +2005,28 @@ for (i in 1:num_pages) {
     tabla1$varpersonas[is.na(tabla1$varpersonas)] <- 0
     end_row <- i*num_rows_per_page
   }
-
-
+  
+  
   tabla_paginada[[i]] <- tabla1[start_row:end_row, ] %>%
-    mutate(varprod_plot = purrr::map(varprod_por,
+    mutate(varprod_plot = purrr::map(varprod_por, 
                                      ~bar_chart(label = .x, fill = colores[1])),
-        varventas_plot = purrr::map(varventas_por,
+        varventas_plot = purrr::map(varventas_por, 
                                      ~bar_chart(label = .x, fill = colores[2])),
-        varpersonas_plot = purrr::map(varpersonas_por,
-                                     ~bar_chart(label = .x, fill = colores[3])))  %>%
-     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal)
+        varpersonas_plot = purrr::map(varpersonas_por, 
+                                     ~bar_chart(label = .x, fill = colores[3])))  %>% 
+     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
 
-
+  
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(110),
+    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
     DOMINIO_39 ~ px(25),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
-    everything() ~ px(50)
+    everything() ~ px(48)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -2143,8 +2037,8 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla13_",i,".png"))
 }
@@ -2152,11 +2046,23 @@ gtsave(tabla_paginada[[i]],paste0("tabla13_",i,".png"))
 
 knitr::include_graphics(paste0("tabla13_", 1, ".png"))
 cat("\n\n")
-knitr::include_graphics(paste0("tabla13_", 2, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+
+
+```{r tabla13_2,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla13_", 2, ".png"))
+cat("\n\n")
+```
+
+
+```{r tabla13_3,echo=FALSE,fig.align='center'}
+knitr::include_graphics(paste0("tabla13_", 3, ".png"))
+```
+
+
+\textbf{Fuente}: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -2205,25 +2111,18 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
 ## Variación trienal (%) y contribución, del valor de la producción, ventas y empleo total según departamentos {.unlisted }
+\textbf{`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`}
 
-De los 14 dominios de departamentos representado por la encuesta, `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0]),1)` p.p. a la variación total nacional.\
-\
-\textbf{Tabla 4. Variación trienal y contribución de la producción real, ventas reales y personal ocupado}\
-\textbf{Departamentos}
-`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`\
+De los 14 dominios de departamentos representado por la encuesta, `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$produccion>=0])` p.p. a la variación total nacional.\
 
-```{r tabla14_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+\textbf{Tabla 14. Variación trienal y contribución de la producción real, ventas reales y personal ocupado}\
+\textbf{Departamentos}\
+\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`}\
+
+```{r tabla14_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -2253,11 +2152,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(110),
+    INCLUSION_NOMBRE_DEPTO ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -2270,23 +2169,21 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla14_",i,".png"))
 }
-
 knitr::include_graphics(paste0("tabla14_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
 * Otros departamentos: Amazonas, Caquetá, Casanare, Cesar, Chocó, Huila, La Guajira, Magdalena, Meta, Nariño, Norte de Santander, Putumayo, Quindío, San Andrés, Sucre.\
 
-## Variación trianual (%) y contribución, del valor de la producción, ventas y empleo total según áreas metropolitanas {.unlisted }
-
+## Variación trienal (%) y contribución, del valor de la producción, ventas y empleo total según áreas metropolitanas {.unlisted }
 \textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`}\
 
 ```{r tabla15,echo=F,eval=TRUE,warning=FALSE,message=F}
@@ -2333,23 +2230,14 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r round(tabla1$varprod[which.max(tabla1$varprod)]*100,1)`%, sumando `r round(tabla1$produccion[which.max(tabla1$varprod)]*100,1)` p.p. a la variación total nacional. (Tabla 15)\
-\
+En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 15)\
 
 **Tabla 15. Variación trienal y contribución de la producción real, ventas reales y personal ocupado en Áreas Metropolitanas**\
-`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`\
+\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`}\
 
-```{r tabla15_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla15_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -2379,11 +2267,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(110),
+    AREA_METROPOLITANA ~ px(100),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -2396,17 +2284,15 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla15_",i,".png"))
 }
-
-
 knitr::include_graphics(paste0("tabla15_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -2455,28 +2341,19 @@ tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
-
-
 ```
 
 ## Variación trienal (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
+\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`}\
 
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,")P")`}\
-\
+En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional. (Tabla 16)\
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r round(sum(tabla1$varprod[tabla1$varprod>=0])*100,1)` p.p. de la variación total nacional (tabla 16)\
-\
-**Tabla 16. Variación trienal y contribución de la producción real, ventas reales y personal ocupado Ciudades**\
+\newpage
+**Tabla 16. Variación trienal y contribución de la producción real, ventas reales y personal ocupado**\
+\textbf{Ciudades}\
+\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`}
 
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,")P")`}\
-
-```{r tabla16_view,echo=F,eval=TRUE,warning=FALSE,message=F}
-bar_chart <- function(label, height = "16px", fill = "#00bfc4", background = "white") {
-    bar <- glue::glue("<div style='background:{fill};width:{label}%;height:{height};'></div>")
-    chart <- glue::glue("<div style='flex-grow:1;margin-left:2px;background:{background};'>{bar}</div>")
-    glue::glue("<div style='display:flex;align-items:left';>{chart}</div>") %>%
-        gt::html()
-}
+```{r tabla16_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
 num_rows_per_page <- nrow(tabla1)  # Define el número de filas por página
@@ -2506,11 +2383,11 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(110),
+    CIUDAD ~ px(80),
     varprod_plot ~  px(30),
     varventas_plot ~  px(30),
     varpersonas_plot ~  px(30),
-    varprod ~ px(40),
+    varprod ~ px(43),
     varventas ~ px(40),
     varpersonas ~ px(40),
     everything() ~ px(50)
@@ -2523,39 +2400,43 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=5) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                                                                                                                    locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla16_",i,".png"))
 }
-
-
 knitr::include_graphics(paste0("tabla16_", 1, ".png"))
 
 ```
 
-**Fuente**: DANE-EMMET\
+\textbf{Fuente}: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
-P.P. puntos porcentuales
+P.P. puntos porcentuales}
 
 # Medidas de calidad
+
+## Cobertura  {.unlisted }
 El porcentaje de cobertura es un instrumento que permite hacer seguimiento al desarrollo de la recolección de infromación de los establecimientos que hacen parte de la operación estadística.
 
 Mide la relación entre la sumatoria del valor de las unidades estadísticas de cobertura en la sumatoria del valor para total de las unidades estadísticas de la muestra para las variables de diseño de la operación. A mayor resultado, mayor cobertura de las variables de importancia y diseño de la operación y mayor calidad de los resultados publicados.
 
 La fórmula para el cálculo del porcentaje de cobertura es:
 
+
 \begin{equation*}
 IC = \frac{(\sum H - \sum Hnc)}{\sum H}*100
 \end{equation*}
+
+
 Donde,
-$\sum H$, es la sumatoria del valor de la variable $H$ del total de las unidades estadpisticas de la muestra.\\
-$\sum Hnc$, es la sumatoria del valor de la variable $H$ de las unidades estadísticas de No Cobertura}
+$\sum H$, es la sumatoria del valor de la variable $H$ del total de las unidades estadpisticas de la muestra.\
+$\sum Hnc$, es la sumatoria del valor de la variable $H$ de las unidades estadísticas de No Cobertura.
+
 
 \begin{align*}
-ICProducción &= `r paste0(params$IC_prod*100,"0%")`\%\\
-ICVentas &= 98,1\%\\
-ICEmpleo &= 98,5\%
+ICProducción &= `r params$IC_prod`\%\\
+ICVentas &= `r params$IC_ven`\%\\
+ICEmpleo &= `r params$IC_empl`\%\\
 \end{align*}
 
 Para el caso de las unidades estadísticas que carecen de infromación por presentar deuda en el periodo de estudio, se aplica el método de imputación señalado en la metodología de la operación estadística.
@@ -2564,34 +2445,38 @@ Para el caso de las unidades estadísticas que carecen de infromación por prese
 
 En este indicador se obtiene un resultado de qué porcentaje de las fuentes esperadas no respondieron el formulario. La diferencia con el indicador anterior es que considerando que hay un desgaste de la muestra a medida que pasa el tiempo, hay fuentes de las cuales no se espera información (fueron liquidadas, cambiaron de sector, etc). A menor resultado, mayor calidad en los resultados publicados.
 
+
 \begin{equation*}
 TNR = \frac{\sum unr}{\sum ue}*100
 \end{equation*}
+
 Donde,
 
-$\sum unr$, es  la sumatoria de unidades estadísticas que no respondieron el formulario\\
-$\sum ue$, es la sumatoria de unidades estadísticas esperadas
+$\sum unr$, es  la sumatoria de unidades estadísticas que no respondieron el formulario.\
+$\sum ue$, es la sumatoria de unidades estadísticas esperadas.
 
 \begin{equation*}
-TNR = 2,0\%
+TNR = `r params$TNR`\%\\
 \end{equation*}
 
 ## Tasa de imputación {.unlisted }
 
 La tasa de imputación mide el porcentaje de unidades estadísticas imputadas del total de las unidades de la muestra. Se imputan datos cuando hay deudas de formulario completo o parcial o en caso de que la información sea incosistente. A menor resultado mayor calidad de los datos publicados.
 
+
 \begin{equation*}
 TI = \frac{\sum uix}{\sum ux}*100
 \end{equation*}
+
 Donde,
 
-$\sum uix$, es  la sumatoria de unidades estadísticas imputadas en la variable $x$\\
-$\sum ux$, es la sumatoria de unidades estadísticas de la muestra en la variable $x$
+$\sum uix$, es  la sumatoria de unidades estadísticas imputadas en la variable $x$.\
+$\sum ux$, es la sumatoria de unidades estadísticas de la muestra en la variable $x$.
 
 \begin{align*}
-TIProducción &= 2,6\%\\
-TIPVentas &= 2,5\%\\
-TIEmpleo &= 2,7\%
+TIProducción &= `r params$TI_prod` \%\\
+TIPVentas &= `r params$TI_ven` \%\\
+TIEmpleo &= `r params$TI_empl`\%\\
 \end{align*}
 
 # Ficha Metodológica
