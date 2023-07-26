@@ -257,9 +257,9 @@
 #'  según clase industrial.
 #'
 #'
-f6_anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                      mes=11,
-                      anio=2022){
+f6_anacional <- function(directorio,
+                      mes,
+                      anio){
   # Cargar librerC-as --------------------------------------------------------
   library(readxl)
   library(dplyr)
@@ -291,7 +291,7 @@ f6_anacional <- function(directorio="/Users/nataliaarteaga/Documents/DANE/Proces
 
   # Archivos de entrada y salida --------------------------------------------
 
-  formato<-paste0(directorio,"/data/",year,"/",substr(mes,1,3),"/anexos_nacional_emmet_",mes,"_formato.xlsx")
+  formato<-paste0(directorio,"/data/anexos_nacional_emmet_",meses[mes],"_formato.xlsx")
   Salida<-paste0(directorio,"/results/S6_anexos/anexos_nacional_emmet_",mes,"_formato.xlsx")
 
 

@@ -244,8 +244,8 @@
 
 
 f7_aterritorial <- function(directorio,
-                            mes=11,
-                            anio=2022){
+                            mes,
+                            anio){
 
 
 # Librerias ---------------------------------------------------------------
@@ -273,7 +273,7 @@ f7_aterritorial <- function(directorio,
 
   # Archivos de entrada y salida --------------------------------------------
 
-  formato <- paste0(directorio,"/results/S6_anexos/anexos_territorial_emmet_",meses[mes],"_formato.xlsx")
+  formato <- paste0(directorio,"/data/anexos_territorial_emmet_",meses[mes],"_formato.xlsx")
   Salida<-paste0(directorio,"/results/S6_anexos/anexos_territorial_emmet_",meses[mes],"_formato",mes,".xlsx")
 
 
