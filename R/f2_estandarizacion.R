@@ -57,8 +57,8 @@
 
 
 f2_estandarizacion <- function(directorio,
-                            mes=11,
-                            anio=2022){
+                            mes,
+                            anio){
   library(readr)
   library(readxl)
   library(dplyr)
@@ -150,8 +150,8 @@ f2_estandarizacion <- function(directorio,
     # establecer la base final.
 
     Igualacion<-function(V_FI,V_FF){
-      base_panel_2$V_FI<-base_panel_2[,"N_I"]
-      base_panel_2$V_FF<-base_panel_2[,"N_F"]
+      base_panel_2[,V_FI]<-base_panel_2[,"N_I"]
+      base_panel_2[,V_FF]<-base_panel_2[,"N_F"]
       borrar <- c("Variable_Inicial","Variable_Final","N_I","N_F")
       base_panel_2 <- base_panel_2[ , !(names(base_panel_2) %in% borrar)]
     }
@@ -162,56 +162,57 @@ f2_estandarizacion <- function(directorio,
 
     #II_PA_PP__IEP,II_PA_PP__FEP
     Fechas_2    <-Fechas_Mod(Fechas,II_PA_PP_IEP,II_PA_PP_FEP)
+    Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PA_PP_IEP,II_PA_PP_FEP)
-    base_panel_2<-Igualacion(II_PA_PP_IEP,II_PA_PP_FEP)
+    base_panel_2<-Igualacion("II_PA_PP_IEP","II_PA_PP_FEP")
 
     #II_PA_TI__IETA,II_PA_TI__FETA
     Fechas_2    <-Fechas_Mod(Fechas,II_PA_TI_IETA,II_PA_TI_FETA)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PA_TI_IETA,II_PA_TI_FETA)
-    base_panel_2<-Igualacion(II_PA_TI_IETA,II_PA_TI_FETA)
+    base_panel_2<-Igualacion("II_PA_TI_IETA","II_PA_TI_FETA")
 
     #II_PA_AP__AI_AP,II_PA_AP__AF_AP
     Fechas_2    <-Fechas_Mod(Fechas,II_PA_AP_AI_AP,II_PA_AP_AF_AP)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PA_AP_AI_AP,II_PA_AP_AF_AP)
-    base_panel_2<-Igualacion(II_PA_AP_AI_AP,II_PA_AP_AF_AP)
+    base_panel_2<-Igualacion("II_PA_AP_AI_AP","II_PA_AP_AF_AP")
 
     #II_PP_PP__IOP,II_PP_PP__FOP
     Fechas_2    <-Fechas_Mod(Fechas,II_PP_PP_IOP,II_PP_PP_FOP)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PP_PP_IOP,II_PP_PP_FOP)
-    base_panel_2<-Igualacion(II_PP_PP_IOP,II_PP_PP_FOP)
+    base_panel_2<-Igualacion("II_PP_PP_IOP","II_PP_PP_FOP")
 
     #II_PP_TD__IOT,II_PP_TD__FOT
     Fechas_2    <-Fechas_Mod(Fechas,II_PP_TD_IOT,II_PP_TD_FOT)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PP_TD_IOT,II_PP_TD_FOT)
-    base_panel_2<-Igualacion(II_PP_TD_IOT,II_PP_TD_FOT)
+    base_panel_2<-Igualacion("II_PP_TD_IOT","II_PP_TD_FOT")
 
     #II_PP_TI__IOTA,II_PP_TI__FOTA
     Fechas_2    <-Fechas_Mod(Fechas,II_PP_TI_IOTA,II_PP_TI_FOTA)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PP_TI_IOTA,II_PP_TI_FOTA)
-    base_panel_2<-Igualacion(II_PP_TI_IOTA,II_PP_TI_FOTA)
+    base_panel_2<-Igualacion("II_PP_TI_IOTA","II_PP_TI_FOTA")
 
     #II_PP_AP__AI_PP,II_PP_AP__AF_PP
     Fechas_2    <-Fechas_Mod(Fechas,II_PP_AP_AI_PP,II_PP_AP_AF_PP)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_PP_AP_AI_PP,II_PP_AP_AF_PP)
-    base_panel_2<-Igualacion(II_PP_AP_AI_PP,II_PP_AP_AF_PP)
+    base_panel_2<-Igualacion("II_PP_AP_AI_PP","II_PP_AP_AF_PP")
 
     #II_HORAS__HORDI_D,II_HORAS__HORDI_H
     Fechas_2    <-Fechas_Mod(Fechas,II_HORAS_HORDI_D,II_HORAS_HORDI_H)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(II_HORAS_HORDI_D,II_HORAS_HORDI_H)
-    base_panel_2<-Igualacion(II_HORAS_HORDI_D,II_HORAS_HORDI_H)
+    base_panel_2<-Igualacion("II_HORAS_HORDI_D","II_HORAS_HORDI_H")
 
     #III_PE__IV,III_PE__FV
     Fechas_2    <-Fechas_Mod(Fechas,III_PE_IV,III_PE_FV)
     Fechas_2    <-Fechas_2[,c("LLAVE","Variable_Inicial","Variable_Final")]
     base_panel_2<-Remplazo(III_PE_IV,III_PE_FV)
-    base_panel_2<-Igualacion(III_PE_IV,III_PE_FV)
+    base_panel_2<-Igualacion("III_PE_IV","III_PE_FV")
 
 
 
@@ -220,25 +221,25 @@ f2_estandarizacion <- function(directorio,
 
     base_panel_2<-base_panel_2 %>%
       mutate(
-        ifelse(is.na(II_PA_PP_IEP),0,II_PA_PP_IEP),
-        ifelse(II_PA_PP_FEP,0,II_PA_PP_FEP),
-        ifelse(II_PA_TD_IET,0,II_PA_TD_IET),
-        ifelse(II_PA_TD_FET,0,II_PA_TD_FET),
-        ifelse(II_PA_TI_IETA,0,II_PA_TI_IETA),
-        ifelse(II_PA_TI_FETA,0,II_PA_TI_FETA),
-        ifelse(II_PA_AP_AI_AP,0,II_PA_AP_AI_AP),
-        ifelse(II_PA_AP_AF_AP,0,II_PA_AP_AF_AP),
-        ifelse(II_PP_PP_IOP,0,II_PP_PP_IOP),
-        ifelse(II_PP_PP_FOP,0,II_PP_PP_FOP),
-        ifelse(II_PP_TD_IOT,0,II_PP_TD_IOT),
-        ifelse(II_PP_TD_FOT,0,II_PP_TD_FOT),
-        ifelse(II_PP_TI_IOTA,0,II_PP_TI_IOTA),
-        ifelse(II_PP_TI_FOTA,0,II_PP_TI_FOTA),
-        ifelse(II_PP_AP_AI_PP,0,II_PP_AP_AI_PP),
-        ifelse(II_HORAS_HORDI_D,0,II_HORAS_HORDI_D),
-        ifelse(II_HORAS_HORDI_H,0,II_HORAS_HORDI_H),
-        ifelse(III_PE_IV,0,III_PE_IV),
-        ifelse(III_PE_FV,0,III_PE_FV)
+        II_PA_PP_IEP=ifelse(is.na(II_PA_PP_IEP),0,II_PA_PP_IEP),
+        II_PA_PP_FEP=ifelse(is.na(II_PA_PP_FEP),0,II_PA_PP_FEP),
+        II_PA_TD_IET=ifelse(is.na(II_PA_TD_IET),0,II_PA_TD_IET),
+        II_PA_TD_FET=ifelse(is.na(II_PA_TD_FET),0,II_PA_TD_FET),
+        II_PA_TI_IETA=ifelse(is.na(II_PA_TI_IETA),0,II_PA_TI_IETA),
+        II_PA_TI_FETA=ifelse(is.na(II_PA_TI_FETA),0,II_PA_TI_FETA),
+        II_PA_AP_AI_AP=ifelse(is.na(II_PA_AP_AI_AP),0,II_PA_AP_AI_AP),
+        II_PA_AP_AF_AP=ifelse(is.na(II_PA_AP_AF_AP),0,II_PA_AP_AF_AP),
+        II_PP_PP_IOP=ifelse(is.na(II_PP_PP_IOP),0,II_PP_PP_IOP),
+        II_PP_PP_FOP=ifelse(is.na(II_PP_PP_FOP),0,II_PP_PP_FOP),
+        II_PP_TD_IOT=ifelse(is.na(II_PP_TD_IOT),0,II_PP_TD_IOT),
+        II_PP_TD_FOT=ifelse(is.na(II_PP_TD_FOT),0,II_PP_TD_FOT),
+        II_PP_TI_IOTA=ifelse(is.na(II_PP_TI_IOTA),0,II_PP_TI_IOTA),
+        II_PP_TI_FOTA=ifelse(is.na(II_PP_TI_FOTA),0,II_PP_TI_FOTA),
+        II_PP_AP_AI_PP=ifelse(is.na(II_PP_AP_AI_PP),0,II_PP_AP_AI_PP),
+        II_HORAS_HORDI_D=ifelse(is.na(II_HORAS_HORDI_D),0,II_HORAS_HORDI_D),
+        II_HORAS_HORDI_H=ifelse(is.na(II_HORAS_HORDI_H),0,II_HORAS_HORDI_H),
+        III_PE_IV=ifelse(is.na(III_PE_IV),0,III_PE_IV),
+        III_PE_FV=ifelse(is.na(III_PE_FV),0,III_PE_FV)
       )
 
 
@@ -246,28 +247,28 @@ f2_estandarizacion <- function(directorio,
 
     base_panel_2<-base_panel_2 %>%
       mutate(
-        ifelse(AJU_III_PE_VENTASIN,0,AJU_III_PE_VENTASIN),
-        ifelse(AJU_III_PE_VENTASEX,0,AJU_III_PE_VENTASEX),
-        ifelse(II_PA_PP_NPERS_EP,0,II_PA_PP_NPERS_EP),
-        ifelse(II_PA_TD_NPERS_ET,0,II_PA_TD_NPERS_ET),
-        ifelse(II_PA_TI_NPERS_ETA,0,II_PA_TI_NPERS_ETA),
-        ifelse(II_PA_AP_AAEP,0,II_PA_AP_AAEP),
-        ifelse(II_PP_PP_NPERS_OP,0,II_PP_PP_NPERS_OP),
-        ifelse(II_PP_TD_NPERS_OT,0,II_PP_TD_NPERS_OT),
-        ifelse(II_PP_TI_NPERS_OTA,0,II_PP_TI_NPERS_OTA),
-        ifelse(II_PP_AP_APEP,0,II_PP_AP_APEP),
-        ifelse(AJU_II_PA_PP_SUELD_EP,0,AJU_II_PA_PP_SUELD_EP),
-        ifelse(AJU_II_PA_TD_SUELD_ET,0,AJU_II_PA_TD_SUELD_ET),
-        ifelse(AJU_II_PA_TI_SUELD_ETA,0,AJU_II_PA_TI_SUELD_ETA),
-        ifelse(AJU_II_PA_AP_AAS_AP,0,AJU_II_PA_AP_AAS_AP),
-        ifelse(AJU_II_PP_PP_SUELD_OP,0,AJU_II_PP_PP_SUELD_OP),
-        ifelse(AJU_II_PP_TD_SUELD_OT,0,AJU_II_PP_TD_SUELD_OT),
-        ifelse(AJU_II_PP_TI_SUELD_OTA,0,AJU_II_PP_TI_SUELD_OTA),
-        ifelse(AJU_II_PP_AP_AAS_PP,0,AJU_II_PP_AP_AAS_PP),
-        ifelse(AJU_II_HORAS_HORDI_T,0,AJU_II_HORAS_HORDI_T),
-        ifelse(AJU_II_HORAS_HEXTR_T,0,AJU_II_HORAS_HEXTR_T),
-        ifelse(AJU_III_PE_PRODUCCION,0,AJU_III_PE_PRODUCCION),
-        ifelse(III_EX_VEXIS,0,III_EX_VEXIS)
+        AJU_III_PE_VENTASIN=ifelse(is.na(AJU_III_PE_VENTASIN),0,AJU_III_PE_VENTASIN),
+        AJU_III_PE_VENTASEX=ifelse(is.na(AJU_III_PE_VENTASEX),0,AJU_III_PE_VENTASEX),
+        II_PA_PP_NPERS_EP=ifelse(is.na(II_PA_PP_NPERS_EP),0,II_PA_PP_NPERS_EP),
+        II_PA_TD_NPERS_ET=ifelse(is.na(II_PA_TD_NPERS_ET),0,II_PA_TD_NPERS_ET),
+        II_PA_TI_NPERS_ETA=ifelse(is.na(II_PA_TI_NPERS_ETA),0,II_PA_TI_NPERS_ETA),
+        II_PA_AP_AAEP=ifelse(is.na(II_PA_AP_AAEP),0,II_PA_AP_AAEP),
+        II_PP_PP_NPERS_OP=ifelse(is.na(II_PP_PP_NPERS_OP),0,II_PP_PP_NPERS_OP),
+        II_PP_TD_NPERS_OT=ifelse(is.na(II_PP_TD_NPERS_OT),0,II_PP_TD_NPERS_OT),
+        II_PP_TI_NPERS_OTA=ifelse(is.na(II_PP_TI_NPERS_OTA),0,II_PP_TI_NPERS_OTA),
+        II_PP_AP_APEP=ifelse(is.na(II_PP_AP_APEP),0,II_PP_AP_APEP),
+        AJU_II_PA_PP_SUELD_EP=ifelse(is.na(AJU_II_PA_PP_SUELD_EP),0,AJU_II_PA_PP_SUELD_EP),
+        AJU_II_PA_TD_SUELD_ET=ifelse(is.na(AJU_II_PA_TD_SUELD_ET),0,AJU_II_PA_TD_SUELD_ET),
+        AJU_II_PA_TI_SUELD_ETA=ifelse(is.na(AJU_II_PA_TI_SUELD_ETA),0,AJU_II_PA_TI_SUELD_ETA),
+        AJU_II_PA_AP_AAS_AP=ifelse(is.na(AJU_II_PA_AP_AAS_AP),0,AJU_II_PA_AP_AAS_AP),
+        AJU_II_PP_PP_SUELD_OP=ifelse(is.na(AJU_II_PP_PP_SUELD_OP),0,AJU_II_PP_PP_SUELD_OP),
+        AJU_II_PP_TD_SUELD_OT=ifelse(is.na(AJU_II_PP_TD_SUELD_OT),0,AJU_II_PP_TD_SUELD_OT),
+        AJU_II_PP_TI_SUELD_OTA=ifelse(is.na(AJU_II_PP_TI_SUELD_OTA),0,AJU_II_PP_TI_SUELD_OTA),
+        AJU_II_PP_AP_AAS_PP=ifelse(is.na(AJU_II_PP_AP_AAS_PP),0,AJU_II_PP_AP_AAS_PP),
+        AJU_II_HORAS_HORDI_T=ifelse(is.na(AJU_II_HORAS_HORDI_T),0,AJU_II_HORAS_HORDI_T),
+        AJU_II_HORAS_HEXTR_T=ifelse(is.na(AJU_II_HORAS_HEXTR_T),0,AJU_II_HORAS_HEXTR_T),
+        AJU_III_PE_PRODUCCION=ifelse(is.na(AJU_III_PE_PRODUCCION),0,AJU_III_PE_PRODUCCION),
+        III_EX_VEXIS=ifelse(is.na(III_EX_VEXIS),0,III_EX_VEXIS)
       )
 
     return(base_panel_2)
