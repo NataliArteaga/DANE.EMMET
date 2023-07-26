@@ -22,7 +22,7 @@
 #'                        mes=11,anio=2022)
 
 
-macro2<-function(directorio,mes,anio,fecha,guardar){
+macro2<-function(directorio,mes,anio,tipo="pdf"){
   respuesta <- readline(paste("Ingrese '1' si ya valido el archivo de alertas y desea continuar
                               con el proceso, otro valor si desea cancelar"))
   if (respuesta != 1) {
