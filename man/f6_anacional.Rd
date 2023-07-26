@@ -4,11 +4,7 @@
 \alias{f6_anacional}
 \title{Anexo Nacional}
 \usage{
-f6_anacional(
-  directorio = "/Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET",
-  mes = 11,
-  anio = 2022
-)
+f6_anacional(directorio, mes, anio)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}

@@ -4,7 +4,7 @@
 \alias{f7_aterritorial}
 \title{Anexo territorial}
 \usage{
-f7_aterritorial(directorio, mes = 11, anio = 2022)
+f7_aterritorial(directorio, mes, anio)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}

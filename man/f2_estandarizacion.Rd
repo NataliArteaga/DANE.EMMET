@@ -4,7 +4,7 @@
 \alias{f2_estandarizacion}
 \title{Estandarizacion}
 \usage{
-f2_estandarizacion(directorio, mes = 11, anio = 2022)
+f2_estandarizacion(directorio, mes, anio)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}

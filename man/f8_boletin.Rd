@@ -2,7 +2,7 @@
 % Please edit documentation in R/f8_boletin.R
 \name{f8_boletin}
 \alias{f8_boletin}
-\title{Macro 1}
+\title{Boletin}
 \usage{
 f8_boletin(directorio, mes, anio, tipo = "pdf")
 }
@@ -12,22 +12,21 @@ f8_boletin(directorio, mes, anio, tipo = "pdf")
 \item{mes}{Definir el mes a ejecutar, ej: 11}
 
 \item{anio}{Definir el año a ejecutar, ej: 2022}
+
+\item{tipo}{Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "pdf", ej: "html}
 }
 \description{
-Con esta función realizaremos la primera parte del proceso, en donde se correran las 4
-primeras funciones.
-}
-\details{
-Esta funcion tiene como objetivo correr desde la función inicial hasta la función
-de identificacion de alertas, con el fin de que el usuario pueda obtener rapidamente el
-archivo de salida de la función de alertas y poder realizar el proceso de critica.
-Recuerde que si el archivo de alertas ya está creado, al correr esta función le pedira que
-responda S si quiere sobreescribirlo, de lo contrario otro valor para cancelar la función
+Está función crea el boletín, un documento exportado en pdf o word, según se desea.
 
-Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}}, \code{\link{f2_estandarizacion}},
-\code{\link{f3_identificacion_outliers}}
+ Este es un resumen ejecutivo en el que se presentan los
+ principales resultados con el uso de cuadros de líneas para presentar
+ información histórica y graficas de barras para hacer comparaciones de
+ variaciones entre las distintas actividades o desagregación regional.
+ Además, se presentan tablas con el resumen por actividad para el total
+ nacional, departamentos, áreas metropolitanas y ciudades incluyendo
+ las tres variables principales que permiten hacer un análisis cruzado
+ entre estas.
 }
 \examples{
-macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes=11,anio=2022)
+f8_boletin(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022,tipo="word")
 }

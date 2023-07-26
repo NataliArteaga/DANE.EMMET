@@ -4,7 +4,7 @@
 \alias{macro2}
 \title{Macro 2}
 \usage{
-macro2(directorio, mes, anio, fecha, guardar)
+macro2(directorio, mes, anio, tipo = "pdf")
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
