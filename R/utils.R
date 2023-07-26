@@ -40,3 +40,14 @@ cap2=c("II_PA_PP_NPERS_EP","AJU_II_PA_PP_SUELD_EP","II_PA_TD_NPERS_ET",
 
 #crea un vector con las variables del capitulo 3
 cap3=c("AJU_III_PE_PRODUCCION","AJU_III_PE_VENTASIN","AJU_III_PE_VENTASEX","III_EX_VEXIS" )
+
+#crea un vector con las variables relacionadas a personas
+personas=c("II_PA_PP_NPERS_EP","II_PA_TD_NPERS_ET","II_PA_TI_NPERS_ETA","II_PA_AP_AAEP",
+           "II_PP_PP_NPERS_OP","II_PP_TD_NPERS_OT","II_PP_TI_NPERS_OTA"
+           ,"II_PP_AP_APEP")
+
+#crea un vector con las variables relacionadas a sueldos
+sueldos=c("AJU_II_PA_PP_SUELD_EP",
+          "AJU_II_PA_TD_SUELD_ET","AJU_II_PA_TI_SUELD_ETA","AJU_II_PA_AP_AAS_AP",
+          "AJU_II_PP_PP_SUELD_OP","AJU_II_PP_TD_SUELD_OT",
+          "AJU_II_PP_TI_SUELD_OTA","AJU_II_PP_AP_AAS_PP")
