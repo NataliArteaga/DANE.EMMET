@@ -59,7 +59,6 @@ f4_imputacion <- function(directorio,mes,anio) {
   library(VIM)
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
-  anio  <- anio
 
   #cargar base estandarizada
   datos <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"))
@@ -203,10 +202,10 @@ f4_imputacion <- function(directorio,mes,anio) {
                              AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
                              II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
                              AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
-                             AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS)
+                             AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS,ends_with("_rezago1"))
 
 
-  #quitar las columnas del capítulo 3 para imputarlos por el valor optenido con los KNN
+  #quitar las columnas del capítulo 3 para imputarlos por el valor obtenido con los KNN
   mes_ant=arrange(mes_ant,mes_ant$ID_NUMORD)
   mes_ant <- mes_ant[, !(names(mes_ant) %in% cap3)]
   mes_ant <- cbind(mes_ant, wowKNNciu3[, cap3])
@@ -231,11 +230,34 @@ f4_imputacion <- function(directorio,mes,anio) {
     datoscom[,i] <- ifelse(is.na(datoscom[,i]),0,datoscom[,i])
   }
 
+  #validar si hay 0 personas entonces el sueldo debe ser 0
+  for (i in 1:8) {
+    mes_ant[,paste0(personas[i],"_prueba")]=ifelse((mes_ant[,personas[i]]==0 &  mes_ant[,sueldos[i]]!=0) ,1,0)
+    mes_ant[,paste0(sueldos[i],"_prueba")]=ifelse((mes_ant[,personas[i]]!=0 &  (mes_ant[,sueldos[i]]/mes_ant[,personas[i]])<1000) ,1,0)
+
+  }
+
+#arreglar las columnas que no cumplen ocn la regla
+  for (i in 1:8) {
+
+ mes_ant[mes_ant[,paste0(personas[i],"_prueba")]==1,paste0(sueldos[i])]<- 0
+
+  }
+
+mes_ant[,"horasordi_prueba"]=ifelse((mes_ant$AJU_II_HORAS_HORDI_T/(24*(mes_ant$II_PP_PP_NPERS_OP+mes_ant$II_PP_TD_NPERS_OT+mes_ant$II_PP_TI_NPERS_OTA+mes_ant$II_PP_AP_APEP))
+  )<7 | (mes_ant$AJU_II_HORAS_HORDI_T/(24*(mes_ant$II_PP_PP_NPERS_OP+mes_ant$II_PP_TD_NPERS_OT+mes_ant$II_PP_TI_NPERS_OTA+mes_ant$II_PP_AP_APEP))
+  )>9,1,0)
+
+mes_ant[,"horasextras_prueba"]=ifelse(mes_ant$AJU_II_HORAS_HEXTR_T>mes_ant$AJU_II_HORAS_HORDI_T,1,0)
+
+mes_ant[,"existencias_prueba"]=ifelse((mes_ant[,"AJU_III_PE_PRODUCCION"]>(mes_ant[,"AJU_III_PE_VENTASEX"]+mes_ant[,"AJU_III_PE_VENTASIN"]) & mes_ant[,"III_EX_VEXIS"]<mes_ant[,"III_EX_VEXIS_rezago1"])|(mes_ant[,"AJU_III_PE_PRODUCCION"]<(mes_ant[,"AJU_III_PE_VENTASEX"]+mes_ant[,"AJU_III_PE_VENTASIN"]) & mes_ant[,"III_EX_VEXIS"]>mes_ant[,"III_EX_VEXIS_rezago1"]),1,0)
+
   #pegar las columnas imputadas en el data frame del mes actual
   for (i in variablesinte){
     novtem[,i]<- mes_ant[,i]
 
   }
+
 
   #combinar las base original estandarizada con el mes imputado
 
@@ -249,6 +271,7 @@ f4_imputacion <- function(directorio,mes,anio) {
 
 
   # Exportar la base imputada -------------------------------
+  write.csv(mes_ant,paste0(directorio,"/results/S4_imputacion/EMMET_reglas_consistencia",meses[mes],anio,".csv"),row.names=F)
 
   write.csv(imputa,paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F)
 }
