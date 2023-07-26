@@ -271,7 +271,7 @@ mes_ant[,"existencias_prueba"]=ifelse((mes_ant[,"AJU_III_PE_PRODUCCION"]>(mes_an
 
 
   # Exportar la base imputada -------------------------------
-  write.csv(mes_ant,paste0(directorio,"/results/S4_imputacion/EMMET_reglas_consistencia",meses[mes],anio,".csv"),row.names=F)
+  write.csv(mes_ant,paste0(directorio,"/results/S4_imputacion/EMMET_reglas_consistencia_",meses[mes],anio,".csv"),row.names=F)
 
   write.csv(imputa,paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F)
 }
