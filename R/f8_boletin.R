@@ -75,7 +75,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
                                   TNR= parametros[4,2],
                                   TI_prod= parametros[5,2],
                                   TI_ven=parametros[6,2],
-                                  TI_empl= parametros[7,2],
+                                  TI_empl= parametros[7,2]
                                   ),
                     output_file = paste0("boletin_", fecha_formateada),
                     output_dir = file.path(directorio, "results", "S7_boletin"))
