@@ -46,7 +46,13 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   unzip(archivo_zip, exdir = file.path(directorio, "boletin"))
 
   # Definir la ruta del archivo boletin.Rmd en la carpeta descargada
-  ruta_boletin_rmd <- file.path(directorio, "boletin","boletin", "boletin.Rmd")
+
+  if (tipo == "word") {
+
+    ruta_boletin_rmd <- file.path(directorio, "boletin","boletin", "boletin_versionW.Rmd")
+  } else {
+    ruta_boletin_rmd <- file.path(directorio, "boletin","boletin", "boletin_versionP.Rmd")
+  }
   parametros <- as.data.frame(read_excel(paste0(directorio,"/results/S7_boletin/parametros_boletin.xlsx")))
   meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
