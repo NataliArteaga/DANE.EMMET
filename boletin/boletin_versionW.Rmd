@@ -26,7 +26,7 @@ params:
   TI_ven: 2.5
   TI_empl: 2.7
   fecha_publicacion: 14 de Diciembre de 2022
-  directorio: /Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET/results/S5_tematica/EMMET_PANEL_tematica_nov2022.csv
+  directorio: "C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET"
 header-includes: 
   - \usepackage{titling}
   - \usepackage{graphicx}
@@ -58,7 +58,7 @@ library(gt)
 library(purrr)
 library(knitr)
 library(tinytex)
-
+library(webshot2)
 
 meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")

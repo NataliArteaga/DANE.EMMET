@@ -87,3 +87,5 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
                     output_dir = file.path(directorio, "results", "S7_boletin"))
 }
 
+
+

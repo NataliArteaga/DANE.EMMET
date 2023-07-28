@@ -5,16 +5,19 @@
 \documentclass[
 ]{article}
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -33,7 +36,7 @@
   \KOMAoptions{parskip=half}}
 \makeatother
 \usepackage{xcolor}
-\usepackage[includeheadfoot,left=0.75in,right=0.75in,top=0.5in,bottom=1.2in]{geometry}
+\usepackage[includeheadfoot,left=0.60in,right=0.60in,top=0.5in,bottom=1.2in]{geometry}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -57,30 +60,16 @@
 \usepackage{xcolor}
 \pagestyle{fancy}
 \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\ {\fontfamily{put}\selectfont \textcolor{gray}{\Large Noviembre 2022}}}
-\fancyhead[L]{ {\fontfamily{put}\selectfont \textcolor{gray}{\Large 14 de Diciembre de 2022,}}}
+\fancyhead[L]{ {\fontfamily{put}\selectfont \textcolor{gray}{\Large 14 de Diciembre de 2022}}}
 \setlength{\headheight}{70.83125pt}
 \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\ \thepage}
 \renewcommand{\footrulewidth}{0pt}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
@@ -101,12 +90,13 @@ ventas y personal ocupado de la industria manufacturera}\\
 \textbf{Noviembre (2022/2021)p - Noviembre (2022/2019)}\\
 \strut \\
 
-\includegraphics{boletin_files/figure-latex/variacion-1.pdf}
+\begin{center}\includegraphics{boletin_files/figure-latex/variacion-1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P: Cifras provisionales. Se presentan variaciones respecto al año 2020
 para considerar el efecto base de comparación del periodo de pandemia.
 
+\newpage
 \renewcommand\contentsname{}
 \setcounter{tocdepth}{1}
 \tableofcontents
@@ -145,20 +135,24 @@ construir indicadores confiables de la industria manufacturera, los
 cuales son herramientas importantes para la toma de decisiones
 económicas en el país.
 
-\hypertarget{evoluciuxf3n-general-de-las-principales-variables-total-nacional-noviembre-2022}{%
-\section{Evolución general de las principales variables total nacional
-Noviembre
-2022}\label{evoluciuxf3n-general-de-las-principales-variables-total-nacional-noviembre-2022}}
+\newpage
+
+\hypertarget{evoluciuxf3n-general-de-las-principales-variables-total-nacional}{%
+\section{Evolución general de las principales variables total
+nacional}\label{evoluciuxf3n-general-de-las-principales-variables-total-nacional}}
+
+Noviembre 2022
 
 En Noviembre de 2022 frente a Noviembre de 2021, la producción real de
-la industria manufacturera presentó una variación de 245.6\%, las ventas
-reales de de 286.2\% y el personal ocupado de 0.7\%.\\
+la industria manufacturera presentó una variación de 4.9\%, las ventas
+reales de 2.3\% y el personal ocupado de 2.5\%.\\
 \strut \\
-\textbf{Gráfico 2. Variación anual de la producción real, ventas y personas ocupado de la industria manufacturera}\\
+\textbf{Gráfico 2. Variación anual de la producción real, ventas y personal ocupado de la industria manufacturera}\\
 \textbf{Total Nacional}\\
 \textbf{Enero 2020 – Noviembre 2022p}\\
 
-\includegraphics{boletin_files/figure-latex/historico-1.pdf}
+\begin{center}\includegraphics{boletin_files/figure-latex/historico-1} \end{center}
+
 \textbf{Fuente:} DANE- EMMET\\
 P: Cifras provisionales\\
 
@@ -170,89 +164,104 @@ industrial}\label{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciu
 \textbf{Noviembre 2022/2021p}\\
 
 De las 39 actividades industriales representadas por la encuesta, un
-total de 19 registraron variaciones positivas en su producción real,
-sumando 249.6 puntos porcentuales a la variación total anual y 20
-subsectores con variaciones negativas restaron en conjunto -4.1 puntos
-porcentuales a la variación total (Tabla1).
+total de 23 registraron variaciones positivas en su producción real,
+sumando 6.7 puntos porcentuales a la variación total anual y 16
+subsectores con variaciones negativas restaron en conjunto 1.8 puntos
+porcentuales a la variación total (Tabla 1).
 
-\includegraphics{boletin_files/figure-latex/tabla1_view-1.png}
+\begin{center}\includegraphics[width=14.78in]{tabla1_1} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla1_2} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla1_3} \end{center}
 
 \textbf{Fuente:} DANE- EMMET\\
 P: Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
-PP. Puntos porcentuales
+PP. Puntos porcentuales\\
 
-\hypertarget{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-segpun-clase-industrial}{%
+\newpage
+
+\hypertarget{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-clase-industrial}{%
 \subsection{Variación año corrido (\%) y contribución, del valor de la
-producción, ventas y empleo total, segpun clase
-industrial}\label{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-segpun-clase-industrial}}
+producción, ventas y empleo total, según clase
+industrial}\label{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-clase-industrial}}
 
-\textbf{Enero - Noviembre 2022/2021p}\\
-\strut \\
+\textbf{Enero - Noviembre2022/2021p}
 
-En lo corrido del año hastaNoviembre de 2022, la producción real de la
-industria manufacturera presentó una variación de 36.1\%, las ventas
-reales de 40.4\% y el personal ocupado de 4.3\%.\\
+En lo corrido del año hasta Noviembre de 2022, la producción real de la
+industria manufacturera presentó una variación de 11.8\%, las ventas
+reales de 11\% y el personal ocupado de 4.4\%.\\
 
 \textbf{Gráfico 3. Variación año corrido de la producción real, ventas y
 personal ocupado de la industria manufacturera}\\
 \textbf{Total nacional}\\
-\textbf{Enero - 2020Noviembre 2022p}\\
+\textbf{Enero - 2020 Noviembre - 2022p}\\
 
-\includegraphics{boletin_files/figure-latex/anio_corrido_view-1.pdf}
+\begin{center}\includegraphics{boletin_files/figure-latex/anio_corrido_view-1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 
-De las 39 actividades industriales representadas por la encuesta, un
-total de 34 registraron variaciones positivas en su producción real,
-sumando 36.5 puntos porcentuales a la variación total anual y 5
-subsectores con variaciones negativas restaron en conjunto -0.1 puntos
-porcentuales a la variación total (Tabla2).
+\newpage
 
-\includegraphics{boletin_files/figure-latex/tabla2_view-1.png}
+De las 39 actividades industriales representadas por la encuesta, un
+total de 35 registraron variaciones positivas en su producción real,
+sumando 12 puntos porcentuales a la variación año corrido y 4
+subsectores con variaciones negativas restaron en conjunto 0.1 puntos
+porcentuales a la variación total (Tabla 2).
+
+\begin{center}\includegraphics[width=14.78in]{tabla2_1} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla2_2} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla2_3} \end{center}
 
 \textbf{Fuente:} DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
 PP. Puntos porcentuales\\
 
+\newpage
+
 \hypertarget{variaciuxf3n-doce-meses-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-clase-industrial}{%
-\subsection{1.3 Variación doce meses (\%) y contribución, del valor de
-la producción, ventas y empleo total según clase
+\subsection{Variación doce meses (\%) y contribución, del valor de la
+producción, ventas y empleo total según clase
 industrial}\label{variaciuxf3n-doce-meses-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-clase-industrial}}
 
 \textbf{Diciembre 2021 - Noviembre 2022 / Diciembre 2020 - Noviembre 2021P}\\
+
 \textbf{Gráfico 4. Variación doce meses de la producción real, ventas y
-personal ocupado de la industria manufacturera}\\
-\textbf{Total nacional}\\
-\textbf{Enero 2020 - Noviembre 2022P}\\
+personal ocupado de la industria manufacturera} \textbf{Total nacional}
+\textbf{Enero 2020 - Noviembre 2022P}
 
-En lo corrido del año hastaNoviembre de 2022, la producción real de la
-industria manufacturera presentó una variación de 34.2\%, las ventas
-reales de 37.9\% y el personal ocupado de 4.3\%.\\
+Durante los últimos doce meses hasta Noviembre de 2022, la producción
+real de la industria manufacturera presentó una variación de 11.9\%, las
+ventas reales de 11\% y el personal ocupado de 4.4\%.\\
 
-\textbf{Gráfico 3. Variación año corrido de la producción real, ventas y
-personal ocupado de la industria manufacturera}\\
-\textbf{Total nacional}\\
-\textbf{Enero - 2020Noviembre 2022p}\\
-
-\includegraphics{boletin_files/figure-latex/anio_corrido_view_2-1.pdf}
+\begin{center}\includegraphics{boletin_files/figure-latex/anio_corrido_view_2-1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 
 De las 39 actividades industriales representadas por la encuesta, un
 total de 35 registraron variaciones positivas en su producción real,
-sumando \ensuremath{1.125\times 10^{5}} puntos porcentuales a la
-variación total doce meses y 4 subsectores con variaciones negativas
-restaron en conjunto -2440 puntos porcentuales a la variación total.
-(tabla 3)
-\textbf{Tabla3. Variación doce meses y contribución de la producción real, ventas reales, y personal ocupado, según actividad manufacturera}\\
+sumando 12.1 puntos porcentuales a la variación total doce meses y 3
+subsectores con variaciones negativas restaron en conjunto 0 puntos
+porcentuales a la variación total. (Tabla 3)\\
+
+\newpage
+
+\textbf{Tabla 3. Variación doce meses y contribución de la producción real, ventas reales, y personal ocupado, según actividad manufacturera}\\
 \textbf{Total Nacional}\\
 \textbf{Diciembre 2021 - Noviembre 2022 / Diciembre 2020 - Noviembre 2021 P}
 
-\includegraphics{boletin_files/figure-latex/tabla3_view-1.png}
+\begin{center}\includegraphics[width=14.78in]{tabla3_1} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla3_2} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla3_3} \end{center}
+
 \textbf{Fuente:} DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
@@ -268,14 +277,16 @@ territorial Noviembre
 producción, ventas y empleo total según
 departamentos}\label{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos}}
 
-De los 14 dominios de departamentos representado por la encuest,De los
-14 dominios de departamentos representados por la encuesta, 10
-registraron variaciones positivas en su producción real, sumando 3669.7
+De los 14 dominios de departamentos representados por la encuesta, 10
+registraron variaciones positivas en su producción real, sumando 5.9
 p.p. a la variación total nacional.\\
-\strut \\
+\newpage
 \textbf{Tabla 4. Variación anual y contribución de la producción real, ventas reales y personal ocupado}\\
-\textbf{Departamentos} Noviembre (2022/2021)P
-\includegraphics{boletin_files/figure-latex/tabla4_new-1.png}
+\textbf{Departamentos}\\
+\textbf{Noviembre (2022/2021)P}
+
+\begin{center}\includegraphics[width=12.58in]{tabla4_1} \end{center}
+
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
@@ -293,40 +304,38 @@ metropolitanas}\label{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-produ
 
 En Noviembre de 2022 frente a Noviembre 2021, el área metropolitana que
 más constribuye a la variación anual de la producción real es la de Área
-Metropolitana de Barranquilla con una variación de
-\ensuremath{3.6308\times 10^{5}}\%, sumando
-\ensuremath{2.438\times 10^{4}} p.p. a la variación total nacional.\\
+Metropolitana de Barranquilla con una variación de 14.1\%, sumando 0.9
+p.p. a la variación total nacional.\\
 \strut \\
-
 \textbf{Tabla 5. Variación anual y contribución de la producción real,
 ventas reales y personal ocupado en Áreas Metropolitanas}\\
-Noviembre (2022/2021)P
+\textbf{Noviembre (2022/2021)P}
 
-\includegraphics{boletin_files/figure-latex/tabl5_view-1.png}
+\begin{center}\includegraphics[width=13.14in]{tabla5_1} \end{center}
+
 \textbf{Fuente}: DANE-EMMET\\
 P: Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
-P.P. puntos porcentuales\\
+P.P. puntos porcentuales
 
 \hypertarget{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades}{%
 \subsection{Variación anual (\%) y contribución, del valor de la
 producción, ventas, y empleo total según
 ciudades}\label{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades}}
 
-\textbf{Noviembre 2022/2021)P}\\
+\textbf{Noviembre 2022/2021P}\\
 \strut \\
-
 En Noviembre de 2022 frente a Noviembre de 2021 de los 10 dominios de
-ciudades representados por la encuesta, 8 registraron variaciones
-positivas en su producción real, sumando
-\ensuremath{4.7185\times 10^{5}} p.p. de la variación total nacional
-(tabla 6)\\
-\strut \\
-\textbf{Tabla 6. Variación anual y contribución de la producción real,
-ventas reales y personal ocupado Ciudades}\\
-\textbf{Noviembre 2022/2021)P}\\
+ciudades representados por la encuesta, 7 registraron variaciones
+positivas en su producción real, sumando 6 p.p. de la variación total
+nacional (Tabla 6)\\
+\newpage \textbf{Tabla 6. Variación anual y contribución de la
+producción real, ventas reales y personal ocupado}\\
+\textbf{Ciudades}\\
+\textbf{Noviembre  (2022/2021)P}
 
-\includegraphics{boletin_files/figure-latex/tabla6_view-1.png}
+\begin{center}\includegraphics[width=12.58in]{tabla6_1} \end{center}
+
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
@@ -338,19 +347,18 @@ producción, ventas y empleo total, según
 departamentos}\label{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos}}
 
 \textbf{Enero - Noviembre 2022/2021P}\\
-\strut \\
 
-De los 14 dominio de departamentos representado por la encuesta,13
-registraton variaciones positivas en su producción real, sumando
-\ensuremath{5.071\times 10^{4}} p.p. a la variación total nacional
-(Tabla 7)\\
-\strut \\
+De los 14 dominios de departamentos representado por la encuesta, 13
+registraton variaciones positivas en su producción real, sumando 11.9
+p.p. a la variación total nacional. (Tabla 7)\\
+
 \textbf{Tabla 7. Variación año corrido y contribución de la producción
 real, ventas reales y personal ocupado}\\
 \textbf{Departamentos}\\
-\textbf{Enero - Noviembre 2022/2021P}\\
+\textbf{Enero - Noviembre (2022/2021)P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla7_view-1.png}
+\begin{center}\includegraphics[width=12.5in]{tabla7_1} \end{center}
+
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
@@ -364,73 +372,70 @@ Quindío, San Andrés, Sucre.\\
 producción, ventas, y empleo total, según áreas
 metropolitanas}\label{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-uxe1reas-metropolitanas}}
 
-\textbf{Enero - Noviembre 2022/2021P}\\
+\textbf{Enero - Noviembre 2022/2021P}
 
 En lo corrido del año hastaNoviembre de 2022, el área metropolitana que
 más constribuye a la variación anual de la producción real es la de Área
-Metropolitana de Barranquilla con una variación de
-\ensuremath{3.697\times 10^{4}}\%, sumando 2550 p.p. a la variación
-total nacional. (tabla 8)\\
-\strut \\
+Metropolitana de Barranquilla con una variación de 15.1\%, sumando 1
+p.p. a la variación total nacional. (Tabla 8)\\
 
 \textbf{Tabla 8. Variación anual y contribución de la producción real,
 ventas reales y personal ocupado}\\
 \textbf{Áreas Metropolitanas}\\
-Enero - Noviembre (2022/2021)P\\
+\textbf{Enero - Noviembre (2022/2021)P}
 
-\includegraphics{boletin_files/figure-latex/tabla8_view-1.png}
+\begin{center}\includegraphics[width=13.14in]{tabla8_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
 P.P. Puntos porcentuales\\
+
+\newpage
 
 \hypertarget{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades-1}{%
 \subsection{Variación anual (\%) y contribución, del valor de la
 producción, ventas, y empleo total según
 ciudades}\label{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades-1}}
 
-\textbf{Enero - Noviembre 2022/2021)P}\\
-\strut \\
+\textbf{Enero - Noviembre 2022/2021P}\\
 
 En lo corrido del año hasta Noviembre de 2022, de los 10 dominios de
 ciudades representados por la encuesta, 10 registraron variaciones
-positivas en su producción real, sumando \ensuremath{5.739\times 10^{4}}
-p.p. de la variación total nacional (tabla 9)\\
-\strut \\
+positivas en su producción real, sumando 11.8 p.p. de la variación total
+nacional (Tabla 9)\\
+
 \textbf{Tabla 9. Variación anual y contribución de la producción real,
 ventas reales y personal ocupado}\\
 \textbf{Ciudades}\\
-\textbf{Enero - Noviembre 2022/2021)P}\\
+\textbf{Enero - Noviembre (2022/2021)P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla9_view-1.png}
+\begin{center}\includegraphics[width=12.58in]{tabla9_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
 P.P. Puntos porcentuales\\
 
-\hypertarget{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos-1}{%
-\subsection{Variación año corrido (\%) y contribución, del valor de la
+\hypertarget{variaciuxf3n-doce-meses-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos}{%
+\subsection{Variación doce meses (\%) y contribución, del valor de la
 producción, ventas y empleo total, según
-departamentos}\label{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos-1}}
+departamentos}\label{variaciuxf3n-doce-meses-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos}}
 
 \textbf{Diciembre 2021 - Noviembre 2022/Diciembre 2020 - Noviembre
 2021P}\\
-\strut \\
 
-De los 14 dominios de departamentos representado por la encuesta,13
-registraton variaciones positivas en su producción real, sumando
-\ensuremath{4.816\times 10^{4}} p.p. a la variación total nacional
-(Tabla 10)\\
+De los 14 dominios de departamentos representado por la encuesta, 13
+registraton variaciones positivas en su producción real, sumando 11.8
+p.p. a la variación total nacional (Tabla 10)\\
 \strut \\
-\textbf{Tabla 10. Variación año corrido y contribución de la producción
+\textbf{Tabla 10. Variación doce meses y contribución de la producción
 real, ventas reales y personal ocupado}\\
 \textbf{Departamentos}\\
 \textbf{Diciembre 2021 - Noviembre 2022/Diciembre 2020 - Noviembre
 2021P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla10_view-1.png}
+\begin{center}\includegraphics[width=12.58in]{tabla10_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
@@ -451,9 +456,8 @@ metropolitanas}\label{variaciuxf3n-auxf1o-corrido-y-contribuciuxf3n-del-valor-de
 Durante los últimos doce meses hasta el mes de Noviembre de 2022, el
 área metropolitana que más constribuye a la variación anual de la
 producción real es la de Área Metropolitana de Barranquilla con una
-variación de \ensuremath{3.402\times 10^{4}}\%, sumando 2350 p.p. a la
-variación total nacional. (tabla 11)\\
-\strut \\
+variación de 15.2\%, sumando 1.1 p.p. a la variación total nacional.
+(Tabla 11)\\
 
 \textbf{Tabla 11. Variación anual y contribución de la producción real,
 ventas reales y personal ocupado}\\
@@ -461,36 +465,33 @@ ventas reales y personal ocupado}\\
 \textbf{Diciembre 2021 - Noviembre 2022/Diciembre 2020 - Noviembre
 2021P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla11_view-1.png}
+\begin{center}\includegraphics[width=13.14in]{tabla11_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
 Nota: La diferencia en la suma se da por aproximaciones decimales\\
 P.P. Puntos porcentuales\\
 
-\hypertarget{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades-2}{%
-\subsection{Variación anual (\%) y contribución, del valor de la
+\hypertarget{variaciuxf3n-doce-meses-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades}{%
+\subsection{Variación doce meses (\%) y contribución, del valor de la
 producción, ventas, y empleo total según
-ciudades}\label{variaciuxf3n-anual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades-2}}
+ciudades}\label{variaciuxf3n-doce-meses-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades}}
 
 \textbf{Diciembre 2021 - Noviembre 2022/Diciembre 2020 - Noviembre
 2021P}\\
 
-\hfill\break
-
 Durante los últimos doce meses hasta Noviembre de 2022, de los 10
 dominios de ciudades representados por la encuesta, 10 registraron
-variaciones positivas en su producción real, sumando
-\ensuremath{5.358\times 10^{4}} p.p. de la variación total nacional
-(tabla 12)\\
-\strut \\
-\textbf{Tabla 12. Variación anual y contribución de la producción real,
-ventas reales y personal ocupado}\\
+variaciones positivas en su producción real, sumando 12 p.p. de la
+variación total nacional (Tabla 12)\\
+
+\textbf{Tabla 12. Variación doce meses y contribución de la producción
+real, ventas reales y personal ocupado}\\
 \textbf{Ciudades}\\
 \textbf{Diciembre 2021 - Noviembre 2022/Diciembre 2020 - Noviembre
 2021P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla12_view-1.png}
+\begin{center}\includegraphics[width=12.58in]{tabla12_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
@@ -503,17 +504,15 @@ variación trienal Noviembre
 2022}\label{evoluciuxf3n-general-de-las-principales-variables-total-nacional-variaciuxf3n-trienal-noviembre-2022}}
 
 En Noviembre de 2022 frente al mismo mes de 2019, la producción real de
-la industria manufacturera presentó una variación de frente al mismo mes
-de 2019, la producción real de la industria manufacturera presentó una
-variación de 245.6 \%, 292.6 \%, las ventas reales de 286.2 \%, 335.7 \%
-y el personal ocupado 0.7 \%, -0.5 \%.\\
-\strut \\
+la industria manufacturera presentó una variación de 19.1 \%, las ventas
+reales de 15.4 \% y el personal ocupado 1.3 \%.\\
+
 \textbf{Gráfico 5. Variación trienal de la producción real, ventas y
 personal ocupado de la industria manufacturera}\\
 \textbf{Total Nacional}\\
 \textbf{Noviembre (2022/2021)P}\\
 
-\includegraphics{boletin_files/figure-latex/variacion_trienal_plot-1.pdf}
+\begin{center}\includegraphics{boletin_files/figure-latex/variacion_trienal_plot-1} \end{center}
 
 \hypertarget{variaciuxf3n-trienal-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-clase-industrial}{%
 \subsection{Variación trienal (\%) y contribución, del valor de la
@@ -521,18 +520,23 @@ producción, ventas y empleo total según clase
 industrial}\label{variaciuxf3n-trienal-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-clase-industrial}}
 
 \textbf{Noviembre (2022/2019)P}\\
-\strut \\
+
 De las 39 actividades industriales representadas por la encuesta, un
-total de 30 registraron variaciones positivas en su producción real,
-sumando \ensuremath{8.3222\times 10^{5}} puntos porcentuales a la
-variación trienal y 9 subsectores con variaciones negativas restaron en
-conjunto -8510 puntos porcentuales a la variación total (tabla 13).\\
-\textbf{Tabla 13. variación trienal y contribución de la producción
-real, ventas reales y personal ocupado, según actividad manufacturera}\\
+total de 31 registraron variaciones positivas en su producción real,
+sumando 19.4 puntos porcentuales a la variación trienal y 8 subsectores
+con variaciones negativas restaron en conjunto 0.4 puntos porcentuales a
+la variación total. (Tabla 13).\\
+\newpage \textbf{Tabla 13. variación trienal y contribución de la
+producción real, ventas reales y personal ocupado, según actividad
+manufacturera}\\
 \textbf{Total nacional}\\
 \textbf{Noviembre (2022/2019)P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla13_view-1.png}
+\begin{center}\includegraphics[width=14.78in]{tabla13_1} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla13_2} \end{center}
+
+\begin{center}\includegraphics[width=14.78in]{tabla13_3} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P: Cifras provisionales\\
@@ -544,15 +548,17 @@ P.P. puntos porcentuales\\
 producción, ventas y empleo total según
 departamentos}\label{variaciuxf3n-trienal-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-departamentos}}
 
-De los 14 dominios de departamentos representado por la encuest,De los
-14 dominios de departamentos representados por la encuesta, 12
-registraron variaciones positivas en su producción real, sumando 4435.3
-p.p. a la variación total nacional.\\
-\strut \\
-\textbf{Tabla 4. Variación trienal y contribución de la producción real, ventas reales y personal ocupado}\\
-\textbf{Departamentos} Noviembre (2022/2019)P\\
+\textbf{Noviembre (2022/2019)P}
 
-\includegraphics{boletin_files/figure-latex/tabla14_view-1.png}
+De los 14 dominios de departamentos representado por la encuesta, 13
+registraron variaciones positivas en su producción real, sumando 19.1
+p.p. a la variación total nacional.\\
+
+\textbf{Tabla 14. Variación trienal y contribución de la producción real, ventas reales y personal ocupado}\\
+\textbf{Departamentos}\\
+\textbf{Noviembre (2022/2019)P}\\
+
+\begin{center}\includegraphics[width=12.58in]{tabla14_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P:Cifras provisionales\\
@@ -562,26 +568,23 @@ P.P. puntos porcentuales\\
 La Guajira, Magdalena, Meta, Nariño, Norte de Santander, Putumayo,
 Quindío, San Andrés, Sucre.\\
 
-\hypertarget{variaciuxf3n-trianual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-uxe1reas-metropolitanas}{%
-\subsection{Variación trianual (\%) y contribución, del valor de la
+\hypertarget{variaciuxf3n-trienal-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-uxe1reas-metropolitanas}{%
+\subsection{Variación trienal (\%) y contribución, del valor de la
 producción, ventas y empleo total según áreas
-metropolitanas}\label{variaciuxf3n-trianual-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-uxe1reas-metropolitanas}}
+metropolitanas}\label{variaciuxf3n-trienal-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-uxe1reas-metropolitanas}}
 
 \textbf{Noviembre 2022/2019P}\\
 
 En Noviembre de 2022 frente al mismo mes del 2019, el área metropolitana
-que más constribuye a la variación anual de la producción real es la de
-Área Metropolitana de Barranquilla con una variación de
-\ensuremath{4.2615\times 10^{5}}\%, sumando
-\ensuremath{2.781\times 10^{4}} p.p. a la variación total nacional.
-(Tabla 15)\\
-\strut \\
+que más constribuye a la variación trienal de la producción real es la
+de Área Metropolitana de Barranquilla con una variación de 33.4\%,
+sumando 2.2 p.p. a la variación total nacional. (Tabla 15)\\
 
 \textbf{Tabla 15. Variación trienal y contribución de la producción
 real, ventas reales y personal ocupado en Áreas Metropolitanas}\\
-Noviembre (2022/2019)P\\
+\textbf{Noviembre (2022/2019)P}\\
 
-\includegraphics{boletin_files/figure-latex/tabla15_view-1.png}
+\begin{center}\includegraphics[width=13.14in]{tabla15_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P: Cifras provisionales\\
@@ -593,28 +596,32 @@ P.P. puntos porcentuales\\
 producción, ventas, y empleo total según
 ciudades}\label{variaciuxf3n-trienal-y-contribuciuxf3n-del-valor-de-la-producciuxf3n-ventas-y-empleo-total-seguxfan-ciudades}}
 
-\textbf{Noviembre 2022/2019)P}\\
-\strut \\
+\textbf{Noviembre 2022/2019P}\\
 
 En Noviembre de 2022 frente al mismo mes de 2019 de los 10 dominios de
-ciudades representados por la encuesta, 9 registraron variaciones
-positivas en su producción real, sumando
-\ensuremath{5.7275\times 10^{5}} p.p. de la variación total nacional
-(tabla 16)\\
-\strut \\
-\textbf{Tabla 16. Variación trienal y contribución de la producción
-real, ventas reales y personal ocupado Ciudades}\\
-\textbf{Noviembre 2022/2019)P}\\
+ciudades representados por la encuesta, 10 registraron variaciones
+positivas en su producción real, sumando 19.2 p.p. de la variación total
+nacional. (Tabla 16)\\
 
-\includegraphics{boletin_files/figure-latex/tabla16_view-1.png}
+\newpage
+
+\textbf{Tabla 16. Variación trienal y contribución de la producción
+real, ventas reales y personal ocupado}\\
+\textbf{Ciudades}\\
+\textbf{Noviembre 2022/2019P}
+
+\begin{center}\includegraphics[width=12.58in]{tabla16_1} \end{center}
 
 \textbf{Fuente}: DANE-EMMET\\
 P: Cifras provisionales\\
 Nota: La diferencua en la suma se da por aproximaciones decimales\\
-P.P. puntos porcentuales
+P.P. puntos porcentuales\}
 
 \hypertarget{medidas-de-calidad}{%
 \section{Medidas de calidad}\label{medidas-de-calidad}}
+
+\hypertarget{cobertura}{%
+\subsection{Cobertura}\label{cobertura}}
 
 El porcentaje de cobertura es un instrumento que permite hacer
 seguimiento al desarrollo de la recolección de infromación de los
@@ -631,15 +638,17 @@ La fórmula para el cálculo del porcentaje de cobertura es:
 
 \begin{equation*}
 IC = \frac{(\sum H - \sum Hnc)}{\sum H}*100
-\end{equation*} Donde, \(\sum H\), es la sumatoria del valor de la
-variable \(H\) del total de las unidades estadpisticas de la
-muestra.\textbackslash{} \(\sum Hnc\), es la sumatoria del valor de la
-variable \(H\) de las unidades estadísticas de No Cobertura\}
+\end{equation*}
+
+Donde, \(\sum H\), es la sumatoria del valor de la variable \(H\) del
+total de las unidades estadpisticas de la muestra.\\
+\(\sum Hnc\), es la sumatoria del valor de la variable \(H\) de las
+unidades estadísticas de No Cobertura.
 
 \begin{align*}
-ICProducción &= 98,1\%\\
-ICVentas &= 98,1\%\\
-ICEmpleo &= 98,5\%
+ICProducción &= 98.1\%\\
+ICVentas &= 98.1\%\\
+ICEmpleo &= 98.5\%\\
 \end{align*}
 
 Para el caso de las unidades estadísticas que carecen de infromación por
@@ -658,14 +667,16 @@ resultado, mayor calidad en los resultados publicados.
 
 \begin{equation*}
 TNR = \frac{\sum unr}{\sum ue}*100
-\end{equation*} Donde,
+\end{equation*}
+
+Donde,
 
 \(\sum unr\), es la sumatoria de unidades estadísticas que no
-respondieron el formulario\textbackslash{} \(\sum ue\), es la sumatoria
-de unidades estadísticas esperadas
+respondieron el formulario.\\
+\(\sum ue\), es la sumatoria de unidades estadísticas esperadas.
 
 \begin{equation*}
-TNR = 2,0\%
+TNR = 2\%\\
 \end{equation*}
 
 \hypertarget{tasa-de-imputaciuxf3n}{%
@@ -679,16 +690,19 @@ datos publicados.
 
 \begin{equation*}
 TI = \frac{\sum uix}{\sum ux}*100
-\end{equation*} Donde,
+\end{equation*}
+
+Donde,
 
 \(\sum uix\), es la sumatoria de unidades estadísticas imputadas en la
-variable \(x\)\textbackslash{} \(\sum ux\), es la sumatoria de unidades
-estadísticas de la muestra en la variable \(x\)
+variable \(x\).\\
+\(\sum ux\), es la sumatoria de unidades estadísticas de la muestra en
+la variable \(x\).
 
 \begin{align*}
-TIProducción &= 2,6\%\\
-TIPVentas &= 2,5\%\\
-TIEmpleo &= 2,7\%
+TIProducción &= 2.6 \%\\
+TIPVentas &= 2.5 \%\\
+TIEmpleo &= 2.7\%\\
 \end{align*}
 
 \hypertarget{ficha-metodoluxf3gica}{%
