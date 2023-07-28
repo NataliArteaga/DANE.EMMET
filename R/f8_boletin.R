@@ -69,7 +69,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
 
 
   # Renderizar el archivo Rmd localmente
-  rmarkdown::render(ruta_boletin_rmd, paste0(tipo, "_document"),
+  rmarkdown::render(ruta_boletin_rmd, output_format=paste0(tipo, "_document"),
                     params = list(month = mes,
                                   year = anio,
                                   month_b= meses_b[mes],

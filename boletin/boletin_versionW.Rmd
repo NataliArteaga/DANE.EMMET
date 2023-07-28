@@ -1,6 +1,6 @@
 ---
+---
 output:
-  word_document: 
   html_document:
     df_print: paged
   pdf_document:
@@ -26,7 +26,7 @@ params:
   TI_ven: 2.5
   TI_empl: 2.7
   fecha_publicacion: 14 de Diciembre de 2022
-  directorio: "C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET"
+  directorio: /Users/nataliaarteaga/Documents/DANE/Procesos DIMPE /PilotoEMMET/results/S5_tematica/EMMET_PANEL_tematica_nov2022.csv
 header-includes: 
   - \usepackage{titling}
   - \usepackage{graphicx}
@@ -38,6 +38,7 @@ header-includes:
      \textcolor{gray}{\Large `r paste(params$month_b,params$year)`}}}
      \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
 ---
+
 
 
 ![](img/header.png)

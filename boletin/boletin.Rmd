@@ -40,6 +40,10 @@ header-includes:
 ---
 
 
+
+![](img/header.png)
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readxl)
@@ -56,13 +60,11 @@ library(knitr)
 library(tinytex)
 library(webshot2)
 
-
 meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
 
 data<-read.csv(paste0(params$directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"))
-
 #data <- fread(params$directorio)
 
 colnames_format <- function(base){
@@ -162,7 +164,6 @@ tab_acople <- function(base){
 
 ```
 
-
 # Encuesta Mensual Manufacturera con Enfoque Territorial – EMMET  `r paste0(meses_b[params$month]," ",params$year)`{.unlisted .unnumbered}
 
 **Gráfico 1. Variación anual y trienal de la producción real, ventas y personal ocupado de la industria manufacturera**\
@@ -171,7 +172,7 @@ tab_acople <- function(base){
 \
 
 
-```{r variacion,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3.2,fig.width=4}
+```{r variacion,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.ext='pdf'}
 #1
 variacion <- data %>% 
   group_by(ANIO,MES)
@@ -209,17 +210,18 @@ ggplot(variaciones,aes(x=variable,y=variacion,fill=variable))+geom_bar(stat="ide
   scale_fill_manual(values = colores)+theme(legend.position = "none",axis.text.x=element_text(size=7),axis.text.y = element_text(size=6.5))+labs(y="Variación (%)",x="",y.size=5)+
   theme(strip.background.x=element_rect(color = NA,  fill=NA))
 
+
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P: Cifras provisionales. Se presentan variaciones respecto al año 2020 para considerar el efecto base de comparación del periodo de pandemia.
  
-\newpage
+\pagrebreack
 \renewcommand\contentsname{}
 \setcounter{tocdepth}{1}
 \tableofcontents
 
-\newpage
+\pagrebreack
 # Introducción {.unlisted .unnumbered}
 
 La Encuesta Mensual Manufacturera con Enfoque Territorial (EMMET), es una investigación de carácter estadístico por medio de la cual el Departamento Administrativo Nacional de Estadística (DANE) obtiene la información de evolución de las principales variables económicas del sector fabril colombiano en el corto plazo.
@@ -228,17 +230,17 @@ La EMMET mide la evolución mensual del sector manufactrero del país, a través
 
 Tomando como marco la Encuesta Anual Manufacturera de 2017, se realizó el último rediseño de la operación estadística. Sobre este año base, se obtuvo una encuesta por muestreo no probabilístico de 3.100 establecimientos; con ellos se presentan los resultados a nivel total nacional y su desagregación para 12 departamentos, Bogotá y otros departamentos, 3 áreas metropolitanas y 8 ciudades del país, para los diferentes usuarios públicos y privado. En el contexto nacional, se mantienen 39 dominios industriales manufactureros de publicación establecidos con base en la Clasificación Industrial Internacional Uniforme (CIIU) de toas las actividades económicas Rev. 4 adaptada para Colombia.De esta forma es posible obtener la información necesaria para construir indicadores confiables de la industria manufacturera, los cuales son herramientas importantes para la toma de decisiones económicas en el país.
 
-\newpage
+\pagrebreack
 # Evolución general de las principales variables total nacional 
 `r paste0(meses_b[params$month]," ",params$year)`
 
 En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Producción\nReal","variacion"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Ventas\nReales","variacion"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones[variaciones$tipo==paste0(meses_b[params$month]," (",params$year," / ",params$year-1,")") & variaciones$variable=="Personal\nOcupado","variacion"]*100,1),"%")`.\
 \
-\textbf{Gráfico 2. Variación anual de la producción real, ventas y personal ocupado de la industria manufacturera}\
-\textbf{Total Nacional}\
-\textbf{Enero 2020 – `r paste0(meses_b[params$month]," ",params$year,"p")`}\
+**Gráfico 2. Variación anual de la producción real, ventas y personal ocupado de la industria manufacturera**\
+**Total Nacional**\
+**Enero 2020 – `r paste0(meses_b[params$month]," ",params$year,"p")`**\
 
-```{r historico,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3,fig.width=5}
+```{r historico,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=5,fig.width=9,fig.ext='pdf'}
 #2
 variaciones_totales <- data %>% 
   group_by(ANIO,MES)
@@ -280,9 +282,9 @@ ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=vari
   scale_color_manual(values = colores)+labs(x="",y="Variación (%)",color="")+
   scale_y_continuous(breaks=function(x)pretty_breaks(n=20)(c(as.numeric(x)[1],as.numeric(x)[2])),labels = percent)+
   geom_hline(aes(yintercept=0),color="gray",size=0.5)+
-  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.15,label=round(value*100,1),color=variables),show.legend = F,hjust=-0.2,size=2.8)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.10,label=round(value*100,1),color=variables),show.legend = F,hjust=-0.2,size=2.8)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.05,label=round(value*100,1),color=variables),show.legend = F,hjust=-0.2,size=2.8)
+  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.15,label=round(value*100,1),color=variables),show.legend = F,hjust=-0.2,size=3.5)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.10,label=round(value*100,1),color=variables),show.legend = F,hjust=-0.2,size=3.5)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.05,label=round(value*100,1),color=variables),show.legend = F,hjust=-0.2,size=3.5)
   
 ```
 
@@ -291,7 +293,7 @@ ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=vari
 P: Cifras provisionales\
 
 ## Variación anual (%) y contribución, del valor de la producción, ventas y empleo total, según clase industrial {.unlisted }
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"p")`}\
+**`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"p")`**\
 
 ```{r tabla1,echo=F,eval=TRUE,warning=FALSE,message=F} 
 #c1
@@ -419,10 +421,10 @@ P: Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 PP. Puntos porcentuales\
 
-\newpage
+\pagrebreack
 
 ## Variación año corrido (%) y contribución, del valor de la producción, ventas y empleo total, según clase industrial {.unlisted }
-\textbf{`r paste0("Enero - ",meses_b[params$month],"", params$year,"/",params$year-1,"p")`}
+**`r paste0("Enero - ",meses_b[params$month],"", params$year,"/",params$year-1,"p")`**
 ```{r anio_corrido,echo=F,eval=TRUE,warning=FALSE,message=F}
 #3
 variaciones_totales <- data %>% 
@@ -459,27 +461,28 @@ variaciones_totales$periodo <- paste0(substr(meses,1,3)[as.numeric(variaciones_t
 variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste0(rep(substr(meses,1,3),length(c(2018:params$year))),"-",rep(18:substr(params$year,3,4),each=12))))
 
 ```
+
 En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real","value"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales","value"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado","value"]*100,1),"%")`.\
 
 **Gráfico 3. Variación año corrido de la producción real, ventas y personal ocupado de la industria manufacturera**\
 **Total nacional**\
-\textbf{`r paste0("Enero - 2020 ",meses_b[params$month]," - ",params$year,"p")`}\
-```{r anio_corrido_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3,fig.width=4.89}
+**`r paste0("Enero - 2020 ",meses_b[params$month]," - ",params$year,"p")`**\
+```{r anio_corrido_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=5,fig.width=9,fig.ext='pdf'}
 ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=variables))+geom_line(size=0.8)+
   geom_point(aes(x=max(value)+1,y=0),color="transparent")+facet_grid(~ANIO,scales = "free_x")+
   theme_classic()+theme(axis.text.x=element_text(angle=90,size = 7),axis.text.y=element_text(size = 7),legend.direction = "horizontal",legend.position="bottom")+
   scale_color_manual(values = colores)+labs(x="",y="Variación (%)",color="")+
   scale_y_continuous(breaks=function(x)pretty_breaks(n=20)(c(as.numeric(x)[1],as.numeric(x)[2])),labels = percent)+
   geom_hline(aes(yintercept=0),color="gray",size=0.5)+
-  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.11,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=2.2)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.09,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=2.2)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.06,label=round(value*100,1),color=variables),show.legend = F,hjust=-0,size=2.2)+
+  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.11,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=3.5)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.09,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=3.5)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.06,label=round(value*100,1),color=variables),show.legend = F,hjust=-0,size=3.5)+
   theme(strip.background.x=element_rect(color = NA,  fill=NA),strip.text = element_text(color="transparent"))
 
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 
 ```{r tabla2,echo=F,eval=TRUE,warning=FALSE,message=F}
@@ -528,7 +531,7 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 
-\newpage
+\pagrebreack
 De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación año corrido y `r paste0(sum(tabla1$varprod<0))` subsectores con variaciones negativas restaron en conjunto `r abs(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total (Tabla 2).
 
 ```{r tabla2_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
@@ -610,13 +613,13 @@ P:Cifras provisionales\
 Nota: La diferencia en la suma se da  por aproximaciones decimales\
 PP. Puntos porcentuales\
 
-\newpage
+\pagrebreack
 ## Variación doce meses (%) y contribución, del valor de la producción, ventas y empleo total según clase industrial {.unlisted }
-\textbf{`r paste0(meses_b[params$month+1]," ",params$year-1," - ",meses_b[params$month]," ", params$year," / ",meses_b[params$month+1]," ",params$year-2," - ",meses_b[params$month]," ", params$year-1,"P")`}\
+**`r paste0(meses_b[params$month+1]," ",params$year-1," - ",meses_b[params$month]," ", params$year," / ",meses_b[params$month+1]," ",params$year-2," - ",meses_b[params$month]," ", params$year-1,"P")`**\
 
 **Gráfico 4. Variación doce meses de la producción real, ventas y personal ocupado de la industria manufacturera**
 **Total nacional**
-\textbf{`r paste0("Enero ",params$year-2," - ",meses_b[params$month]," ",params$year,"P")`}
+**`r paste0("Enero ",params$year-2," - ",meses_b[params$month]," ",params$year,"P")`**
 
 
 ```{r anio_corrido_2,echo=F,eval=TRUE,warning=FALSE,message=F}
@@ -664,21 +667,21 @@ variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste
 
 Durante los últimos doce meses hasta `r paste0(meses_b[params$month]," de ",params$year)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real","value"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales","value"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado","value"]*100,1),"%")`.\
 
-```{r anio_corrido_view_2,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3,fig.width=4.8}
+```{r anio_corrido_view_2,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.width=8,fig.ext='pdf',fig.height=5}
 ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=variables))+geom_line(size=0.89)+
   geom_point(aes(x=max(value)+1,y=0),color="transparent")+
   theme_classic()+theme(axis.text.x=element_text(angle=90,size = 7),axis.text.y=element_text(size = 7),legend.direction = "horizontal",legend.position="bottom")+
   scale_color_manual(values = colores)+labs(x="",y="Variación (%)",color="")+
   scale_y_continuous(breaks=function(x)pretty_breaks(n=20)(c(as.numeric(x)[1],as.numeric(x)[2])),labels = percent)+
   geom_hline(aes(yintercept=0),color="gray",size=0.5)+
-  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.11,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=2.2)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.09,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=2.2)+
-    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.06,label=round(value*100,1),color=variables),show.legend = F,hjust=-0,size=2.5)+
+  geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real",],aes(x=periodo,y=0.11,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=3.5)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales",],aes(x=periodo,y=0.09,label=round(value*100,1),color=variables),show.legend = F,hjust=0,size=3.5)+
+    geom_text(data=variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado",],aes(x=periodo,y=0.06,label=round(value*100,1),color=variables),show.legend = F,hjust=-0,size=3.5)+
   theme(strip.background.x=element_rect(color = NA,  fill=NA),strip.text = element_text(color="transparent"))
   
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 
 ```{r tabla3,echo=F,eval=TRUE,warning=FALSE,message=F}
@@ -731,10 +734,10 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 De las 39 actividades industriales representadas por la encuesta, un total de `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación total doce meses y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r sum(tabla1$produccion[tabla1$varprod<0])` puntos porcentuales a la variación total. (Tabla 3)\
 
-\newpage
-\textbf{Tabla 3. Variación doce meses y contribución de la producción real, ventas reales, y personal ocupado, según actividad manufacturera}\
-\textbf{Total Nacional}\
-\textbf{`r paste0(meses_b[params$month+1]," ",params$year-1," - ",meses_b[params$month]," ", params$year," / ",meses_b[params$month+1]," ",params$year-2," - ",meses_b[params$month]," ", params$year-1," P")`}
+\pagrebreack
+**Tabla 3. Variación doce meses y contribución de la producción real, ventas reales, y personal ocupado, según actividad manufacturera**\
+**Total Nacional**\
+**`r paste0(meses_b[params$month+1]," ",params$year-1," - ",meses_b[params$month]," ", params$year," / ",meses_b[params$month+1]," ",params$year-2," - ",meses_b[params$month]," ", params$year-1," P")`**
 
 ```{r tabla3_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -867,10 +870,10 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ```
 
 De los 14 dominios de departamentos representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional.\
-\newpage
-\textbf{Tabla 4. Variación anual y contribución de la producción real, ventas reales y personal ocupado}\
-\textbf{Departamentos}\
-\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}
+\pagrebreack
+**Tabla 4. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
+**Departamentos**\
+**`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**
 
 ```{r tabla4_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -929,14 +932,14 @@ knitr::include_graphics(paste0("tabla4_", 1, ".png"))
 ```
 
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
 * Otros departamentos: Amazonas, Caquetá, Casanare, Cesar, Chocó, Huila, La Guajira, Magdalena, Meta, Nariño, Norte de Santander, Putumayo, Quindío, San Andrés, Sucre.
 
 ## Variación anual (%) y contribución, del valor de la producción, ventas y empleo total según áreas metropolitanas {.unlisted }
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`}
+**`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**
 
 ```{r tabl5,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c5
@@ -989,7 +992,7 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," ",params$year-1)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional.\
 \
 **Tabla 5. Variación anual y contribución de la producción real, ventas reales y personal ocupado en Áreas Metropolitanas**\
-\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}
+**`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**
 
 ```{r tabla5_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -1048,7 +1051,7 @@ knitr::include_graphics(paste0("tabla5_", 1, ".png"))
 ```
 
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales
@@ -1099,13 +1102,13 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 ## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`}\
+**`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
 \
 En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)` de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>0])` p.p. de la variación total nacional (Tabla 6)\
-\newpage
+\pagrebreack
 **Tabla 6. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
-\textbf{Ciudades}\
-\textbf{`r paste0(meses_b[params$month],"  (",params$year,"/",params$year-1,")P")`}
+**Ciudades**\
+**`r paste0(meses_b[params$month],"  (",params$year,"/",params$year-1,")P")`**
 
 ```{r tabla6_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -1164,7 +1167,7 @@ knitr::include_graphics(paste0("tabla6_", 1, ".png"))
 ```
 
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1282,7 +1285,7 @@ gtsave(tabla_paginada[[i]],paste0("tabla7_",i,".png"))
 knitr::include_graphics(paste0("tabla7_", 1, ".png"))
 
 ```
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -1342,7 +1345,7 @@ En lo corrido del año hasta`r paste0(meses_b[params$month]," de ",params$year)`
 
 **Tabla 8. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Áreas Metropolitanas**\
-\textbf{`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}
+**`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**
 
 ```{r tabla8_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -1400,7 +1403,7 @@ knitr::include_graphics(paste0("tabla8_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1451,16 +1454,16 @@ tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*1
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
 
 ```
-\newpage
+\pagrebreack
 
 ## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
-\textbf{`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`}\
+**`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
 
 En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 9)\
 
 **Tabla 9. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
-\textbf{`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`}\
+**`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**\
 
 ```{r tabla9_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -1517,7 +1520,7 @@ knitr::include_graphics(paste0("tabla9_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1635,7 +1638,7 @@ knitr::include_graphics(paste0("tabla10_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -1754,7 +1757,7 @@ knitr::include_graphics(paste0("tabla11_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1871,7 +1874,7 @@ knitr::include_graphics(paste0("tabla12_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. Puntos porcentuales\
@@ -1911,7 +1914,7 @@ En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2
 **Total Nacional**\
 **`r paste0(meses_b[params$month], " (",params$year,"/",params$year-1,")P")`**\
 
-```{r variacion_trienal_plot,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.height=3.3,fig.width=3.8}
+```{r variacion_trienal_plot,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.width=6,fig.ext='pdf'}
 ggplot(variaciones[variaciones$tipo==paste0(meses_b[params$month], " (",params$year," / 2019)"),],aes(x=variable,y=variacion,fill=variable))+geom_bar(stat="identity")+
   theme_classic()+
   facet_grid(~tipo)+geom_text(aes(x=variable,y=variacion,label=paste0(round(variacion*100,1),"%")),vjust=-0.5,size=2.5)+
@@ -1977,7 +1980,7 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 **`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`**\
 
 De las 39 actividades industriales representadas por la encuesta, un total de `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación trienal y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r abs(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total. (Tabla 13).\
-\newpage
+\pagrebreack
 **Tabla 13. variación trienal y contribución de la producción real, ventas reales y personal ocupado, según actividad manufacturera**\
 **Total nacional**\
 **`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`**\
@@ -2056,7 +2059,7 @@ knitr::include_graphics(paste0("tabla13_", 3, ".png"))
 ```
 
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -2108,13 +2111,13 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ```
 
 ## Variación trienal (%) y contribución, del valor de la producción, ventas y empleo total según departamentos {.unlisted }
-\textbf{`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`}
+**`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`**
 
 De los 14 dominios de departamentos representado por la encuesta, `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$produccion>=0])` p.p. a la variación total nacional.\
 
-\textbf{Tabla 14. Variación trienal y contribución de la producción real, ventas reales y personal ocupado}\
-\textbf{Departamentos}\
-\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`}\
+**Tabla 14. Variación trienal y contribución de la producción real, ventas reales y personal ocupado**\
+**Departamentos**\
+**`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`**\
 
 ```{r tabla14_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -2171,14 +2174,14 @@ knitr::include_graphics(paste0("tabla14_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
 * Otros departamentos: Amazonas, Caquetá, Casanare, Cesar, Chocó, Huila, La Guajira, Magdalena, Meta, Nariño, Norte de Santander, Putumayo, Quindío, San Andrés, Sucre.\
 
 ## Variación trienal (%) y contribución, del valor de la producción, ventas y empleo total según áreas metropolitanas {.unlisted }
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`}\
+**`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`**\
 
 ```{r tabla15,echo=F,eval=TRUE,warning=FALSE,message=F}
 #c15
@@ -2229,7 +2232,7 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 15)\
 
 **Tabla 15. Variación trienal y contribución de la producción real, ventas reales y personal ocupado en Áreas Metropolitanas**\
-\textbf{`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`}\
+**`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`**\
 
 ```{r tabla15_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -2286,7 +2289,7 @@ knitr::include_graphics(paste0("tabla15_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
 P.P. puntos porcentuales\
@@ -2338,14 +2341,14 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ```
 
 ## Variación trienal (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`}\
+**`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`**\
 
 En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional. (Tabla 16)\
 
-\newpage
+\pagrebreack
 **Tabla 16. Variación trienal y contribución de la producción real, ventas reales y personal ocupado**\
-\textbf{Ciudades}\
-\textbf{`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`}
+**Ciudades**\
+**`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`**
 
 ```{r tabla16_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
@@ -2402,10 +2405,11 @@ knitr::include_graphics(paste0("tabla16_", 1, ".png"))
 
 ```
 
-\textbf{Fuente}: DANE-EMMET\
+**Fuente**: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
-P.P. puntos porcentuales}
+P.P. puntos porcentuales
+
 
 # Medidas de calidad
 
@@ -2416,62 +2420,48 @@ Mide la relación entre la sumatoria del valor de las unidades estadísticas de 
 
 La fórmula para el cálculo del porcentaje de cobertura es:
 
-
-\begin{equation*}
-IC = \frac{(\sum H - \sum Hnc)}{\sum H}*100
-\end{equation*}
-
+$$IC = \frac{(\sum H - \sum Hnc)}{\sum H}*100$$
 
 Donde,
 $\sum H$, es la sumatoria del valor de la variable $H$ del total de las unidades estadpisticas de la muestra.\
-$\sum Hnc$, es la sumatoria del valor de la variable $H$ de las unidades estadísticas de No Cobertura.
+$\sum Hnc$, es la sumatoria del valor de la variable $H$ de las unidades estadísticas de No Cobertura.\
 
-
-\begin{align*}
-ICProducción &= `r params$IC_prod`\%\\
-ICVentas &= `r params$IC_ven`\%\\
-ICEmpleo &= `r params$IC_empl`\%\\
-\end{align*}
+ICProducción = `r paste0(params$IC_prod,"%")`\
+ICVentas = `r paste0(params$IC_ven,"%")`\
+ICEmpleo = `r paste0(params$IC_empl,"%")`\
 
 Para el caso de las unidades estadísticas que carecen de infromación por presentar deuda en el periodo de estudio, se aplica el método de imputación señalado en la metodología de la operación estadística.
 
 ## Tasa de no respuesta {.unlisted }
 
-En este indicador se obtiene un resultado de qué porcentaje de las fuentes esperadas no respondieron el formulario. La diferencia con el indicador anterior es que considerando que hay un desgaste de la muestra a medida que pasa el tiempo, hay fuentes de las cuales no se espera información (fueron liquidadas, cambiaron de sector, etc). A menor resultado, mayor calidad en los resultados publicados.
+En este indicador se obtiene un resultado de qué porcentaje de las fuentes esperadas no respondieron el formulario. La diferencia con el indicador anterior es que considerando que hay un desgaste de la muestra a medida que pasa el tiempo, hay fuentes de las cuales no se espera información (fueron liquidadas, cambiaron de sector, etc). A menor resultado, mayor calidad en los resultados publicados.\
 
+$$TNR = \frac{\sum unr}{\sum ue}*100$$
 
-\begin{equation*}
-TNR = \frac{\sum unr}{\sum ue}*100
-\end{equation*}
 
 Donde,
 
 $\sum unr$, es  la sumatoria de unidades estadísticas que no respondieron el formulario.\
-$\sum ue$, es la sumatoria de unidades estadísticas esperadas.
+$\sum ue$, es la sumatoria de unidades estadísticas esperadas.\
 
-\begin{equation*}
-TNR = `r params$TNR`\%\\
-\end{equation*}
+TNR = `r paste0(params$TNR,"%")`\
 
 ## Tasa de imputación {.unlisted }
 
-La tasa de imputación mide el porcentaje de unidades estadísticas imputadas del total de las unidades de la muestra. Se imputan datos cuando hay deudas de formulario completo o parcial o en caso de que la información sea incosistente. A menor resultado mayor calidad de los datos publicados.
+La tasa de imputación mide el porcentaje de unidades estadísticas imputadas del total de las unidades de la muestra. Se imputan datos cuando hay deudas de formulario completo o parcial o en caso de que la información sea incosistente. A menor resultado mayor calidad de los datos publicados.\
 
-
-\begin{equation*}
-TI = \frac{\sum uix}{\sum ux}*100
-\end{equation*}
+$$TI = \frac{\sum uix}{\sum ux}*100$$
 
 Donde,
 
 $\sum uix$, es  la sumatoria de unidades estadísticas imputadas en la variable $x$.\
-$\sum ux$, es la sumatoria de unidades estadísticas de la muestra en la variable $x$.
+$\sum ux$, es la sumatoria de unidades estadísticas de la muestra en la variable $x$.\
 
-\begin{align*}
-TIProducción &= `r params$TI_prod` \%\\
-TIPVentas &= `r params$TI_ven` \%\\
-TIEmpleo &= `r params$TI_empl`\%\\
-\end{align*}
+
+TIProducción = `r paste0(params$TI_prod,"%")`\
+TIPVentas = `r paste0(params$TI_ven,"%")`\
+TIEmpleo = `r paste0(params$TI_empl,"%")`\
+
 
 # Ficha Metodológica
 
@@ -2482,9 +2472,10 @@ TIEmpleo &= `r params$TI_empl`\%\\
 **Alcance temático**: para la EMMET, los indicadores estarán representados de manera mensual a nivel nacional por 39 dominios o agrupaciones de la CIIU Rev. 4, que corresponde a las actividades económicas del sector industria y que de acuerdo con la CIIU Rev. 4 A.C., se identifican como industria manufacturera y cumplen con los parámetros de inclusión de la Encuesta Anual Manufacturera (10 o más personas ocupadas o un nivel de producción igual o superio al determinado cada año como parámetro de inclusión de la EAM). A nivel nacional, desagregación territorial a nivel de departamentos, áreas metropolitanas y ciudades. La EMMET no estudia el comportamiento de las microempresas, considerando que el sector manufacturero nacional tienen una distribución asímetrica y los establecimientos con mayor nivel de producción son los que más influyen en su comportamiento.\
 \
 **Indicadores:** los datos acerca de las características de los establecimientos industriales. manufactureros son recopilados con fines estadísticos para agregarlos a nivel de dominios y total del sector. Con esta información se obtiene el índice de producción industrial manufacturera (IPIM), el cual permite conocer la estructura y evolución del sector manufacturero en Colombia. Estándares estadísticos empleados:
-+ Clasificación Industrial Internacional Uniforme - CIIU Revisión 4 A.C.
-+ División Político Administrativa - Divipola
-+ Clasificación Central de Productos ver 2 - CPC 2.\
+
+Clasificación Industrial Internacional Uniforme - CIIU Revisión 4 A.C.\
+División Político Administrativa - Divipola\
+Clasificación Central de Productos ver 2 - CPC 2.\
 \
 **Unidades Estadísticas**: la unidad de observación, análisis y muestro es el establecimiento industrial. \
 \
@@ -2532,6 +2523,8 @@ TIEmpleo &= `r params$TI_empl`\%\\
 **Sueldos**: se entiende por sueldos y salarios la retribución fija u ordinaria que el persona (permanente o contratado directamente por el establecimiento) percibe como pago por los servicios prestados durante el periodo al que se refiere la información, antes de deducir los descuentos por retención en la fuente, seguro social, sindicatom fondo de empleados y similaresm etc. Incluye salarios básicos, sobresueldos y bonificaciones mensuales permanentes ( por mayor costo de vida, condiciones ambientales, riesgos, etc.), pago a los trabajadores a destajo o por producción, pagos por trabajos en horas extras o en días de descanso obligatorio, recargos nocturnos y festivos, licencias por enfermedad o maternidad pagadas directamente por el patrono, comisiones o porcentajes sobre ventas y mayor producción, viáticos cuando son permanentes.\
 
 También se cuenta con desagregación de personal y salarios según funcionalidad (administrativo o producción) o según contratación (permanente temporal).
-\newpage
-
+\pagrebreack
+<!--
 \includegraphics[width=18cm]{img/infodane.png}
+-->
+![Fin](img/infodane_1.png)
