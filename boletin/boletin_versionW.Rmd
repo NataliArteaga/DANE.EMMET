@@ -32,10 +32,10 @@ header-includes:
   - \usepackage{fancyhdr}
   - \usepackage{xcolor}
   - \pagestyle{fancy}
-  - \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\
-     {\fontfamily{put}\selectfont
-     \textcolor{gray}{\Large `r paste(params$month_b,params$year)`}}}
-     \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
+  - \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\      
+    {\fontfamily{put}\selectfont      \textcolor{gray}{\Large `r paste(params$month_b,params$year)`}}}  
+  - \fancyhead[L]{ {\fontfamily{put}\selectfont      
+    \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
 ---
 
 
