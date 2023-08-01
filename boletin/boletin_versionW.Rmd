@@ -36,6 +36,9 @@ header-includes:
     {\fontfamily{put}\selectfont      \textcolor{gray}{\Large `r paste(params$month_b,params$year)`}}}  
   - \fancyhead[L]{ {\fontfamily{put}\selectfont      
     \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
+  - \setlength{\headheight}{70.83125pt}  
+  - \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\     \thepage}   
+  - \renewcommand{\footrulewidth}{0pt}
 ---
 
 
