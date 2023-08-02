@@ -37,6 +37,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   library(rmarkdown)
   library(readxl)
   library(lubridate)
+
   # Definir la URL de la carpeta boletin en GitHub
   url_boletin <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/boletin.zip"
 
