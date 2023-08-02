@@ -1,11 +1,11 @@
 ---
 output:
-  html_document:
-    df_print: paged
   pdf_document:
     latex_engine: pdflatex
     keep_tex: yes
     number_sections: true
+  html_document:
+    df_print: paged
   word_document: default
   classoption: landscape
 geometry:
