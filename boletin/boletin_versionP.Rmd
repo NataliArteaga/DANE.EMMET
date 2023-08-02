@@ -42,6 +42,9 @@ header-includes:
   - \renewcommand{\footrulewidth}{0pt}
 ---
 
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
 
 
 ```{r setup, include=FALSE}
