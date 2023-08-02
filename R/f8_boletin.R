@@ -64,7 +64,8 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   }
 
   # Formateamos la fecha en el formato deseado
-  fecha_formateada <- paste(day(Sys.Date()), "de", nombre_mes_espanol(Sys.Date()), "de", year(Sys.Date()))
+  fecha_formateada1 <- paste(day(Sys.Date()), "de", nombre_mes_espanol(Sys.Date()), "de", year(Sys.Date()))
+  fecha_formateada2 <- paste0(day(Sys.Date()), "de", nombre_mes_espanol(Sys.Date()), "de", year(Sys.Date()))
 
 
 
@@ -74,7 +75,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
                     params = list(month = mes,
                                   year = anio,
                                   month_b= meses_b[mes],
-                                  fecha_publicacion = fecha_formateada,
+                                  fecha_publicacion = fecha_formateada1,
                                   directorio = directorio,
                                   IC_prod= parametros[1,2],
                                   IC_ven= parametros[2,2],
@@ -84,7 +85,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
                                   TI_ven=parametros[6,2],
                                   TI_empl= parametros[7,2]
                                   ),
-                    output_file = paste0("boletin_", fecha_formateada),
+                    output_file = paste0("boletin_", fecha_formateada2),
                     output_dir = file.path(directorio, "results", "S7_boletin"))
 }
 

@@ -377,15 +377,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    DOMINIO_39 ~ px(25),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(48)
+    DESCRIPCIONDOMINIOEMMET39 ~ px(100),
+    varprod_plot ~  px(28),
+    varventas_plot ~  px(28),
+    varpersonas_plot ~  px(28),
+    DOMINIO_39 ~ px(20),
+    varprod ~ px(38),
+    varventas ~ px(35),
+    varpersonas ~ px(35),
+    everything() ~ px(42)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -566,15 +566,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    DOMINIO_39 ~ px(25),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(48)
+    DESCRIPCIONDOMINIOEMMET39 ~ px(100),
+    varprod_plot ~  px(28),
+    varventas_plot ~  px(28),
+    varpersonas_plot ~  px(28),
+    DOMINIO_39 ~ px(20),
+    varprod ~ px(38),
+    varventas ~ px(35),
+    varpersonas ~ px(35),
+    everything() ~ px(42)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -771,15 +771,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    DOMINIO_39 ~ px(25),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(48)
+    DESCRIPCIONDOMINIOEMMET39 ~ px(100),
+    varprod_plot ~  px(28),
+    varventas_plot ~  px(28),
+    varpersonas_plot ~  px(28),
+    DOMINIO_39 ~ px(20),
+    varprod ~ px(38),
+    varventas ~ px(35),
+    varpersonas ~ px(35),
+    everything() ~ px(42)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -2017,15 +2017,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(140),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    DOMINIO_39 ~ px(25),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(48)
+   DESCRIPCIONDOMINIOEMMET39 ~ px(100),
+    varprod_plot ~  px(28),
+    varventas_plot ~  px(28),
+    varpersonas_plot ~  px(28),
+    DOMINIO_39 ~ px(20),
+    varprod ~ px(38),
+    varventas ~ px(35),
+    varpersonas ~ px(35),
+    everything() ~ px(42)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
