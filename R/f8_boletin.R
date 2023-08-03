@@ -38,6 +38,10 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   library(readxl)
   library(lubridate)
 
+  if (!tinytex:::is_tinytex()) {
+    # Si no está configurado correctamente, instalar TinyTeX
+    tinytex::install_tinytex()
+  }
   # Definir la URL de la carpeta boletin en GitHub
   url_boletin <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/boletin.zip"
 
