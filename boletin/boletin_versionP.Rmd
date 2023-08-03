@@ -396,8 +396,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla1_",i,".png"))
 }
@@ -585,8 +584,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla2_",i,".png"))
 }
@@ -790,8 +788,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla3_",i,".png"))
 }
@@ -924,8 +921,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla4_",i,".png"))
 }
@@ -1043,8 +1039,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla5_",i,".png"),)
 }
@@ -1159,8 +1154,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla6_",i,".png"))
 }
@@ -1279,8 +1273,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla7_",i,".png"))
 }
@@ -1396,8 +1389,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla8_",i,".png"))
 }
@@ -1514,8 +1506,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla8_",i,".png"))
 }
@@ -1633,8 +1624,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla10_",i,".png"))
 }
@@ -1753,8 +1743,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla11_",i,".png"))
 }
@@ -1871,8 +1860,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla12_",i,".png"))
 }
@@ -2040,8 +2028,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 
 gtsave(tabla_paginada[[i]],paste0("tabla13_",i,".png"))
@@ -2173,8 +2160,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla14_",i,".png"))
 }
@@ -2289,8 +2275,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla15_",i,".png"))
 }
@@ -2406,8 +2391,8 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),locations=cells_body(rows=varprod==0.001))
+
 gtsave(tabla_paginada[[i]],paste0("tabla16_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla16_", 1, ".png"),dpi=200)
