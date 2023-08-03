@@ -1,18 +1,19 @@
 ---
 output:
-  html_document:
-    df_print: paged
+  word_document: default
   pdf_document:
     latex_engine: pdflatex
     keep_tex: yes
-    number_sections: true
+    number_sections: yes
   classoption: landscape
+  html_document:
+    df_print: paged
 geometry:
-  - includeheadfoot
-  - left=0.60in
-  - right=0.60in
-  - top=0.5in
-  - bottom=1.2in
+- includeheadfoot
+- left=0.60in
+- right=0.60in
+- top=0.5in
+- bottom=1.2in
 params:
   month: 11
   year: 2022
@@ -20,25 +21,24 @@ params:
   IC_prod: 98.1
   IC_ven: 98.1
   IC_empl: 98.5
-  TNR: 2.0
+  TNR: 2
   TI_prod: 2.6
   TI_ven: 2.5
   TI_empl: 2.7
   fecha_publicacion: 14 de Diciembre de 2022
-  directorio: "C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET"
-header-includes: 
-  - \usepackage{titling}
-  - \usepackage{graphicx}
-  - \usepackage{fancyhdr}
-  - \usepackage{xcolor}
-  - \pagestyle{fancy}
-  - \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\      
-    {\fontfamily{put}\selectfont      \textcolor{gray}{\Large `r paste(params$month_b,params$year)`}}}  
-  - \fancyhead[L]{ {\fontfamily{put}\selectfont      
-    \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
-  - \setlength{\headheight}{70.83125pt}  
-  - \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\     \thepage}   
-  - \renewcommand{\footrulewidth}{0pt}
+  directorio: C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET
+header-includes:
+- \usepackage{titling}
+- \usepackage{graphicx}
+- \usepackage{fancyhdr}
+- \usepackage{xcolor}
+- \pagestyle{fancy}
+- \fancyhead[R]{\includegraphics[width=18cm]{img/header.png}\\ {\fontfamily{put}\selectfont      \textcolor{gray}{\Large
+  `r paste(params$month_b,params$year)`}}}
+- \fancyhead[L]{ {\fontfamily{put}\selectfont \textcolor{gray}{\Large `r paste(params$fecha_publicacion)`}}}
+- \setlength{\headheight}{70.83125pt}
+- \fancyfoot[R]{\includegraphics[width=18cm]{img/footer.png}\\     \thepage}
+- \renewcommand{\footrulewidth}{0pt}
 ---
 
 
@@ -337,6 +337,7 @@ for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal"
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
+tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
@@ -351,7 +352,7 @@ De las 39 actividades industriales representadas por la encuesta, un total de `r
 ```{r tabla1_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.height=7,fig.width=5, fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 13  # Define el número de filas por página
+num_rows_per_page <- 20  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
 
@@ -412,11 +413,6 @@ cat("\n\n")
 ```{r tabla1_2,echo=FALSE,fig.align='center'}
 knitr::include_graphics(paste0("tabla1_", 2, ".png"))
 cat("\n\n")
-```
-
-
-```{r tabla1_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla1_", 3, ".png"))
 ```
 
 
@@ -526,6 +522,7 @@ for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal"
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
+tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
@@ -540,7 +537,7 @@ De las 39 actividades industriales representadas por la encuesta, un total de `r
 ```{r tabla2_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 13  # Define el número de filas por página
+num_rows_per_page <- 20  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
 
@@ -604,12 +601,6 @@ cat("\n\n")
 knitr::include_graphics(paste0("tabla2_", 2, ".png"))
 cat("\n\n")
 ```
-
-
-```{r tabla2_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla2_", 3, ".png"))
-```
-
 
 **Fuente:** DANE-EMMET\
 P:Cifras provisionales\
@@ -727,6 +718,7 @@ for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal"
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
+tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
@@ -745,7 +737,7 @@ De las 39 actividades industriales representadas por la encuesta, un total de `r
 ```{r tabla3_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 13  # Define el número de filas por página
+num_rows_per_page <- 20  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
 
@@ -807,11 +799,6 @@ cat("\n\n")
 ```{r tabla3_2,echo=FALSE,fig.align='center'}
 knitr::include_graphics(paste0("tabla3_", 2, ".png"))
 cat("\n\n")
-```
-
-
-```{r tabla3_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla3_", 3, ".png"))
 ```
 
 
@@ -1971,6 +1958,7 @@ for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal"
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
+tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
@@ -1991,7 +1979,7 @@ De las 39 actividades industriales representadas por la encuesta, un total de `r
 ```{r tabla13_view,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center'}
 
 # Dividir la tabla en partes más pequeñas
-num_rows_per_page <- 13  # Define el número de filas por página
+num_rows_per_page <- 20  # Define el número de filas por página
 num_pages <- ceiling(nrow(tabla1) / num_rows_per_page)
 tabla_paginada <- list()
 
@@ -2054,11 +2042,6 @@ cat("\n\n")
 ```{r tabla13_2,echo=FALSE,fig.align='center'}
 knitr::include_graphics(paste0("tabla13_", 2, ".png"))
 cat("\n\n")
-```
-
-
-```{r tabla13_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla13_", 3, ".png"))
 ```
 
 
