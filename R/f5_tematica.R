@@ -210,7 +210,8 @@ f5_tematica <- function(directorio,mes,anio){
              TOTAL_VENTAS=(AJU_III_PE_VENTASIN+AJU_III_PE_VENTASEX),
              DEFLACTOR_NAL=(TOTAL_VENTAS/VentasReales)) %>%
       rename(Dominio_39=DOMINIOEMMET39,
-             Dominio_43=DOMINIOEMMET43)
+             Dominio_43=DOMINIOEMMET43,
+             ID_DEPARTAMENTO=CODIGODEPARTAMENTO)
 
     base_tematica<- base_tematica %>%
       mutate(deflactor_nal=case_when(
