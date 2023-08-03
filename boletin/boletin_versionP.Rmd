@@ -1516,6 +1516,8 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      varpersonas =md("**Variación<br>Personas**"),
                      personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
+gtsave(tabla_paginada[[i]],paste0("tabla8_",i,".png"))
 }
 knitr::include_graphics(paste0("tabla9_", 1, ".png"),dpi=200)
 
