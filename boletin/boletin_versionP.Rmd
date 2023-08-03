@@ -377,15 +377,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(100),
-    varprod_plot ~  px(28),
-    varventas_plot ~  px(28),
-    varpersonas_plot ~  px(28),
-    DOMINIO_39 ~ px(20),
-    varprod ~ px(38),
-    varventas ~ px(35),
-    varpersonas ~ px(35),
-    everything() ~ px(42)
+    DESCRIPCIONDOMINIOEMMET39 ~ pct(13),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    DOMINIO_39 ~ pct(5),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -396,26 +396,26 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla1_",i,".png"))
 }
 
 
-knitr::include_graphics(paste0("tabla1_", 1, ".png"))
+knitr::include_graphics(paste0("tabla1_", 1, ".png"),dpi=200)
 cat("\n\n")
 
 ```
 
 ```{r tabla1_2,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla1_", 2, ".png"))
+knitr::include_graphics(paste0("tabla1_", 2, ".png"),dpi=200)
 cat("\n\n")
 ```
 
 
 ```{r tabla1_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla1_", 3, ".png"))
+knitr::include_graphics(paste0("tabla1_", 3, ".png"),dpi=200)
 ```
 
 
@@ -566,15 +566,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(100),
-    varprod_plot ~  px(28),
-    varventas_plot ~  px(28),
-    varpersonas_plot ~  px(28),
-    DOMINIO_39 ~ px(20),
-    varprod ~ px(38),
-    varventas ~ px(35),
-    varpersonas ~ px(35),
-    everything() ~ px(42)
+    DESCRIPCIONDOMINIOEMMET39 ~ pct(13),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    DOMINIO_39 ~ pct(5),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -585,14 +585,14 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla2_",i,".png"))
 }
 
 
-knitr::include_graphics(paste0("tabla2_", 1, ".png"))
+knitr::include_graphics(paste0("tabla2_", 1, ".png"),dpi=200)
 cat("\n\n")
 
 ```
@@ -600,13 +600,13 @@ cat("\n\n")
 
 
 ```{r tabla2_2,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla2_", 2, ".png"))
+knitr::include_graphics(paste0("tabla2_", 2, ".png"),dpi=200)
 cat("\n\n")
 ```
 
 
 ```{r tabla2_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla2_", 3, ".png"))
+knitr::include_graphics(paste0("tabla2_", 3, ".png"),dpi=200)
 ```
 
 
@@ -771,15 +771,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ px(100),
-    varprod_plot ~  px(28),
-    varventas_plot ~  px(28),
-    varpersonas_plot ~  px(28),
-    DOMINIO_39 ~ px(20),
-    varprod ~ px(38),
-    varventas ~ px(35),
-    varpersonas ~ px(35),
-    everything() ~ px(42)
+    DESCRIPCIONDOMINIOEMMET39 ~ pct(13),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    DOMINIO_39 ~ pct(5),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -790,27 +790,27 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla3_",i,".png"))
 }
 
 
-knitr::include_graphics(paste0("tabla3_", 1, ".png"))
+knitr::include_graphics(paste0("tabla3_", 1, ".png"),dpi=200)
 cat("\n\n")
 
 ```
 
 
 ```{r tabla3_2,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla3_", 2, ".png"))
+knitr::include_graphics(paste0("tabla3_", 2, ".png"),dpi=200)
 cat("\n\n")
 ```
 
 
 ```{r tabla3_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla3_", 3, ".png"))
+knitr::include_graphics(paste0("tabla3_", 3, ".png"),dpi=200)
 ```
 
 
@@ -907,14 +907,14 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    INCLUSION_NOMBRE_DEPTO ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      INCLUSION_NOMBRE_DEPTO=md("**Departamento**"),
                      varprod =md("**Variación<br>Producción**"),
@@ -924,12 +924,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla4_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla4_", 1, ".png"))
+knitr::include_graphics(paste0("tabla4_", 1, ".png"),dpi=200)
 
 ```
 
@@ -1026,14 +1026,14 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(100),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    AREA_METROPOLITANA ~ pct(10),
+    varprod_plot ~  pct(5),
+    varventas_plot ~  pct(5),
+    varpersonas_plot ~  pct(5),
+    varprod ~ pct(7),
+    varventas ~ pct(7),
+    varpersonas ~ pct(7),
+    everything() ~ pct(8)
     ) %>% cols_label(varprod_plot ="",
                      AREA_METROPOLITANA=md("**Area<br>Metropolitana**"),
                      varprod =md("**Variación<br>Producción**"),
@@ -1043,12 +1043,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
-gtsave(tabla_paginada[[i]],paste0("tabla5_",i,".png"))
+gtsave(tabla_paginada[[i]],paste0("tabla5_",i,".png"),)
 }
-knitr::include_graphics(paste0("tabla5_", 1, ".png"))
+knitr::include_graphics(paste0("tabla5_", 1, ".png"),dpi=150)
 
 ```
 
@@ -1142,14 +1142,14 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    CIUDAD ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      CIUDAD=md("**Ciudad**"),
                      varprod =md("**Variación<br>Producción**"),
@@ -1159,12 +1159,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla6_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla6_", 1, ".png"))
+knitr::include_graphics(paste0("tabla6_", 1, ".png"),dpi=200)
 
 ```
 
@@ -1262,16 +1262,16 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(40),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+        INCLUSION_NOMBRE_DEPTO ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
-                     INCLUSION_NOMBRE_DEPTO =md("**Departamento**"),
+                     INCLUSION_NOMBRE_DEPTO=md("**Departamento**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
                      varventas_plot ="",
@@ -1279,12 +1279,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla7_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla7_", 1, ".png"))
+knitr::include_graphics(paste0("tabla7_", 1, ".png"),dpi=200)
 
 ```
 **Fuente:**: DANE-EMMET\
@@ -1379,16 +1379,16 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(100),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    AREA_METROPOLITANA ~ pct(10),
+    varprod_plot ~  pct(5),
+    varventas_plot ~  pct(5),
+    varpersonas_plot ~  pct(5),
+    varprod ~ pct(7),
+    varventas ~ pct(7),
+    varpersonas ~ pct(7),
+    everything() ~ pct(8)
     ) %>% cols_label(varprod_plot ="",
-                     AREA_METROPOLITANA =md("**Area<br>Metropolitana**"),
+                     AREA_METROPOLITANA=md("**Area<br>Metropolitana**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
                      varventas_plot ="",
@@ -1396,12 +1396,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 
 gtsave(tabla_paginada[[i]],paste0("tabla8_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla8_", 1, ".png"))
+knitr::include_graphics(paste0("tabla8_", 1, ".png"),dpi=200)
 
 ```
 
@@ -1497,16 +1497,16 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    CIUDAD ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
-                     CIUDAD =md("**Ciudad**"),
+                     CIUDAD=md("**Ciudad**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
                      varventas_plot ="",
@@ -1514,11 +1514,10 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
-gtsave(tabla_paginada[[i]],paste0("tabla9_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla9_", 1, ".png"))
+knitr::include_graphics(paste0("tabla9_", 1, ".png"),dpi=200)
 
 ```
 
@@ -1615,16 +1614,16 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+        INCLUSION_NOMBRE_DEPTO ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
-                     INCLUSION_NOMBRE_DEPTO =md("**Departamento**"),
+                     INCLUSION_NOMBRE_DEPTO=md("**Departamento**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
                      varventas_plot ="",
@@ -1632,11 +1631,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
 gtsave(tabla_paginada[[i]],paste0("tabla10_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla10_", 1, ".png"))
+knitr::include_graphics(paste0("tabla10_", 1, ".png"),dpi=200)
 
 ```
 
@@ -1734,16 +1734,16 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(100),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    AREA_METROPOLITANA ~ pct(10),
+    varprod_plot ~  pct(5),
+    varventas_plot ~  pct(5),
+    varpersonas_plot ~  pct(5),
+    varprod ~ pct(7),
+    varventas ~ pct(7),
+    varpersonas ~ pct(7),
+    everything() ~ pct(8)
     ) %>% cols_label(varprod_plot ="",
-                     AREA_METROPOLITANA =md("**Area<br>Metropolitana**"),
+                     AREA_METROPOLITANA=md("**Area<br>Metropolitana**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
                      varventas_plot ="",
@@ -1751,11 +1751,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
 gtsave(tabla_paginada[[i]],paste0("tabla11_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla11_", 1, ".png"))
+knitr::include_graphics(paste0("tabla11_", 1, ".png"),dpi=200)
 
 ```
 
@@ -1851,16 +1852,16 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    CIUDAD ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
-                     CIUDAD =md("**Ciudad**"),
+                     CIUDAD=md("**Ciudad**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
                      varventas_plot ="",
@@ -1868,11 +1869,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
 gtsave(tabla_paginada[[i]],paste0("tabla12_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla12_", 1, ".png"))
+knitr::include_graphics(paste0("tabla12_", 1, ".png"),dpi=200)
 
 ```
 
@@ -2017,15 +2019,15 @@ for (i in 1:num_pages) {
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-   DESCRIPCIONDOMINIOEMMET39 ~ px(100),
-    varprod_plot ~  px(28),
-    varventas_plot ~  px(28),
-    varpersonas_plot ~  px(28),
-    DOMINIO_39 ~ px(20),
-    varprod ~ px(38),
-    varventas ~ px(35),
-    varpersonas ~ px(35),
-    everything() ~ px(42)
+    DESCRIPCIONDOMINIOEMMET39 ~ pct(13),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    DOMINIO_39 ~ pct(5),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
@@ -2036,14 +2038,15 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7,table.width = pct(65),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
 
 gtsave(tabla_paginada[[i]],paste0("tabla13_",i,".png"))
 }
 
 
-knitr::include_graphics(paste0("tabla13_", 1, ".png"))
+knitr::include_graphics(paste0("tabla13_", 1, ".png"),dpi=200)
 cat("\n\n")
 
 ```
@@ -2051,13 +2054,13 @@ cat("\n\n")
 
 
 ```{r tabla13_2,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla13_", 2, ".png"))
+knitr::include_graphics(paste0("tabla13_", 2, ".png"),dpi=200)
 cat("\n\n")
 ```
 
 
 ```{r tabla13_3,echo=FALSE,fig.align='center'}
-knitr::include_graphics(paste0("tabla13_", 3, ".png"))
+knitr::include_graphics(paste0("tabla13_", 3, ".png"),dpi=200)
 ```
 
 
@@ -2151,14 +2154,14 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    INCLUSION_NOMBRE_DEPTO ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+        INCLUSION_NOMBRE_DEPTO ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      INCLUSION_NOMBRE_DEPTO=md("**Departamento**"),
                      varprod =md("**Variación<br>Producción**"),
@@ -2168,11 +2171,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
 gtsave(tabla_paginada[[i]],paste0("tabla14_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla14_", 1, ".png"))
+knitr::include_graphics(paste0("tabla14_", 1, ".png"),dpi=200)
 
 ```
 
@@ -2266,14 +2270,14 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    AREA_METROPOLITANA ~ px(100),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    AREA_METROPOLITANA ~ pct(10),
+    varprod_plot ~  pct(5),
+    varventas_plot ~  pct(5),
+    varpersonas_plot ~  pct(5),
+    varprod ~ pct(7),
+    varventas ~ pct(7),
+    varpersonas ~ pct(7),
+    everything() ~ pct(8)
     ) %>% cols_label(varprod_plot ="",
                      AREA_METROPOLITANA=md("**Area<br>Metropolitana**"),
                      varprod =md("**Variación<br>Producción**"),
@@ -2283,11 +2287,12 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
+
 gtsave(tabla_paginada[[i]],paste0("tabla15_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla15_", 1, ".png"))
+knitr::include_graphics(paste0("tabla15_", 1, ".png"),dpi=200)
 
 ```
 
@@ -2382,14 +2387,14 @@ for (i in 1:num_pages) {
 
 
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    CIUDAD ~ px(80),
-    varprod_plot ~  px(30),
-    varventas_plot ~  px(30),
-    varpersonas_plot ~  px(30),
-    varprod ~ px(43),
-    varventas ~ px(40),
-    varpersonas ~ px(40),
-    everything() ~ px(50)
+    CIUDAD ~ pct(12),
+    varprod_plot ~  pct(6),
+    varventas_plot ~  pct(6),
+    varpersonas_plot ~  pct(6),
+    varprod ~ pct(9),
+    varventas ~ pct(9),
+    varpersonas ~ pct(9),
+    everything() ~ pct(10)
     ) %>% cols_label(varprod_plot ="",
                      CIUDAD=md("**Ciudad**"),
                      varprod =md("**Variación<br>Producción**"),
@@ -2399,11 +2404,11 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      ventas =md("**Contribución<br>Ventas**"),
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
-                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
+                     personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=8,table.width = pct(50),table.layout="fixed") %>% tab_style(style=cell_text(color="white"),
                                                                                                                     locations=cells_body(rows=varprod==0.001))
 gtsave(tabla_paginada[[i]],paste0("tabla16_",i,".png"))
 }
-knitr::include_graphics(paste0("tabla16_", 1, ".png"))
+knitr::include_graphics(paste0("tabla16_", 1, ".png"),dpi=200)
 
 ```
 

@@ -44,7 +44,7 @@ header-includes:
 
 
 ![](img/header.png)
-
+`r paste0(params$month_b,",", params$year)`
 
 
 ```{r setup, include=FALSE}
@@ -176,7 +176,7 @@ tab_acople <- function(base){
 \
 
 
-```{r variacion,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.ext='pdf'}
+```{r variacion,echo=F,eval=TRUE,warning=FALSE,message=F,fig.align='center',fig.ext='pdf',fig.height=3.2,fig.width=4}
 #1
 variacion <- data %>% 
   group_by(ANIO,MES)
