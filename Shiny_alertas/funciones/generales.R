@@ -1,4 +1,4 @@
-
+generales=function(directorio,mes,anio){
 # Librerias ---------------------------------------------------------------
 
 require(plotly)
@@ -38,4 +38,5 @@ tematica<-fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",m
 colnames(tematica) <- colnames_format(tematica)
 tematica<-  tematica%>% mutate_at(vars(contains("OBSE")),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 colnames(base_panel)<-colnames_format(base_panel)
-
+}
+generales(directorio,anio,mes)

@@ -35,8 +35,6 @@ f9_shiny <- function(directorio, mes, anio) {
   library(lubridate)
   library(shiny)
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
-  mes=mes
-  anio=anio
 
 
   url_boletin <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/Shiny_alertas.zip"
