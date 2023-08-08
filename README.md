@@ -9,7 +9,7 @@
 Este paquete tiene como objetivo optimizar los tiempos del proceso que
 se realiza para la encuesta mensual manufacturera con enfoque
 territorial (EMMET). La cual sigue el siguiente flujo: ![Flujo del
-proceso](imagenes/flujo.jfif)
+proceso](imagenes/flujo.jpeg)
 
 ## Instalación
 
@@ -89,13 +89,27 @@ variar.
 Esta libreria se puede usar de 2 maneras
 
 1.  Funciones individuales: la librera consta de las siguientes
-    funciones individuales -inicial(directorio)
-    -integracion(directorio,mes,anio)
-    -estandarizacion(directorio,mes,anio)
-    -identificacion_outliers(directorio,mes,anio)
-    -imputacion_outliers(directorio,mes,anio)
-    -anacional(directorio,mes,anio) -aterritorial(directorio,mes,anio)
-    -boletin(directorio,mes,anio)
+    funciones individuales
+
+-f0_inicial(directorio)
+
+-f1_integracion(directorio,mes,anio)
+
+-f2_estandarizacion(directorio,mes,anio)
+
+-f3_identificacion_outliers(directorio,mes,anio)
+
+-f4_imputacion_outliers(directorio,mes,anio)
+
+-f5_tematica(directorio,mes,anio)
+
+-f6_anacional(directorio,mes,anio)
+
+-f7_aterritorial(directorio,mes,anio)
+
+-f8_boletin(directorio,mes,anio,tipo=“pdf”)
+
+-f9_shiny(directorio,mes,anio)
 
 Las cuales se puden correr una a una para asi poder revisar los archivos
 de salida de cada función.
@@ -103,13 +117,17 @@ de salida de cada función.
 2.  Funciones macro: la libreria cuenta con dos macro funciones
 
 -macro1(directorio,mes,anio): la cual corre las funciones
-inicial,integracion,estandarizacion e identificacion_outliers, para que
-asi el usuario pueda verificar y modificar las alertas, y luego
-continuar con el proceso.
+f0_inicial,f1_integracion,f2_estandarizacion e
+f3_identificacion_alertas, para que asi el usuario pueda verificar y
+modificar las alertas, y luego continuar con el proceso.
+
+-f9_shiny(directorio,mes,anio): la cual sirve para poder visualizar las
+alertas hasta el momento.
 
 -macro2(directorio,mes,anio): una vez modificado el archivo de alertas
 podemos continuar con el proceso, con esta macro funcion se corren las
-funciones imputacion_outliers, anacional,aterritorial y boletin.
+funciones f4_imputacion,f5_tematica f6_anacional,f7_aterritorial y
+f8_boletin.
 
 ## Ejemplos
 
@@ -121,21 +139,25 @@ funciones imputacion_outliers, anacional,aterritorial y boletin.
 #cargar la libreria
 library(DANE.EMMET)
 #correr funcion inicial
-inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
+f0_inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
 # correr funcion integracion
-integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f1_integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion estandarizacion
-estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f2_estandarizacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion identificacion_outliers
-identificacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f3_identificacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion imputacion_outliers
-imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f4_imputacion_outliers(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+# correr funcion tematica
+f5_tematica(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion anacional
-anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f6_anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion aterritorial
-aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f7_aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion boletin
-boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f8_boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,tipo="word")
+#correr funcion shiny
+f9_shiny(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 ```
 
 Se puede revisar el archivo de salida despues de cada función
@@ -149,6 +171,9 @@ library(DANE.EMMET)
 macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 #verificar y/o modificar el archivo de alertas para continuar con el proceso
 
+#verificar si se requiere la aplicación shiny
+f9_shiny(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+
 #correr funcion macro2
-macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,fecha="24/12/2022",guardar="Documents/DANE/Procesos DIMPE /PilotoEMMET/results/boletin")
+macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,tipo="pdf")
 ```

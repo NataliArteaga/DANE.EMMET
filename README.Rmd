@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 Este paquete tiene como objetivo optimizar los tiempos del proceso que se realiza para la encuesta mensual manufacturera con enfoque territorial (EMMET). La cual sigue el siguiente flujo:
-![Flujo del proceso](imagenes/flujo.jfif)
+![Flujo del proceso](imagenes/flujo.jpeg)
 
 ## Instalación
 
@@ -89,15 +89,19 @@ Esta libreria se puede usar de 2 maneras
 
 -f7_aterritorial(directorio,mes,anio)
 
--f8_boletin(directorio,mes,anio)
+-f8_boletin(directorio,mes,anio,tipo="pdf")
+
+-f9_shiny(directorio,mes,anio)
 
 Las cuales se puden correr una a una para asi poder revisar los archivos de salida de cada función.
 
 2. Funciones macro: la libreria cuenta con dos macro funciones
 
--macro1(directorio,mes,anio): la cual corre las funciones inicial,integracion,estandarizacion e identificacion_outliers, para que asi el usuario pueda verificar y modificar las alertas, y luego continuar con el proceso.
+-macro1(directorio,mes,anio): la cual corre las funciones f0_inicial,f1_integracion,f2_estandarizacion e f3_identificacion_alertas, para que asi el usuario pueda verificar y modificar las alertas, y luego continuar con el proceso.
 
--macro2(directorio,mes,anio): una vez modificado el archivo de alertas podemos continuar con el proceso, con esta macro funcion se corren las funciones imputacion_outliers, anacional,aterritorial y boletin.
+-f9_shiny(directorio,mes,anio): la cual sirve para poder visualizar las alertas hasta el momento.
+
+-macro2(directorio,mes,anio): una vez modificado el archivo de alertas podemos continuar con el proceso, con esta macro funcion se corren las funciones f4_imputacion,f5_tematica f6_anacional,f7_aterritorial y f8_boletin.
 
 ## Ejemplos
 
@@ -123,7 +127,10 @@ f6_anacional(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio
 # correr funcion aterritorial
 f7_aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 # correr funcion boletin
-f8_boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+f8_boletin(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,tipo="word")
+#correr funcion shiny
+f9_shiny(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
+
 
 ```
 
@@ -137,6 +144,9 @@ library(DANE.EMMET)
 #correr funcion macro1
 macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 #verificar y/o modificar el archivo de alertas para continuar con el proceso
+
+#verificar si se requiere la aplicación shiny
+f9_shiny(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022)
 
 #correr funcion macro2
 macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",mes=11,anio=2022,tipo="pdf")
