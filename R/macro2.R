@@ -7,6 +7,7 @@
 #' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#' @param tipo Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "pdf", ej: "html
 #'
 #' @details  Esta funcion tiene como objetivo correr desde la función de imputacion hasta la función
 #' que crea el archivo de boletin, con el fin de que el usuario pueda continuar con el proceso

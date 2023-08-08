@@ -28,7 +28,12 @@
 #'
 #' @details
 #'  En los anexos territoriales se calculan las contribuciones y variaciones
-#'  en tres diferentes periodos. A continuación se muestran los  periodos
+#'  en tres diferentes periodos.
+#'
+#'  Es importante resaltar que el equipo en el que se ejecutará la función debe
+#'  tener intalado Java. Ver \href{https://github.com/NataliArteaga/DANE.EMMET#readme}{README}
+#'
+#'  A continuación se muestran los  periodos
 #'  y las formulas para realizar el calculo de estos:
 #'
 #'  Contribucion anual:

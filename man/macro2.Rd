@@ -12,6 +12,8 @@ macro2(directorio, mes, anio, tipo = "pdf")
 \item{mes}{Definir el mes a ejecutar, ej: 11}
 
 \item{anio}{Definir el año a ejecutar, ej: 2022}
+
+\item{tipo}{Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "pdf", ej: "html}
 }
 \description{
 Con esta función realizaremos la segunda parte del proceso, en donde se correran las 5

@@ -27,6 +27,18 @@ Está función crea el boletín, un documento exportado en pdf o word, según se
  las tres variables principales que permiten hacer un análisis cruzado
  entre estas.
 }
+\details{
+Esta función requiere del uso de Google Chrome, pues para la creación de
+las tablas de resumen en las que se muestra la contribución y
+variación desagregada por total nacional, departamentos, áreas
+metropolitanas y ciudades, se acuede a código html que compila gracias a
+Google Chrome.
+Las diferentes gráficas o tablas que se muestran, se realizan con las formulas
+ya especificadas en ls detalles de las funciones de anexos.
+Si requiere más información acerca de las fórmula, recurra a los detalles
+de la función de anexos.
+}
 \examples{
 f8_boletin(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022,tipo="word")
+
 }
