@@ -1,3 +1,4 @@
+
 library(shiny)
 library(shinyauthr)
 library(shinydashboard)
@@ -21,9 +22,6 @@ library(TSstudio)
 library(tseries)
 library(forecast)
 
-print(directorio)
-print(mes)
-print(anio)
 
 source('funciones/generales.R')
 
