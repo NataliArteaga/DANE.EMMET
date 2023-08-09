@@ -1,6 +1,7 @@
 
 library(shiny)
 library(shinyauthr)
+library(flexdashboard)
 library(shinydashboard)
 library(shinyjs)
 library(DT)
@@ -211,10 +212,10 @@ server <- function(input, output, session) {
                     column(width=12,
                            #infoBox(tags$span("Año", style="text-transform: none;"),textOutput("anio_imp"),icon=tags$i(class = "fas fa-thumbs-up", style="font-size: 12px; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
                            #infoBox(tags$span("Id_numord", style="text-transform: none;"),textOutput("id_numord_imp"),icon=tags$i(class = "fingerprint", style="font-size: 12px; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
-                           infoBox(tags$span("Dominio EMMET", style="text-transform: none;"),textOutput("dominio_imp"),icon=tags$i(class = "id-card", style="font-size: 12px; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
-                           infoBox(tags$span("Departamento", style="text-transform: none;"),textOutput("departamento_imp"),icon=tags$i(class = "fas map-pin", style="font-size: 12px; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
-                           infoBox(tags$span("Municipio", style="text-transform: none;"),textOutput("municipio_imp"),icon=tags$i(class = "fas map-pin", style="font-size: 12px; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
-                           infoBox(tags$span("Contribucion", style="text-transform: none;"),textOutput("contribucion_imp"),icon=tags$i(class = "fas map-pin", style="font-size: 12px; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
+                           infoBox(tags$span("Dominio EMMET", style="text-transform: none;"),textOutput("dominio_imp"),icon=icon("id-card", style="font-size: 80%; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
+                           infoBox(tags$span("Departamento", style="text-transform: none;"),textOutput("departamento_imp"),icon=icon("map-pin", style="font-size: 80%; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
+                           infoBox(tags$span("Municipio", style="text-transform: none;"),textOutput("municipio_imp"),icon=icon("map-pin", style="font-size: 80%; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
+                           infoBox(tags$span("Contribucion", style="text-transform: none;"),textOutput("contribucion_imp"),icon=icon("map-pin", style="font-size: 80%; color: white"),color="yellow",value=tags$p(style = "font-size: 10px;")),
                     )
                   ),
                   #dataTableOutput("tabla"),
