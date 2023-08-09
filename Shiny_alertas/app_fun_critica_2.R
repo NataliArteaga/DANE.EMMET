@@ -24,6 +24,7 @@ library(forecast)
 print(directorio)
 print(mes)
 print(anio)
+
 source('funciones/generales.R')
 
 
