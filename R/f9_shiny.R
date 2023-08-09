@@ -3,19 +3,25 @@
 #' @description Está función abre el navegador para abrir la aplicación de alertas, en la cual se puede loguear
 #' y se encontraran 4 ventanas
 #'
-#' 1. identificación de alertas: la cual se puede filtrar por ID_NUMORD, mes y año; se encontrara una tabla con
-#' los valores para las variables de capitulo 2 y 3 para los filtros aplicados, grafico de la serie para la variable
+#' 1. identificación de alertas: la cual se puede filtrar por ID_NUMORD, mes y año; se encontrará una tabla con
+#' los valores para las variables de capítulo 2 y 3 para los filtros aplicados, grafico de la serie para la variable
 #' que se seleccione y finalmente los datos para el establecimiento en esa variable desde 2018 hasta la fecha.
 #'
 #' 2. Consolidado de alertas: la cual se puede filtrar por capitulo a la que pertenece la variable y el tipo de
-#' imputación (imputación deuda o imputación caso especial) en el año y mes de interes, tiene el resgistro de todos
-#' los establecimientos y variables en los que se identifico un posible caso de imputación.
+#' imputación (imputación deuda o imputación caso especial) en el año y mes de interés, tiene el registro de todos
+#' los establecimientos y variables en los que se identificó un posible caso de imputación.
 #'
-#' 3. Agregado variables: la cual se puede filtrar por año, mes, actividad economicama, departamento, área metropolitana
-#' y ciudad
+#' 3. Agregado variables: la cual se puede filtrar por año, mes, actividad económica, departamento, área metropolitana
+#' y ciudad, se observan 2 gráficos, el primero un gráfico de barras en el cual se muestra la variación de la contribución según los filtros
+#' y en el segundo grafico se observa la serie de tiempo desde 2019, estos gráficos se pueden observar por mes-año anterior, año corrido, año acumulado y
+#' precovid
 #'
-#' 4. Comparación: la cual se puede filtrar por comparación (CIUU,DPTO,ciudad y área metropolitana) , año, mes, actividad economica
-#' departamento, área metropolitana y ciudad...
+#' 4. Comparación: la cual se puede filtrar por comparación entre CIUU,DPTO,ciudad y área metropolitana, Adicionalmente se puede filtrar por año, mes, actividad económica
+#' departamento, área metropolitana y ciudad, en la cual se observa un gráfico de barras para producción, para ventas
+#' y para personal, donde la elongación de la barra se refiere a la variación y el valor es referente a la contribución, nuevamente estos
+#' gráficos se pueden observar por mes-año anterior, año corrido, año acumulado y
+#' precovid
+
 #'
 #' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
