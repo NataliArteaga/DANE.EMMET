@@ -20,11 +20,12 @@ library(lubridate)
 library(TSstudio)
 library(tseries)
 library(forecast)
-source('funciones/generales.R')
 
 print(directorio)
 print(mes)
 print(anio)
+source('funciones/generales.R')
+
 
 source('funciones/alertas.R')
 source('funciones/fun_tematica.R')
