@@ -273,7 +273,7 @@ f7_aterritorial <- function(directorio,
   # Cargar bases y variables ------------------------------------------------
 
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
-  data<-read.csv(paste0(directorio,"/results/S6_integracion/EMMET Base Temática definitiva ",meses[mes],anio,".csv"), sep = ",")
+  data<-fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"))
 
 
   # Archivos de entrada y salida --------------------------------------------
