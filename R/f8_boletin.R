@@ -46,8 +46,13 @@
 
 f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   library(rmarkdown)
+  library(installr)
   library(readxl)
   library(lubridate)
+  if (!rmarkdown::pandoc_available()) {
+    # Si no está configurado correctamente, instalar pandoc
+    installr::install.pandoc()
+  }
 
   if (!tinytex:::is_tinytex()) {
     # Si no está configurado correctamente, instalar TinyTeX
