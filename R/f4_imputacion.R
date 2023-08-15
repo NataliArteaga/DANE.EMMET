@@ -82,7 +82,7 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
   #Dejar la base sin los datos del mes actual
   datos <- filter(datos, !(ANIO == anio & MES == mes))
   #cargar la base de alertas
-  if(avance=100){
+  if(avance==100){
     wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"))
 
     }else{

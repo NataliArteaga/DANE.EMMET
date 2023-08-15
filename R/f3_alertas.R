@@ -251,7 +251,7 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
 
 
   # Exportar data frame con la identificación de posibles casos de imputación -------------------------------
-if(avance=100){
+if(avance==100){
   write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"),row.names=F)
 }else{
   write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"),row.names=F)
