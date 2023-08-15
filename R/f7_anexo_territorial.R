@@ -398,6 +398,27 @@ f7_aterritorial <- function(directorio,
 
     return(tabla)
   }
+#funcion mutate
+  tabla_sum_mut <- function(periodo,data){
+    if(periodo==13 | periodo==14 | periodo==15){
+      tabla1<-data %>%
+        mutate(produccionNom=round((produccionNom_mensual/produccionNom_total)*100,1),
+               produccion=round((produccion_mensual/produccion_total)*100,1),
+               ventasnom=round((ventasnom_mensual/ventasnom_total)*100,1),
+               ventas=round((ventas_mensual/ventas_total)*100,1),
+               personal=round((personal_mensual/personal_total)*100,1))
+
+    }else{
+      #1,2,3,4,5,6,7,8,9,10,11,12,16,17,18,19
+      tabla1 <- data %>%
+        summarise(produccionNom=sum(PRODUCCIONNOMPOND),
+                  produccion=sum(PRODUCCIONREALPOND),
+                  ventasNom = sum(VENTASNOMINPOND),
+                  ventas = sum(VENTASREALESPOND),
+                  personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
+    }
+    return(tabla1)
+  }
 
   # 1. Var y Cont Anual Dpto ------------------------------------------------
 

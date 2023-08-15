@@ -1247,7 +1247,7 @@ f6_anacional <- function(directorio,
 
 
   # 8. Desestacionalizacion -------------------------------------------------
-
+  year=anio
   CALENDAR.FN <- function(From_year,To_year){
     festivos<-read_xlsx(paste0(directorio,"/data/festivos.xlsx"))
     days <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
