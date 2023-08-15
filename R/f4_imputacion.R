@@ -46,7 +46,7 @@
 
 
 
-f4_imputacion <- function(directorio,mes,anio) {
+f4_imputacion <- function(directorio,mes,anio,avance=100) {
 
 
   # librerias ---------------------------------------------------------------
@@ -82,7 +82,13 @@ f4_imputacion <- function(directorio,mes,anio) {
   #Dejar la base sin los datos del mes actual
   datos <- filter(datos, !(ANIO == anio & MES == mes))
   #cargar la base de alertas
-  wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"))
+  if(avance=100){
+    wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"))
+
+    }else{
+ wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"))
+
+      }
   wowimp=as.data.frame(wowimp)
   # Convertir los datos que son casos de imputación en NA
   for (i in variablesinte) {

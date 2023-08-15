@@ -23,14 +23,14 @@
 #'                        mes=11,anio=2022)
 
 
-macro2<-function(directorio,mes,anio,tipo="pdf"){
+macro2<-function(directorio,mes,anio,avance=100,tipo="pdf"){
   respuesta <- readline(paste("Ingrese '1' si ya valido el archivo de alertas y desea continuar
                               con el proceso, otro valor si desea cancelar"))
   if (respuesta != 1) {
     cat("Operación cancelada. Valide el archivo de alertas y luego llame de nuevo la función .\n")
     return(invisible())
   }else{
-  f4_imputacion(directorio,mes,anio)
+  f4_imputacion(directorio,mes,anio,avance)
   print("Se ejecuto la funcion imputacion")
   f5_tematica(directorio,mes,anio)
   print("Se ejecuto la funcion construccion base tematica")

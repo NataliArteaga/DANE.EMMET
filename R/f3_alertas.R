@@ -101,7 +101,7 @@
 #' @examples f3_identificacion_alertas(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
-f3_identificacion_alertas <- function(directorio,mes,anio) {
+f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   ### función detección de outliers
 
   archivo=paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv")
@@ -251,8 +251,10 @@ f3_identificacion_alertas <- function(directorio,mes,anio) {
 
 
   # Exportar data frame con la identificación de posibles casos de imputación -------------------------------
-
-
+if(avance=100){
   write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"),row.names=F)
+}else{
+  write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"),row.names=F)
+}
 }
 
