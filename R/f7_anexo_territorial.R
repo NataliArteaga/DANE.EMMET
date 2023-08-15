@@ -273,13 +273,13 @@ f7_aterritorial <- function(directorio,
   # Cargar bases y variables ------------------------------------------------
 
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
-  data<-read.csv(paste0(directorio,"/results/S6_integracion/EMMET Base Temática definitiva ",meses[month],anio,".csv"), sep = ",")
+  data<-read.csv(paste0(directorio,"/results/S6_integracion/EMMET Base Temática definitiva ",meses[mes],anio,".csv"), sep = ",")
 
 
   # Archivos de entrada y salida --------------------------------------------
 
   formato <- paste0(directorio,"/data/anexos_territorial_emmet_",meses[mes],"_formato.xlsx")
-  Salida<-paste0(directorio,"/results/S6_anexos/anexos_territorial_emmet_",meses[mes],"_formato",mes,".xlsx")
+  Salida<-paste0(directorio,"/results/S6_anexos/anexos_territorial_emmet_",meses[mes],".xlsx")
 
 
   # Limpieza de nombres de variable -----------------------------------------

@@ -389,31 +389,31 @@ f6_anacional <- function(directorio,
   # data frame, según el periodo que se esté manejando
   tabla_paste_an <- function(periodo,base){
     if(periodo==11){
-      base[paste0("varprodnom_",year)] <- (base[paste0("produccionNom_",year)]-base[paste0("produccionNom_",2019)])/base[paste0("produccionNom_",2019)]
-      base[paste0("varprod_",year)] <- (base[paste0("produccion_",year)]-base[paste0("produccion_",2019)])/base[paste0("produccion_",2019)]
-      base[paste0("varventasnom_",year)]<- (base[paste0("ventasNom_",year)]-base[paste0("ventasNom_",2019)])/base[paste0("ventasNom_",2019)]
-      base[paste0("varventas_",year)]<- (base[paste0("ventas_",year)]-base[paste0("ventas_",2019)])/base[paste0("ventas_",2019)]
-      base[paste0("varpersonas_",year)] <- (base[paste0("personas_",year)]-base[paste0("personas_",2019)])/base[paste0("personas_",2019)]
+      base[paste0("varprodnom_",anio)] <- (base[paste0("produccionNom_",anio)]-base[paste0("produccionNom_",2019)])/base[paste0("produccionNom_",2019)]
+      base[paste0("varprod_",anio)] <- (base[paste0("produccion_",anio)]-base[paste0("produccion_",2019)])/base[paste0("produccion_",2019)]
+      base[paste0("varventasnom_",anio)]<- (base[paste0("ventasNom_",anio)]-base[paste0("ventasNom_",2019)])/base[paste0("ventasNom_",2019)]
+      base[paste0("varventas_",anio)]<- (base[paste0("ventas_",anio)]-base[paste0("ventas_",2019)])/base[paste0("ventas_",2019)]
+      base[paste0("varpersonas_",anio)] <- (base[paste0("personas_",anio)]-base[paste0("personas_",2019)])/base[paste0("personas_",2019)]
     }else if(periodo==2 | periodo==4 | periodo==6){
-      base[paste0("varprod_",year)] <- (base[paste0("produccion_",year)]-base[paste0("produccion_",year-1)])/base[paste0("produccion_",year-1)]
-      base[paste0("varventas_",year)]<- (base[paste0("ventas_",year)]-base[paste0("ventas_",year-1)])/base[paste0("ventas_",year-1)]
-      base[paste0("varpersonas_",year)] <- (base[paste0("personas_",year)]-base[paste0("personas_",year-1)])/base[paste0("personas_",year-1)]
-      base[paste0("varempleo_",year)] <- (base[paste0("empleo_",year)]-base[paste0("empleo_",year-1)])/base[paste0("empleo_",year-1)]
-      base[paste0("varemptem_",year)] <- (base[paste0("emptem_",year)]-base[paste0("emptem_",year-1)])/base[paste0("emptem_",year-1)]
-      base[paste0("varempleados_",year)] <- (base[paste0("empleados_",year)]-base[paste0("empleados_",year-1)])/base[paste0("empleados_",year-1)]
-      base[paste0("varoperarios_",year)] <- (base[paste0("operarios_",year)]-base[paste0("operarios_",year-1)])/base[paste0("operarios_",year-1)]
-      base[paste0("varsueldos_",year)] <- (base[paste0("sueldos_",year)]-base[paste0("sueldos_",year-1)])/base[paste0("sueldos_",year-1)]
-      base[paste0("varsuelemplper_",year)] <- (base[paste0("suelemplper_",year)]-base[paste0("suelemplper_",year-1)])/base[paste0("suelemplper_",year-1)]
-      base[paste0("varsuelempltem_",year)] <- (base[paste0("suelempltem_",year)]-base[paste0("suelempltem_",year-1)])/base[paste0("suelempltem_",year-1)]
-      base[paste0("varsueltotemp_",year)] <- (base[paste0("sueltotemp_",year)]-base[paste0("sueltotemp_",year-1)])/base[paste0("sueltotemp_",year-1)]
-      base[paste0("varsueltotope_",year)] <- (base[paste0("sueltotope_",year)]-base[paste0("sueltotope_",year-1)])/base[paste0("sueltotope_",year-1)]
-      base[paste0("varhoras_",year)] <- (base[paste0("horas_",year)]-base[paste0("horas_",year-1)])/base[paste0("horas_",year-1)]
+      base[paste0("varprod_",anio)] <- (base[paste0("produccion_",anio)]-base[paste0("produccion_",anio-1)])/base[paste0("produccion_",anio-1)]
+      base[paste0("varventas_",anio)]<- (base[paste0("ventas_",anio)]-base[paste0("ventas_",anio-1)])/base[paste0("ventas_",anio-1)]
+      base[paste0("varpersonas_",anio)] <- (base[paste0("personas_",anio)]-base[paste0("personas_",anio-1)])/base[paste0("personas_",anio-1)]
+      base[paste0("varempleo_",anio)] <- (base[paste0("empleo_",anio)]-base[paste0("empleo_",anio-1)])/base[paste0("empleo_",anio-1)]
+      base[paste0("varemptem_",anio)] <- (base[paste0("emptem_",anio)]-base[paste0("emptem_",anio-1)])/base[paste0("emptem_",anio-1)]
+      base[paste0("varempleados_",anio)] <- (base[paste0("empleados_",anio)]-base[paste0("empleados_",anio-1)])/base[paste0("empleados_",anio-1)]
+      base[paste0("varoperarios_",anio)] <- (base[paste0("operarios_",anio)]-base[paste0("operarios_",anio-1)])/base[paste0("operarios_",anio-1)]
+      base[paste0("varsueldos_",anio)] <- (base[paste0("sueldos_",anio)]-base[paste0("sueldos_",anio-1)])/base[paste0("sueldos_",anio-1)]
+      base[paste0("varsuelemplper_",anio)] <- (base[paste0("suelemplper_",anio)]-base[paste0("suelemplper_",anio-1)])/base[paste0("suelemplper_",anio-1)]
+      base[paste0("varsuelempltem_",anio)] <- (base[paste0("suelempltem_",anio)]-base[paste0("suelempltem_",anio-1)])/base[paste0("suelempltem_",anio-1)]
+      base[paste0("varsueltotemp_",anio)] <- (base[paste0("sueltotemp_",anio)]-base[paste0("sueltotemp_",anio-1)])/base[paste0("sueltotemp_",anio-1)]
+      base[paste0("varsueltotope_",anio)] <- (base[paste0("sueltotope_",anio)]-base[paste0("sueltotope_",anio-1)])/base[paste0("sueltotope_",anio-1)]
+      base[paste0("varhoras_",anio)] <- (base[paste0("horas_",anio)]-base[paste0("horas_",anio-1)])/base[paste0("horas_",anio-1)]
     }else{
-      base[paste0("varprodnom_",year)] <- (base[paste0("produccionNom_",year)]-base[paste0("produccionNom_",year-1)])/base[paste0("produccionNom_",year-1)]
-      base[paste0("varprod_",year)] <- (base[paste0("produccion_",year)]-base[paste0("produccion_",year-1)])/base[paste0("produccion_",year-1)]
-      base[paste0("varventasnom_",year)]<- (base[paste0("ventasNom_",year)]-base[paste0("ventasNom_",year-1)])/base[paste0("ventasNom_",year-1)]
-      base[paste0("varventas_",year)]<- (base[paste0("ventas_",year)]-base[paste0("ventas_",year-1)])/base[paste0("ventas_",year-1)]
-      base[paste0("varpersonas_",year)] <- (base[paste0("personas_",year)]-base[paste0("personas_",year-1)])/base[paste0("personas_",year-1)]
+      base[paste0("varprodnom_",anio)] <- (base[paste0("produccionNom_",anio)]-base[paste0("produccionNom_",anio-1)])/base[paste0("produccionNom_",anio-1)]
+      base[paste0("varprod_",anio)] <- (base[paste0("produccion_",anio)]-base[paste0("produccion_",anio-1)])/base[paste0("produccion_",anio-1)]
+      base[paste0("varventasnom_",anio)]<- (base[paste0("ventasNom_",anio)]-base[paste0("ventasNom_",anio-1)])/base[paste0("ventasNom_",anio-1)]
+      base[paste0("varventas_",anio)]<- (base[paste0("ventas_",anio)]-base[paste0("ventas_",anio-1)])/base[paste0("ventas_",anio-1)]
+      base[paste0("varpersonas_",anio)] <- (base[paste0("personas_",anio)]-base[paste0("personas_",anio-1)])/base[paste0("personas_",anio-1)]
     }
 
     return(base)
@@ -465,19 +465,19 @@ f6_anacional <- function(directorio,
 
   #Calculo de la contribucion total
   contribucion_total <- data %>%
-    filter(MES==mes & ANIO%in%c(year-1))
+    filter(MES==mes & ANIO%in%c(anio-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
   #Calculo de la contribucion por meses
   contribucion <- data %>%
-    filter(MES==mes & ANIO%in%c(year,year-1)) %>%
+    filter(MES==mes & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(1,contribucion)
 
   #Calculo de la variación por dominos
   tabla1 <- data %>%
-    filter(ANIO%in%c(year,year-1) & MES%in%mes) %>%
+    filter(ANIO%in%c(anio,anio-1) & MES%in%mes) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(1,tabla1)
 
@@ -508,7 +508,7 @@ f6_anacional <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 14, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 9, startColumn = 1)
 
@@ -516,7 +516,7 @@ f6_anacional <- function(directorio,
 
   #Calculo de la variación por dominos
   tabla1 <- data %>%
-    filter(ANIO%in%c(year,year-1) & MES%in%mes) %>%
+    filter(ANIO%in%c(anio,anio-1) & MES%in%mes) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(2,tabla1)
 
@@ -552,7 +552,7 @@ f6_anacional <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 15, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 9, startColumn = 1)
 
@@ -561,19 +561,19 @@ f6_anacional <- function(directorio,
 
   #Calculo de la contribucion total
   contribucion_total <- data %>%
-    filter(MES%in%c(1:mes) & ANIO%in%c(year-1))
+    filter(MES%in%c(1:mes) & ANIO%in%c(anio-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
   #Calculo de la contribucion mensual por dominio
   contribucion <- data %>%
-    filter(MES%in%c(1:mes) & ANIO%in%c(year,year-1)) %>%
+    filter(MES%in%c(1:mes) & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(3,contribucion)
 
   #Calculo de la variacion por dominio
   tabla1 <- data %>%
-    filter(ANIO%in%c(year,year-1) & MES%in%c(1:mes)) %>%
+    filter(ANIO%in%c(anio,anio-1) & MES%in%c(1:mes)) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(3,tabla1)
 
@@ -601,7 +601,7 @@ f6_anacional <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 14, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 9, startColumn = 1)
 
@@ -610,7 +610,7 @@ f6_anacional <- function(directorio,
 
   #Calculo de la variación por dominos
   tabla1 <- data %>%
-    filter(ANIO%in%c(year,year-1) & MES%in%c(1:mes)) %>%
+    filter(ANIO%in%c(anio,anio-1) & MES%in%c(1:mes)) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(4,tabla1)
 
@@ -646,7 +646,7 @@ f6_anacional <- function(directorio,
                startRow = 15, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[1],"-",meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[1],"-",meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 9, startColumn = 1)
 
@@ -657,19 +657,19 @@ f6_anacional <- function(directorio,
 
   #Calculo de la contribucion total
   contribucion_total <- data %>%
-    filter(ANIO2%in%(year-1))
+    filter(ANIO2%in%(anio-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
   #Calculo de la contribucion mensual por dominio
   contribucion <- data %>%
-    filter(ANIO2%in%c(year-1,year)) %>%
+    filter(ANIO2%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(5,contribucion)
 
   #Calculo de la variación por dominio
   tabla1 <- data %>%
-    filter(ANIO2%in%c(year,year-1)) %>%
+    filter(ANIO2%in%c(anio,anio-1)) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(5,tabla1)
 
@@ -701,7 +701,7 @@ f6_anacional <- function(directorio,
 
 
 
-  Enunciado<-paste0(meses[12]," ",year-1,"-",meses[mes]," ",year,"/",meses[12]," ",year-2,"-",meses[mes]," ",year-1)
+  Enunciado<-paste0(meses[12]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[12]," ",anio-2,"-",meses[mes]," ",anio-1)
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 9, startColumn = 1)
 
@@ -713,24 +713,24 @@ f6_anacional <- function(directorio,
 
   #Calculo de la contribucion total
   contribucion_total <- data %>%
-    filter(ANIO2%in%(year-1))
+    filter(ANIO2%in%(anio-1))
   contribucion_total <- contr_sum_an(contribucion_total)
 
   #Calculo de la contribucion mensual por departamento
   contribucion <- data %>%
-    filter(ANIO2%in%c(year-1,year)) %>%
+    filter(ANIO2%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,INCLUSION_NOMBRE_DEPTO)
   contribucion <- contr_fin(6,contribucion)
 
   #Calculo de la variacion
   tabla1 <- data %>%
-    filter(ANIO2%in%c(year,year-1)) %>%
+    filter(ANIO2%in%c(anio,anio-1)) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(6,tabla1)
 
   tabla1_6 <- data %>%
-    filter(ANIO2%in%c(year,year-1)) %>%
+    filter(ANIO2%in%c(anio,anio-1)) %>%
     group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) %>%
     summarise(produccionNom=sum(PRODUCCIONNOMPOND),
               ventasNom = sum(VENTASNOMINPOND))
@@ -775,7 +775,7 @@ f6_anacional <- function(directorio,
                startRow = 15, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[12]," ",year-1,"-",meses[mes]," ",year,"/",meses[12]," ",year-2,"-",meses[mes]," ",year-1)
+  Enunciado<-paste0(meses[12]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[12]," ",anio-2,"-",meses[mes]," ",anio-1)
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 9, startColumn = 1)
 
@@ -944,7 +944,7 @@ f6_anacional <- function(directorio,
                startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[1]," ",year-4,"-",meses[mes]," ",year)
+  Enunciado<-paste0(meses[1]," ",anio-4,"-",meses[mes]," ",anio)
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
                startRow = 7, startColumn = 1)
 
@@ -1041,7 +1041,7 @@ f6_anacional <- function(directorio,
                row.names=FALSE, startRow = 14, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE,
                row.names=FALSE, startRow = 9, startColumn = 1)
 
@@ -1239,7 +1239,7 @@ f6_anacional <- function(directorio,
                row.names=FALSE, startRow = 14, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE,
                row.names=FALSE, startRow = 9, startColumn = 1)
 
@@ -1311,7 +1311,7 @@ f6_anacional <- function(directorio,
   produccionreal_desest <-seas(
     x = produccionreal_ts,
     #arima.model = " ",
-    series.span = paste0(" 2001.1,",year,".",mes," "),
+    series.span = paste0(" 2001.1,",anio,".",mes," "),
     #" 2001.1,2022.11",
     #series.span = "2001.1,2022.11",
     #series.modelspan = "2001.1,2022.11",
@@ -1360,7 +1360,7 @@ f6_anacional <- function(directorio,
   ventasreales_desest <-seas(
     x = ventasreales_ts,
     #arima.model = " ",
-    series.span = paste0(" 2001.1,",year,".",mes," "),
+    series.span = paste0(" 2001.1,",anio,".",mes," "),
     #series.span = "2001.1,2022.11",
     #series.modelspan = "2001.1,2022.11",
     transform.function = "auto",
@@ -1407,7 +1407,7 @@ f6_anacional <- function(directorio,
   empleototal_desest <-seas(
     x = empleototal_ts,
     #arima.model = " ",
-    series.span = paste0(" 2001.1,",year,".",mes," "),
+    series.span = paste0(" 2001.1,",anio,".",mes," "),
     #series.span = "2001.1,2022.11",
     #series.modelspan = "2001.1,2022.11",
     transform.function = "auto",
@@ -1440,7 +1440,7 @@ f6_anacional <- function(directorio,
                row.names=FALSE, startRow = 14, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE,
                row.names=FALSE, startRow = 9, startColumn = 1)
 
@@ -1455,14 +1455,14 @@ f6_anacional <- function(directorio,
 
   #Calculo de la contribucion mensual
   contribucion <- data %>%
-    filter(MES==mes & ANIO%in%c(year,2019)) %>%
+    filter(MES==mes & ANIO%in%c(anio,2019)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   contribucion <- contr_fin(11,contribucion)
 
   #Calculo de la variacion
   tabla1 <- data %>%
-    filter(ANIO%in%c(year,2019) & MES%in%mes) %>%
+    filter(ANIO%in%c(anio,2019) & MES%in%mes) %>%
     group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
   tabla1 <- tabla_summarise(11,tabla1)
 
@@ -1497,7 +1497,7 @@ f6_anacional <- function(directorio,
                row.names=FALSE, startRow = 14, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",year,"/",year-1,")")
+  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE,
                row.names=FALSE, startRow = 9, startColumn = 1)
 
