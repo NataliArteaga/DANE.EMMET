@@ -179,52 +179,31 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   id_estab=novorg$ID_NUMORD
   #crea un data frame vacio
   datafinal=NULL
-  #función para identificar los valores atipicos en las variables del capitulo 3, utilizando la función tso
-  # y la carta 24 meses
-  #Que realice la función por cada uno de los id
+
   for (i in id_estab) {
     prueba=data.frame()
     prueba[1,"ID_NUMORD"]=i
     mmm <- datos %>% filter(ID_NUMORD==i) %>%
       as.data.frame()
-    #para cada una de las variables en el capítulo 3 aplica la función tso para identificar datos atípicos
     for (j in cap3){
-      #Verificar que el porcentaje de datos de ese establecimiento en la variable j sea mayor al 30%
       if ((sum(mmm[!is.na(mmm[,j]),j]==0)/dim(mmm)[1])<0.3){
+
         prueba[1,paste0(j,"_metodo_de_imputacion")]="tso"
-        prueba[1,paste0(j,"_regla_de_imputacion")]=tryCatch(
-          expr = {
-            # Primera opción, calcula los valores de order y seasonal, los cuales sirven de insumo para
-            #la función tso que identifica outliers
-            fit <- auto.arima(mmm[,j],allowdrift = F)
-            order = arimaorder(fit)
-            seasonal=fit$arma[4:6]
-            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "arima",
-                           args.tsmethod = list(order=c(order),seasonal=list(order=seasonal)))$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
+        fit <- auto.arima(mmm[,j],allowdrift = F,stepwise = T)
+        resid <- residuals(fit)
+        pars <- coefs2poly(fit)
+        order = arimaorder(fit)
+        ts <- locate.outliers.iloop(resid, pars)
+        ts=as.data.frame(ts)
+        prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse(sum(ts$ind==which(mmm$MES==mes & mmm$ANIO==year))>=1,1,0)
 
-          },  # Segunda opción en caso de error, usa tso con el metodo auto.arima
-          error = function(e) {
-            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "auto.arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
-          },  # Tercera opción en caso de error, utiliza tso con order y seasonal calculados por defecto
-          error = function(e) {
-
-            ifelse(sum(tso(as.ts(mmm[,j]), tsmethod = "arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
-          },
-          error = function(e) {
-
-            # cuarta opción en caso de error, utiliza tso con los datos escalados
-            ifelse(sum(tso(as.ts(scale(mmm[,j])), tsmethod = "arima")$outliers$time==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
-          }
-        )
-      }else{#en dado caso que no se cumpla la condición del 30%, realizar carta control 24 meses
-        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
+      }else{
+        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==year-2) |(ANIO==year-1)|(MES<=mes & ANIO==year)) %>%
           as.data.frame()
         prueba[1,paste0(j,"_metodo_de_imputacion")]="IC"
-        #calcula el limite superior e inferior de la carta control
         LI <- mean(mmm2[,j],na.rm=T)-1.96*sd(mmm2[,j],na.rm=T)
         LS <- mean(mmm2[,j],na.rm=T)+1.96*sd(mmm2[,j],na.rm=T)
 
-        #marca como 1 si el valor se sale de los limites de control
         prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse((mmm2[which(mmm2$MES==11 & mmm2$ANIO==2022),j]<LI |
                                                              mmm2[which(mmm2$MES==11 & mmm2$ANIO==2022),j]>LS),1,0)
       }}
