@@ -195,10 +195,10 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
         order = arimaorder(fit)
         ts <- locate.outliers.iloop(resid, pars)
         ts=as.data.frame(ts)
-        prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse(sum(ts$ind==which(mmm$MES==mes & mmm$ANIO==year))>=1,1,0)
+        prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse(sum(ts$ind==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
 
       }else{
-        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==year-2) |(ANIO==year-1)|(MES<=mes & ANIO==year)) %>%
+        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
           as.data.frame()
         prueba[1,paste0(j,"_metodo_de_imputacion")]="IC"
         LI <- mean(mmm2[,j],na.rm=T)-1.96*sd(mmm2[,j],na.rm=T)
