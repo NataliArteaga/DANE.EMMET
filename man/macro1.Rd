@@ -4,7 +4,7 @@
 \alias{macro1}
 \title{Macro 1}
 \usage{
-macro1(directorio, mes, anio)
+macro1(directorio, mes, anio, avance = 100)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
@@ -12,6 +12,11 @@ macro1(directorio, mes, anio)
 \item{mes}{Definir el mes a ejecutar, ej: 11}
 
 \item{anio}{Definir el año a ejecutar, ej: 2022}
+
+\item{avance}{Denifir que porcentaje de la base va a ser procesada para detectar alertas, por defecto el valor
+esta en 100, lo cual indica que estan los más de 3000 establecimientos para el procesamiento, este genera un
+archivo llamado por ejemplo: "EMMET_PANEL_alertas_nov2022.csv", si el avance es diferente de 100 el nombre será
+"EMMET_PANEL_alertas_nov2022_50.csv" indicando que es el 50\% de la base}
 }
 \description{
 Con esta función realizaremos la primera parte del proceso, en donde se correran las 4
@@ -25,9 +30,9 @@ Recuerde que si el archivo de alertas ya está creado, al correr esta función l
 responda S si quiere sobreescribirlo, de lo contrario otro valor para cancelar la función
 
 Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}}, \code{\link{f2_estandarizacion}},
-\code{\link{f3_identificacion_outliers}}
+\code{\link{f3_identificacion_alertas}}
 }
 \examples{
-macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes=11,anio=2022)
+ macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+                       mes=11,anio=2022,avance=100)
 }

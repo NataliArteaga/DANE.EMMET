@@ -1,7 +1,5 @@
 #' Identificación de alertas
 #'
-#'
-#' @description
 #' Función para identificar que variables dentro de cada establecimiento  pueden llegar a ser casos
 #' de imputación, ya sean imputación deuda o por casos especiales.
 #'
@@ -14,8 +12,15 @@
 #' no es lo esperado, se llama al establecimiento para confirmar que el dato reportado es el que es, en dado caso que no exista respuesta por parte de ellos se toma el dato como un caso especial y se procede a imputar.
 #'}
 #' @param mes Definir el mes a ejecutar, ej: 11
+#'
 #' @param anio Definir el año a ejecutar, ej: 2022
+#'
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada.
+#'
+#' @param avance Denifir que porcentaje de la base va a ser procesada para detectar alertas, por defecto el valor
+#' esta en 100, lo cual indica que estan los más de 3000 establecimientos para el procesamiento, este genera un
+#' archivo llamado por ejemplo: "EMMET_PANEL_alertas_nov2022.csv", si el avance es diferente de 100 el nombre será
+#' "EMMET_PANEL_alertas_nov2022_50.csv" indicando que es el 50\% de la base
 #'
 #' @details
 #'
@@ -99,7 +104,7 @@
 #'
 #'
 #' @examples f3_identificacion_alertas(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes=11,anio=2022)
+#'                        mes=11,anio=2022,avance=100)
 #'
 f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   ### función detección de outliers

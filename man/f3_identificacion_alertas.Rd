@@ -4,7 +4,7 @@
 \alias{f3_identificacion_alertas}
 \title{Identificación de alertas}
 \usage{
-f3_identificacion_alertas(directorio, mes, anio)
+f3_identificacion_alertas(directorio, mes, anio, avance = 100)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada.}
@@ -12,6 +12,11 @@ f3_identificacion_alertas(directorio, mes, anio)
 \item{mes}{Definir el mes a ejecutar, ej: 11}
 
 \item{anio}{Definir el año a ejecutar, ej: 2022}
+
+\item{avance}{Denifir que porcentaje de la base va a ser procesada para detectar alertas, por defecto el valor
+esta en 100, lo cual indica que estan los más de 3000 establecimientos para el procesamiento, este genera un
+archivo llamado por ejemplo: "EMMET_PANEL_alertas_nov2022.csv", si el avance es diferente de 100 el nombre será
+"EMMET_PANEL_alertas_nov2022_50.csv" indicando que es el 50\% de la base}
 }
 \value{
 CSV file
@@ -19,7 +24,8 @@ CSV file
 \description{
 Función para identificar que variables dentro de cada establecimiento  pueden llegar a ser casos
 de imputación, ya sean imputación deuda o por casos especiales.
-
+}
+\details{
 \itemize{
 
 \item Imputación deuda: son todos los establecimientos cuya novedad en la base original tienen valor de 5
@@ -28,8 +34,9 @@ de imputación, ya sean imputación deuda o por casos especiales.
 \item Casos especiales: son aquellos establecimientos de las cuales se detectó que el dato informado
 no es lo esperado, se llama al establecimiento para confirmar que el dato reportado es el que es, en dado caso que no exista respuesta por parte de ellos se toma el dato como un caso especial y se procede a imputar.
 }
-}
-\details{
+
+
+
 Primero se dividen las variables en capítulo 2 y capítulo 3
 
 \itemize{
@@ -109,6 +116,6 @@ por "continua_critica", sin importar si el valor anterior era "continua", "imput
 
 \examples{
 f3_identificacion_alertas(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes=11,anio=2022)
+                       mes=11,anio=2022,avance=100)
 
 }

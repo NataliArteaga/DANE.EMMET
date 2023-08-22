@@ -4,7 +4,7 @@
 \alias{macro2}
 \title{Macro 2}
 \usage{
-macro2(directorio, mes, anio, tipo = "pdf")
+macro2(directorio, mes, anio, avance = 100, tipo = "pdf")
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
@@ -12,6 +12,9 @@ macro2(directorio, mes, anio, tipo = "pdf")
 \item{mes}{Definir el mes a ejecutar, ej: 11}
 
 \item{anio}{Definir el año a ejecutar, ej: 2022}
+
+\item{avance}{Denifir que porcentaje de la base va a ser cargada para el proceso de imputación, por defecto el valor
+esta en 100.}
 
 \item{tipo}{Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "pdf", ej: "html}
 }
@@ -31,5 +34,5 @@ Ver:\code{\link{f4_imputacion}}, \code{\link{f5_tematica}}, \code{\link{f6_anaci
 }
 \examples{
 macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes=11,anio=2022)
+                       mes=11,anio=2022,avance=100,tipo="pdf")
 }

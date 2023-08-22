@@ -2,7 +2,6 @@
 #'
 #' Funcion que instala las librerias necesarias para todo el proceso y crea las carpetas en donde se guardaran los archivos.
 #'
-
 #' @param directorio definir el directorio donde se crearan las carpetas.
 #'
 #' @details Se revisa si las funciones están instaladas en el entorno, en caso de

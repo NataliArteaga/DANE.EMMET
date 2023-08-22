@@ -8,6 +8,9 @@
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
 #' @param tipo Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "pdf", ej: "html
+#' @param avance Denifir que porcentaje de la base va a ser cargada para el proceso de imputación, por defecto el valor
+#' esta en 100.
+#'
 #'
 #' @details  Esta funcion tiene como objetivo correr desde la función de imputacion hasta la función
 #' que crea el archivo de boletin, con el fin de que el usuario pueda continuar con el proceso
@@ -20,7 +23,7 @@
 #'
 #'
 #' @examples macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes=11,anio=2022)
+#'                        mes=11,anio=2022,avance=100,tipo="pdf")
 
 
 macro2<-function(directorio,mes,anio,avance=100,tipo="pdf"){

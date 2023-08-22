@@ -5,6 +5,8 @@
 #' @param mes Definir las tres primeras letras del mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
+#' @param avance Denifir que porcentaje de la base va a ser cargada para el proceso de imputación, por defecto el valor
+#' esta en 100.
 #'
 #' @details La metodología de imputación es la siguiente:
 #'
@@ -39,7 +41,7 @@
 #' @export
 #'
 #' @examples f4_imputacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-#'                        mes=11,anio=2022)
+#'                        mes=11,anio=2022,avance=100)
 
 
 # Función identificación e imputación de outliers ------------------------------------------

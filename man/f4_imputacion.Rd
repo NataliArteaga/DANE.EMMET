@@ -4,7 +4,7 @@
 \alias{f4_imputacion}
 \title{Imputación outliers}
 \usage{
-f4_imputacion(directorio, mes, anio)
+f4_imputacion(directorio, mes, anio, avance = 100)
 }
 \arguments{
 \item{directorio}{definir el directorio donde se encuentran ubicado los datos de entrada}
@@ -12,6 +12,9 @@ f4_imputacion(directorio, mes, anio)
 \item{mes}{Definir las tres primeras letras del mes a ejecutar, ej: 11}
 
 \item{anio}{Definir el año a ejecutar, ej: 2022}
+
+\item{avance}{Denifir que porcentaje de la base va a ser cargada para el proceso de imputación, por defecto el valor
+esta en 100.}
 }
 \value{
 CSV file
@@ -51,5 +54,5 @@ Para conocer más sobre la imputación por el método k-Nearest Neighbors ver \c
 }
 \examples{
 f4_imputacion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
-                       mes=11,anio=2022)
+                       mes=11,anio=2022,avance=100)
 }
