@@ -51,7 +51,11 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   library(lubridate)
   if (!rmarkdown::pandoc_available()) {
     # Si no está configurado correctamente, instalar pandoc
-    installr::install.pandoc()
+    url <- "https://github.com/jgm/pandoc/releases/tag/3.1.6.1/pandoc-3.1.6.1-windows-x86_64.msi"
+    dest_path <- paste0(directorio,"/pandoc-3.1.6.1-windows-x86_64.msi")
+    download.file(url, dest_path, method = "auto")
+
+    system(paste("msiexec /i", shQuote(dest_path)))
   }
 
   if (!tinytex:::is_tinytex()) {
