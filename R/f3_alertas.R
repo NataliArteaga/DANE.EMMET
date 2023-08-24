@@ -209,8 +209,8 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
         LI <- mean(mmm2[,j],na.rm=T)-1.96*sd(mmm2[,j],na.rm=T)
         LS <- mean(mmm2[,j],na.rm=T)+1.96*sd(mmm2[,j],na.rm=T)
 
-        prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse((mmm2[which(mmm2$MES==11 & mmm2$ANIO==2022),j]<LI |
-                                                             mmm2[which(mmm2$MES==11 & mmm2$ANIO==2022),j]>LS),1,0)
+        prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse((mmm2[which(mmm2$MES==mes & mmm2$ANIO==anio),j]<LI |
+                                                             mmm2[which(mmm2$MES==mes & mmm2$ANIO==anio),j]>LS),1,0)
       }}
 
     datafinal=rbind(datafinal,prueba)
