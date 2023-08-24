@@ -68,7 +68,7 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
   #crear una copia de la base de datos
   datoscom=datos
   #crear un data frame con las variables de interes
-  datos=datos %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
+  datos=datos %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,CLASE_CIIU4,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
                          AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
                          II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
                          AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
@@ -97,7 +97,7 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
     wowimp[!grepl("continua", tolower(wowimp[, paste0(i, "_caso_de_imputacion")])),i]<- NA
   }
 
-  wowimp=wowimp %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
+  wowimp=wowimp %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,CLASE_CIIU4,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
                            AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
                            II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
                            AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
@@ -126,6 +126,7 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
   base_imputar$MES=as.factor(base_imputar$MES)
   base_imputar$ID_NUMORD=as.factor(base_imputar$ID_NUMORD)
   base_imputar$DOMINIOEMMET39=as.factor(base_imputar$DOMINIOEMMET39)
+  base_imputar$CLASE_CIIU4=as.factor(base_imputar$CLASE_CIIU4)
 
   # realizar la imputación de las variables de interes con el comando kNN
   set.seed(11)
@@ -139,11 +140,12 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
     as.data.frame()
 
   #crea un data frame con las variaciones y convierte algunas variables como anio,mes, id_numord en factor
-  traf1=tra %>% select(ANIO,MES,ID_NUMORD,DOMINIOEMMET39,ends_with("mes_ant"))
+  traf1=tra %>% select(ANIO,MES,ID_NUMORD,DOMINIOEMMET39,CLASE_CIIU4,ends_with("mes_ant"))
   traf1$ANIO=as.factor(traf1$ANIO)
   traf1$MES=as.factor(traf1$MES)
   traf1$ID_NUMORD=as.factor(traf1$ID_NUMORD)
   traf1$DOMINIOEMMET39=as.factor(traf1$DOMINIOEMMET39)
+  traf1$CLASE_CIIU4=as.factor(traf1$CLASE_CIIU4)
   #Vector con los nombres de las variables que contienen los valores de la variación de las variables del capitulo 3
   capf=c("AJU_III_PE_PRODUCCION_var_mes_ant","AJU_III_PE_VENTASIN_var_mes_ant","AJU_III_PE_VENTASEX_var_mes_ant","III_EX_VEXIS_var_mes_ant" )
 
@@ -206,7 +208,7 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
   mes_ant=mes_ant%>% filter(MES==mes & ANIO==anio) %>%
     arrange(ID_NUMORD)
 
-  mes_ant=mes_ant %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
+  mes_ant=mes_ant %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,CLASE_CIIU4,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
                              AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
                              II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
                              AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
