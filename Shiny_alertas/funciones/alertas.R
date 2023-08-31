@@ -25,7 +25,7 @@ variablesinte=c("II_PA_PP_NPERS_EP","AJU_II_PA_PP_SUELD_EP","II_PA_TD_NPERS_ET",
 
 
 for (i in variablesinte) {
-  
+
   base_panel[,i] <- as.numeric(base_panel[,i])
   base_panel[,i] <- ifelse(is.na(base_panel[,i]),0,base_panel[,i])
 }
@@ -40,9 +40,9 @@ base_variables_encuesta <- base_panel %>%
 
 base_variables_encuesta=as.data.frame(base_variables_encuesta)
 
-des <- base_variables_encuesta %>% 
-  filter(ANIO==anio & MES%in%c(mes-1,mes))  %>% 
-  pivot_longer(cols=colnames(base_variables_encuesta)[8:length(colnames(base_variables_encuesta))],names_to = "Variables",values_to ="Valores") %>% 
+des <- base_variables_encuesta %>%
+  filter(ANIO==anio & MES%in%c(mes-1,mes))  %>%
+  pivot_longer(cols=colnames(base_variables_encuesta)[8:length(colnames(base_variables_encuesta))],names_to = "Variables",values_to ="Valores") %>%
   pivot_wider(names_from = "MES",values_from = "Valores")
 des=as.data.frame(des)
 colnames(des)[c(8,9)] <- c(meses_c[mes-1],meses_c[mes])
@@ -53,7 +53,7 @@ des$variacion[des[, paste0(meses_c[mes])] == 0 & des[, paste0(meses_c[mes - 1])]
 
 varinteres=paste0(variablesinte,"_caso_de_imputacion")
 
-des2 <- alertas %>% filter(ANIO==2022 & MES==11) %>%
+des2 <- alertas %>% filter(ANIO==anio & MES==mes) %>%
   pivot_longer(cols=varinteres,names_to = "Variables",values_to ="Caso_imputacion")  %>%
   select(ANIO,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,Variables,Caso_imputacion)
 des2$Variables <- sub("\\_caso_de_imputacion", "", des2$Variables)
