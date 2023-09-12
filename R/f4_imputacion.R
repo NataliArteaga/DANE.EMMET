@@ -63,7 +63,7 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
 
 
   #cargar base estandarizada
-  datos <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"))
+  datos <- read.csv(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"),fileEncoding = "latin1")
 
   #crear una copia de la base de datos
   datoscom=datos
@@ -278,12 +278,19 @@ mes_ant[,"existencias_prueba"]=ifelse((mes_ant[,"AJU_III_PE_PRODUCCION"]>(mes_an
   }
   imputa <- imputa %>% mutate_if(is.integer, as.numeric)
 
-
+  imputa <- imputa %>%
+    mutate(
+      TOTAL_VENTAS=(AJU_III_PE_VENTASIN+AJU_III_PE_VENTASEX),
+      TotalHoras= (AJU_II_HORAS_HORDI_T+AJU_II_HORAS_HEXTR_T),
+      TOT_PERS=(II_PA_PP_NPERS_EP+II_PA_TD_NPERS_ET+II_PA_TI_NPERS_ETA+
+                  II_PA_AP_AAEP+II_PP_PP_NPERS_OP+II_PP_TD_NPERS_OT+
+                  II_PP_TI_NPERS_OTA+II_PP_AP_APEP)
+    )
 
   # Exportar la base imputada -------------------------------
-  write.csv(mes_ant,paste0(directorio,"/results/S4_imputacion/EMMET_reglas_consistencia_",meses[mes],anio,".csv"),row.names=F)
+  write.csv(mes_ant,paste0(directorio,"/results/S4_imputacion/EMMET_reglas_consistencia_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
 
-  write.csv(imputa,paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F)
+  write.csv(imputa,paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
 }
 
 

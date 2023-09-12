@@ -75,6 +75,8 @@ f1_integracion <- function(directorio,
   library(stringr)
   library(tidyr)
   library(dplyr)
+  library(data.table)
+  library(writexl)
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
 
@@ -126,10 +128,11 @@ f1_integracion <- function(directorio,
   drop <- names(base_panel) %in% c("NOMBREMPIO","NOMBREDEPTO","DESDEPTO")
   base_panel <- base_panel[,!drop]
 
-
+  base_panel<-base_panel %>%
+    mutate_at(vars("DESCRIPCIONDOMINIOEMMET39"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
   # Exportar bases de Datos integradas -------------------------------------------------
 
-  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F)
+  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
 
 }
 

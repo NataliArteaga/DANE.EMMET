@@ -71,7 +71,7 @@ f2_estandarizacion <- function(directorio,
 
 
 
-  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"), sep = ",")
+  base_panel_2<-read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"), sep = ",",fileEncoding = "latin1")
 
 
   # Estandarizar formato de fechas ------------------------------------------
@@ -279,5 +279,5 @@ f2_estandarizacion <- function(directorio,
   # Exportacion tabla -------------------------------------------------------
 
   #write.csv(base_panel,"base_pane_estandarizacion.csv")
-  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"),row.names=F)
+  write.csv(base_panel,paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
 }

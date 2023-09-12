@@ -114,7 +114,7 @@ f5_tematica <- function(directorio,mes,anio){
 
   # Cargar bases y variables ------------------------------------------------
 
-  base_panel2<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"))
+  base_panel2<-read.csv(paste0(directorio,"/results/S4_imputacion/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),fileEncoding = "latin1")
 
 
 
@@ -232,6 +232,8 @@ f5_tematica <- function(directorio,mes,anio){
 
 
   base_tematica<-base_tematica(base_panel2)
-  write.csv(base_tematica,paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),row.names=F)
+  base_tematica <-  base_tematica %>%
+    mutate_at(vars("DESCRIPCIONDOMINIOEMMET39"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+  write.csv(base_tematica,paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),row.names=F,fileEncoding ="latin1")
 
 }

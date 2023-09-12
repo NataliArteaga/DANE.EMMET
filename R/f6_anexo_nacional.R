@@ -289,7 +289,7 @@ f6_anacional <- function(directorio,
 
 
   meses <- tolower(meses)
-  data <- fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"))
+  data <- read.csv(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),fileEncoding = "latin1")
   indices_14<- read_xlsx(paste0(directorio,"/data/Indices_2014.xlsx"))
   indices_01<- read_xlsx(paste0(directorio,"/data/Indices_2001.xlsx"))
 

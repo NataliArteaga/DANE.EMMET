@@ -273,7 +273,7 @@ f7_aterritorial <- function(directorio,
   # Cargar bases y variables ------------------------------------------------
 
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
-  data<-fread(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"))
+  data<-read.csv(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),fileEncoding = "latin1")
 
 
   # Archivos de entrada y salida --------------------------------------------
@@ -297,97 +297,145 @@ f7_aterritorial <- function(directorio,
   # Funciones ---------------------------------------------------------------
 
   #Funcion para crear las variables produccion_total, ventas_total y personal_total
-  contr_tm_summ <- function(datos,periodo){
-  if(periodo==1){
-    contribucion <- datos %>%
-      summarise(produccion_total=sum(PRODUCCIONREALPOND),
-                ventas_total=sum(VENTASREALESPOND),
-                personal_total=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+
-                                     TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
-  }
-  if(periodo==2){
-    contribucion <- datos %>%
-      summarise(produccionNom_total = sum(PRODUCCIONNOMPOND),
-                produccion_total = sum(PRODUCCIONREALPOND),
-                ventasnom_total=sum(VENTASNOMINPOND),
-                ventas_total=sum(VENTASREALESPOND),
-                personal_total=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
-  }
-  if(periodo==3){
-    contribucion <- datos %>%
-      summarise(produccionNom_mensual = sum(PRODUCCIONNOMPOND),
-                produccion_mensual = sum(PRODUCCIONREALPOND),
-                ventasnom_mensual=sum(VENTASNOMINPOND),
-                ventas_mensual=sum(VENTASREALESPOND),
-                personal_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
-  }
+  cont_tot_summ <- function(datos,periodo){
+    if(periodo==1){
+      contribucion <- datos  %>%
+        summarise(produccion_total=sum(PRODUCCIONREALPOND),
+                  ventas_total=sum(VENTASREALESPOND),
+                  personal_total=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+
+                                       TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
+    }
+    if(periodo==2){
+      contribucion <- datos  %>%
+        summarise(produccionnom_total = sum(PRODUCCIONNOMPOND),
+                  produccion_total = sum(PRODUCCIONREALPOND),
+                  ventas_total=sum(VENTASREALESPOND),
+                  personal_total=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+
+                                       TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
 
-  return(contribucion)
-}
+    }
+    if(periodo==3){
+      contribucion <- datos  %>%
+        summarise(produccionNom_total = mean(produccionNom_total),
+                  produccion_total = mean(produccion_total),
+                  ventasnom_total=mean(ventasnom_total),
+                  ventas_total=mean(ventas_total),
+                  personal_total=mean(personal_total))
+    }
+    if(periodo==4){
+      contribucion <- datos  %>%
+        summarise(produccionNom_total = sum(PRODUCCIONNOMPOND),
+                  produccion_total = sum(PRODUCCIONREALPOND),
+                  ventasnom_total=sum(VENTASNOMINPOND),
+                  ventas_total=sum(VENTASREALESPOND),
+                  personal_total=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
+    }
+    return(contribucion)
+  }
 
   #Funcion para crear las variavles pro,vent,per de acuerdo al periodo que se
   #esté manejando
-  contribucion_summ <- function(datos,periodo){
-  if(periodo==1){
-    contribucion <- datos %>%
-      summarise(prod = sum(PRODUCCIONREALPOND),
-                vent=sum(VENTASREALESPOND),
-                per=sum(PERSONAL))
-  }
-  if(periodo==2){
-    contribucion <- datos %>%
-      summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
-                ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
-                personal=(per[2]-per[1])/contribucion_total$personal_total) %>%
-      arrange(produccion)
 
+  cont_summ <- function(datos,periodo){
+    if(periodo==1){
+      contribucion <- datos %>%
+        summarise(prod = sum(PRODUCCIONREALPOND),
+                  vent=sum(VENTASREALESPOND),
+                  per=sum(PERSONAL))
+    }
+    if(periodo==2){
+      contribucion <- datos %>%
+        summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
+                  ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
+                  personal=(per[2]-per[1])/contribucion_total$personal_total)
+    }
+    if(periodo==3){
+      contribucion <- datos %>%
+        summarise(prod = sum(PRODUCCIONREALPOND),
+                  vent=sum(VENTASREALESPOND),
+                  per=sum(PERSONAL)) %>%
+        group_by(INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG) %>%
+        summarise(produccion=(prod[2]-prod[1]),
+                  ventas=(vent[2]-vent[1]),
+                  personal=(per[2]-per[1]))
+    }
+    if(periodo==4){
+      contribucion <- datos %>%
+        summarise(produccionNom_mensual = sum(PRODUCCIONNOMPOND),
+                  produccion_mensual = sum(PRODUCCIONREALPOND),
+                  ventasnom_mensual=sum(VENTASNOMINPOND),
+                  ventas_mensual=sum(VENTASREALESPOND),
+                  personal_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
+    }
+    if(periodo==5){
+      contribucion <- datos %>%
+        summarise(produccion=(produccion/produccion_total),
+                  ventas=(ventas/ventas_total),
+                  personas=(personal/personal_total))
+
+    }
+    return(contribucion)
   }
-  if(periodo==3){
-    contribucion <- datos %>%
-      summarise(produccion=(prod[2]-prod[1]),
-                ventas=(vent[2]-vent[1]),
-                personal=(per[2]-per[1])) %>%
-      arrange(produccion)
-  }
-  return(contribucion)
-}
 
   #Funcion para realizar los pivotes en las tablas de acuerdo al periodo que
   #se esté trabajando
   tabla_piv_pas <- function(tabla, periodo){
-  if(periodo==1){
-    tabla <- tabla %>%
-      pivot_wider(names_from = c("ANIO"),values_from = c("produccionNom","produccion","ventasNom","ventas","personas"))
-    tabla[paste0("varprodnom_",anio)] <- (tabla[paste0("produccionNom_",anio)]-tabla[paste0("produccionNom_",anio-1)])/tabla[paste0("produccionNom_",anio-1)]
-    tabla[paste0("varprod_",anio)] <- (tabla[paste0("produccion_",anio)]-tabla[paste0("produccion_",anio-1)])/tabla[paste0("produccion_",anio-1)]
-    tabla[paste0("varventasnom_",anio)]<- (tabla[paste0("ventasNom_",anio)]-tabla[paste0("ventasNom_",anio-1)])/tabla[paste0("ventasNom_",anio-1)]
-    tabla[paste0("varventas_",anio)]<- (tabla[paste0("ventas_",anio)]-tabla[paste0("ventas_",anio-1)])/tabla[paste0("ventas_",anio-1)]
-    tabla[paste0("varpersonas_",anio)] <- (tabla[paste0("personas_",anio)]-tabla[paste0("personas_",anio-1)])/tabla[paste0("personas_",anio-1)]
+    if(periodo==1){
+      tabla <- tabla %>%
+        pivot_wider(names_from = c("ANIO"),values_from = c("produccionNom","produccion","ventasNom","ventas","personas"))
+      tabla[paste0("varprodnom_",anio)] <- (tabla[paste0("produccionNom_",anio)]-tabla[paste0("produccionNom_",anio-1)])/tabla[paste0("produccionNom_",anio-1)]
+      tabla[paste0("varprod_",anio)] <- (tabla[paste0("produccion_",anio)]-tabla[paste0("produccion_",anio-1)])/tabla[paste0("produccion_",anio-1)]
+      tabla[paste0("varventasnom_",anio)]<- (tabla[paste0("ventasNom_",anio)]-tabla[paste0("ventasNom_",anio-1)])/tabla[paste0("ventasNom_",anio-1)]
+      tabla[paste0("varventas_",anio)]<- (tabla[paste0("ventas_",anio)]-tabla[paste0("ventas_",anio-1)])/tabla[paste0("ventas_",anio-1)]
+      tabla[paste0("varpersonas_",anio)] <- (tabla[paste0("personas_",anio)]-tabla[paste0("personas_",anio-1)])/tabla[paste0("personas_",anio-1)]
 
+    }
+    if(periodo==2){
+      tabla <- tabla %>%
+        pivot_wider(names_from = c("ANIO2"),values_from = c("produccionNom","produccion","ventasNom","ventas","personas"))
+      tabla[paste0("varprodnom_",anio)] <- (tabla[paste0("produccionNom_",anio)]-tabla[paste0("produccionNom_",anio-1)])/tabla[paste0("produccionNom_",anio-1)]
+      tabla[paste0("varprod_",anio)] <- (tabla[paste0("produccion_",anio)]-tabla[paste0("produccion_",anio-1)])/tabla[paste0("produccion_",anio-1)]
+      tabla[paste0("varventasnom_",anio)]<- (tabla[paste0("ventasNom_",anio)]-tabla[paste0("ventasNom_",anio-1)])/tabla[paste0("ventasNom_",anio-1)]
+      tabla[paste0("varventas_",anio)]<- (tabla[paste0("ventas_",anio)]-tabla[paste0("ventas_",anio-1)])/tabla[paste0("ventas_",anio-1)]
+      tabla[paste0("varpersonas_",anio)] <- (tabla[paste0("personas_",anio)]-tabla[paste0("personas_",anio-1)])/tabla[paste0("personas_",anio-1)]
+
+
+    }
+    if(periodo==3){
+      tabla <- tabla %>%
+        pivot_wider(names_from = c("ANIO"),values_from = c("produccionNom","produccion","ventasNom","ventas","personas"))
+      tabla[paste0("varprodnom_",anio)] <- (tabla[paste0("produccionNom_",anio)]-tabla[paste0("produccionNom_",2019)])/tabla[paste0("produccionNom_",2019)]
+      tabla[paste0("varprod_",anio)] <- (tabla[paste0("produccion_",anio)]-tabla[paste0("produccion_",2019)])/tabla[paste0("produccion_",2019)]
+      tabla[paste0("varventasnom_",anio)]<- (tabla[paste0("ventasNom_",anio)]-tabla[paste0("ventasNom_",2019)])/tabla[paste0("ventasNom_",2019)]
+      tabla[paste0("varventas_",anio)]<- (tabla[paste0("ventas_",anio)]-tabla[paste0("ventas_",2019)])/tabla[paste0("ventas_",2019)]
+      tabla[paste0("varpersonas_",anio)] <- (tabla[paste0("personas_",anio)]-tabla[paste0("personas_",2019)])/tabla[paste0("personas_",2019)]
+
+    }
+    return(tabla)
   }
-  if(periodo==2){
-    tabla <- tabla %>%
-      pivot_wider(names_from = c("ANIO2"),values_from = c("produccionNom","produccion","ventasNom","ventas","personas"))
-    tabla[paste0("varprodnom_",anio)] <- (tabla[paste0("produccionNom_",anio)]-tabla[paste0("produccionNom_",anio-1)])/tabla[paste0("produccionNom_",anio-1)]
-    tabla[paste0("varprod_",anio)] <- (tabla[paste0("produccion_",anio)]-tabla[paste0("produccion_",anio-1)])/tabla[paste0("produccion_",anio-1)]
-    tabla[paste0("varventasnom_",anio)]<- (tabla[paste0("ventasNom_",anio)]-tabla[paste0("ventasNom_",anio-1)])/tabla[paste0("ventasNom_",anio-1)]
-    tabla[paste0("varventas_",anio)]<- (tabla[paste0("ventas_",anio)]-tabla[paste0("ventas_",anio-1)])/tabla[paste0("ventas_",anio-1)]
-    tabla[paste0("varpersonas_",anio)] <- (tabla[paste0("personas_",anio)]-tabla[paste0("personas_",anio-1)])/tabla[paste0("personas_",anio-1)]
 
+  tabla_sum_mut <- function(data,periodo){
+    if(periodo==1){
+      #1,2,3,4,5,6,7,8,9,10,11,12,16,17,18,19
+      tabla1 <- data %>%
+        summarise(produccionNom=sum(PRODUCCIONNOMPOND),
+                  produccion=sum(PRODUCCIONREALPOND),
+                  ventasNom = sum(VENTASNOMINPOND),
+                  ventas = sum(VENTASREALESPOND),
+                  personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
+    }
+    if(periodo==2){
+      #12,14,15
+      tabla1<-data %>%
+        mutate(produccionNom=round((produccionNom_mensual/produccionNom_total)*100,1),
+               produccion=round((produccion_mensual/produccion_total)*100,1),
+               ventasnom=round((ventasnom_mensual/ventasnom_total)*100,1),
+               ventas=round((ventas_mensual/ventas_total)*100,1),
+               personal=round((personal_mensual/personal_total)*100,1))
 
+    }
+    return(tabla1)
   }
-  if(periodo==3){
-    tabla <- tabla %>%
-      pivot_wider(names_from = c("ANIO"),values_from = c("produccionNom","produccion","ventasNom","ventas","personas"))
-    tabla[paste0("varprodnom_",anio)] <- (tabla[paste0("produccionNom_",anio)]-tabla[paste0("produccionNom_",2019)])/tabla[paste0("produccionNom_",2019)]
-    tabla[paste0("varprod_",anio)] <- (tabla[paste0("produccion_",anio)]-tabla[paste0("produccion_",2019)])/tabla[paste0("produccion_",2019)]
-    tabla[paste0("varventasnom_",anio)]<- (tabla[paste0("ventasNom_",anio)]-tabla[paste0("ventasNom_",2019)])/tabla[paste0("ventasNom_",2019)]
-    tabla[paste0("varventas_",anio)]<- (tabla[paste0("ventas_",anio)]-tabla[paste0("ventas_",2019)])/tabla[paste0("ventas_",2019)]
-    tabla[paste0("varpersonas_",anio)] <- (tabla[paste0("personas_",anio)]-tabla[paste0("personas_",2019)])/tabla[paste0("personas_",2019)]
-
-  }
-  return(tabla)
-}
 
   #Funcion de acople
   tabla_sapp <- function(tabla){
@@ -398,43 +446,23 @@ f7_aterritorial <- function(directorio,
 
     return(tabla)
   }
-#funcion mutate
-  tabla_sum_mut <- function(periodo,data){
-    if(periodo==13 | periodo==14 | periodo==15){
-      tabla1<-data %>%
-        mutate(produccionNom=round((produccionNom_mensual/produccionNom_total)*100,1),
-               produccion=round((produccion_mensual/produccion_total)*100,1),
-               ventasnom=round((ventasnom_mensual/ventasnom_total)*100,1),
-               ventas=round((ventas_mensual/ventas_total)*100,1),
-               personal=round((personal_mensual/personal_total)*100,1))
-
-    }else{
-      #1,2,3,4,5,6,7,8,9,10,11,12,16,17,18,19
-      tabla1 <- data %>%
-        summarise(produccionNom=sum(PRODUCCIONNOMPOND),
-                  produccion=sum(PRODUCCIONREALPOND),
-                  ventasNom = sum(VENTASNOMINPOND),
-                  ventas = sum(VENTASREALESPOND),
-                  personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
-    }
-    return(tabla1)
-  }
 
   # 1. Var y Cont Anual Dpto ------------------------------------------------
 
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(anio-1,anio))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
 
   #Calculo de la variación por departamentos
@@ -475,28 +503,22 @@ f7_aterritorial <- function(directorio,
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(anio-1)) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,1)%>%
-    group_by(INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,3)
-
+  contribucion <- cont_summ(contribucion,3) %>%
+    arrange(produccion)
 
   ##Calculo de la contribucion por sector
   contribucion_sector<-contribucion %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
 
 
-  contribucion<-contribucion_sector %>%
-    summarise(produccion=(produccion/produccion_total),
-              ventas=(ventas/ventas_total),
-              personas=(personal/personal_total))
-
+  contribucion<- cont_summ(contribucion_sector,5)
 
   #Calculo de la variación por departamentos
   tabla1 <- data %>%
@@ -540,16 +562,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por areas mtp
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
 
   #Calculo de la variacion por areas mtp
@@ -594,16 +617,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por ciudad
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,CIUDAD)
-  contribucion <- contribucion_summ(contribucion,1)%>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(CIUDAD)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
   #Calculo de la variación por ciudad
   tabla1 <- data %>%
@@ -631,7 +655,7 @@ f7_aterritorial <- function(directorio,
   tabla1 <- tabla1 %>% arrange(CIUDAD)
 
 
-  #Esportar
+  #Exportar
 
   sheet <- sheets[[6]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
@@ -646,16 +670,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por dpto
   contribucion <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,1)%>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
   #Calculo de la variación por dpto
   tabla1 <- data %>%
@@ -699,24 +724,22 @@ f7_aterritorial <- function(directorio,
   contribucion_total <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio-1)) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por dpto
   contribucion <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,1)%>%
-    group_by(INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,3)
+  contribucion <- cont_summ(contribucion,3) %>%
+    arrange(produccion)
 
+  ##Calculo de la contribucion por sector
   contribucion_sector<-contribucion %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
 
-  contribucion<-contribucion_sector %>%
-    summarise(produccion=(produccion/produccion_total),
-              ventas=(ventas/ventas_total),
-              personas=(personal/personal_total))
+
+  contribucion<- cont_summ(contribucion_sector,5)
 
   #Calculo de la variación por dpto
   tabla1 <- data %>%
@@ -762,16 +785,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por area mtp
   contribucion <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
   #Calculo de la variación por area mtp
   tabla1 <- data %>%
@@ -813,16 +837,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por ciudad
   contribucion <- data %>%
     filter(MES%in%c(1:mes) & ANIO%in%c(anio,anio-1)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,CIUDAD)
-  contribucion <- contribucion_summ(contribucion,1)%>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(CIUDAD)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
   #Calculo de la variacion por ciudad
   tabla1 <- data %>%
@@ -868,16 +893,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(ANIO2%in%(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por dtp
   contribucion <- data %>%
     filter(ANIO2%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
   #Calculo de la variacion mensual por dtp
   tabla1 <- data %>%
@@ -925,25 +951,21 @@ f7_aterritorial <- function(directorio,
   contribucion_total <- data %>%
     filter(ANIO2%in%(anio-1)) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual
   contribucion <- data %>%
     filter(ANIO2%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,1) %>%
-    group_by(INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,3)
+  contribucion <- cont_summ(contribucion,3) %>%
+    arrange(produccion)
 
+  ##Calculo de la contribucion por sector
   contribucion_sector<-contribucion %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
 
-
-  contribucion<-contribucion_sector %>%
-    summarise(produccion=(produccion/produccion_total),
-              ventas=(ventas/ventas_total),
-              personas=(personal/personal_total))
+  contribucion<- cont_summ(contribucion_sector,5)
 
   #Calculo de la variacion
   tabla1 <- data %>%
@@ -992,16 +1014,18 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(ANIO2%in%(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por area mtp
   contribucion <- data %>%
     filter(ANIO2%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
+
 
   #Calculo de la variacion por area mtp
   tabla1 <- data %>%
@@ -1048,16 +1072,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(ANIO2%in%(anio-1))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por ciudad
   contribucion <- data %>%
     filter(ANIO2%in%c(anio-1,anio)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO2,CIUDAD)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(CIUDAD)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
   #Calculo de la variacion por ciudad
   tabla1 <- data %>%
@@ -1100,27 +1125,21 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     group_by(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG)
-  contribucion_total <- contr_tm_summ(contribucion_total,2)
+  contribucion_total <- cont_tot_summ(contribucion_total,4)
 
   #Calculo de la contribucion mensual por dpto
   contribucion_total <- contribucion_total %>%
-    group_by(INCLUSION_NOMBRE_DEPTO,ANIO,AGREG_DOMINIO_REG) %>%
-    summarise(produccionNom_total = mean(produccionNom_total),
-              produccion_total = mean(produccion_total),
-              ventasnom_total=mean(ventasnom_total),
-              ventas_total=mean(ventas_total),
-              personal_total=mean(personal_total))
+    group_by(INCLUSION_NOMBRE_DEPTO,ANIO,AGREG_DOMINIO_REG)
+  contribucion_total <- cont_tot_summ(contribucion_total,3)
 
   #Calculo de indices
   contribucion_mensual <- data %>%
     group_by(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG)
-  contribucion_mensual <- contr_tm_summ(contribucion_mensual,3)
-
+  contribucion_mensual <- cont_summ(contribucion_mensual,4)
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO",
                                       "ANIO"="ANIO"))
-
 
   tabla1 <- tabla_sum_mut(contribucion,2) %>%
     select(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG.x,produccionNom,
@@ -1142,22 +1161,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     group_by(AREA_METROPOLITANA,ANIO,MES)
-  contribucion_total <- contr_tm_summ(contribucion_total,2)
+  contribucion_total <- cont_tot_summ(contribucion_total,4)
 
   #Calculo de la contribucion mensual por area mtp
   contribucion_total <- contribucion_total %>%
-    group_by(AREA_METROPOLITANA,ANIO) %>%
-    summarise(produccionNom_total = mean(produccionNom_total),
-              produccion_total = mean(produccion_total),
-              ventasnom_total=mean(ventasnom_total),
-              ventas_total=mean(ventas_total),
-              personal_total=mean(personal_total))
-
+    group_by(AREA_METROPOLITANA,ANIO)
+  contribucion_total <- cont_tot_summ(contribucion_total,3)
 
   #Calculo de los indices
   contribucion_mensual <- data %>%
     group_by(AREA_METROPOLITANA,ANIO,MES)
-  contribucion_mensual <- contr_tm_summ(contribucion_mensual,3)
+  contribucion_mensual <- cont_summ(contribucion_mensual,4)
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA","ANIO"="ANIO"))
@@ -1182,22 +1196,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     group_by(CIUDAD,ANIO,MES)
-  contribucion_total <- contr_tm_summ(contribucion_total,2)
+  contribucion_total <- cont_tot_summ(contribucion_total,4)
 
   #Calculo de la contribucion mensual por ciudad
   contribucion_total <- contribucion_total %>%
-    group_by(CIUDAD,ANIO) %>%
-    summarise(produccionNom_total = mean(produccionNom_total),
-              produccion_total = mean(produccion_total),
-              ventasnom_total=mean(ventasnom_total),
-              ventas_total=mean(ventas_total),
-              personal_total=mean(personal_total))
-
+    group_by(CIUDAD,ANIO)
+  contribucion_total <- cont_tot_summ(contribucion_total,3)
 
   #Calculo de los indices
   contribucion_mensual <- data %>%
     group_by(CIUDAD,ANIO,MES)
-  contribucion_mensual <- contr_tm_summ(contribucion_mensual,3)
+  contribucion_mensual <- cont_summ(contribucion_mensual,4)
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("CIUDAD"="CIUDAD","ANIO"="ANIO"))
@@ -1222,16 +1231,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(2019))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio,2019)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
 
   #Calculo de la variación por dpto
@@ -1274,25 +1284,20 @@ f7_aterritorial <- function(directorio,
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(2019)) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,2)
 
   #Calculo de la contribucion mensual
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio,2019)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,1) %>%
-    group_by(INCLUSION_NOMBRE_DEPTO,ORDENDOMINDEPTO,AGREG_DOMINIO_REG)
-  contribucion <- contribucion_summ(contribucion,3)
+  contribucion <- cont_summ(contribucion,3) %>%
+    arrange(produccion)
 
   contribucion_sector<-contribucion %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
 
-
-  contribucion<-contribucion_sector %>%
-    summarise(produccion=(produccion/produccion_total),
-              ventas=(ventas/ventas_total),
-              personas=(personal/personal_total))
+  contribucion<- cont_summ(contribucion_sector,5)
 
   #Calculo de la variacion
   tabla1 <- data %>%
@@ -1337,16 +1342,17 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(2019))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por area mtp
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio,2019)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(AREA_METROPOLITANA)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
 
 
   #Calculo de la variacion por area mtp
@@ -1389,16 +1395,18 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     filter(MES==mes & ANIO%in%c(2019))
-  contribucion_total <- contr_tm_summ(contribucion_total,1)
+  contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual por ciudad
   contribucion <- data %>%
     filter(MES==mes & ANIO%in%c(anio,2019)) %>%
     mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
     group_by(ANIO,MES,CIUDAD)
-  contribucion <- contribucion_summ(contribucion,1) %>%
+  contribucion <- cont_summ(contribucion,1) %>%
     group_by(CIUDAD)
-  contribucion <- contribucion_summ(contribucion,2)
+  contribucion <- cont_summ(contribucion,2) %>%
+    arrange(produccion)
+
 
   #Calculo de la variacion por ciudad
   tabla1 <- data %>%

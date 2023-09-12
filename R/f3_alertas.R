@@ -171,11 +171,11 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
     tra[tra[,i]==0 & tra[,paste0(i,"_rezago1")]==0,paste0(i,"_var_mes_ant")] <- 0
     tra[,paste0(i,"_Li")]=tra[,paste0(i,"_promedio")]-1.96*tra[,paste0(i,"_devest")]
     tra[,paste0(i,"_Ls")]=tra[,paste0(i,"_promedio")]+1.96*tra[,paste0(i,"_devest")]
-    tra[,paste0(i,"_caso_de_imputacion")]=ifelse((tra[,i]==0 & tra[,paste0(i,"_rezago1")]==0),"continua",ifelse(tra$NOVEDAD==5 | (tra[,i]==0 & tra[,paste0(i,"_var_mes_ant")]!=0),"imputacion_deuda",ifelse(tra[,i]!=0 & abs(tra[,paste0(i,"_var_mes_ant")])>0.2 &
-                                                                                                                                                                                                              (tra[,i]<tra[,paste0(i,"_Li")] | tra[,i]>tra[,paste0(i,"_Ls")]) & tra[,paste0(i,"_moda_value")]<=1 ,
-                                                                                                                                                                                                            "imputacion_caso_especial","continua")))
-  }
 
+    tra[,paste0(i,"_caso_de_imputacion")]=ifelse((tra$NOVEDAD==5),"imputacion_deuda",ifelse((tra[,i]==0 & tra[,paste0(i,"_rezago1")]==0),"continua",ifelse((tra[,i]==0 & tra[,paste0(i,"_var_mes_ant")]!=0) | (tra[,i]!=0 & abs(tra[,paste0(i,"_var_mes_ant")])>0.2 &
+                                                                                                                                                                                                                (tra[,i]<tra[,paste0(i,"_Li")] | tra[,i]>tra[,paste0(i,"_Ls")]) & tra[,paste0(i,"_moda_value")]<=1) ,
+                                                                                                                                                                                                              "imputacion_caso_especial","continua")))
+  }
   # identificación individuos a imputar para las variables del capitulo 3 -----------------------------------------------
 
   #crear un data frame del mes actual
@@ -220,9 +220,8 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
 
   #crear la regla de indentificación de individuos a imputar para las variables del capitulo 3
   for (i in cap3) {
-    traic[,paste0(i,"_caso_de_imputacion")]=ifelse((traic[,i]==0 & traic[,paste0(i,"_rezago1")]==0),"continua",ifelse(traic$NOVEDAD==5 | (traic[,i]==0 & traic[,paste0(i,"_var_mes_ant")]!=0),"imputacion_deuda",ifelse(traic[,paste0(i,"_regla_de_imputacion")]==1  & traic[,paste0(i,"_moda_value")]<=1 & traic[,i]!=0 & abs(traic[,paste0(i,"_var_mes_ant")])>0.2 ,"imputacion_caso_especial","continua")))
+    traic[,paste0(i,"_caso_de_imputacion")]=ifelse((traic$NOVEDAD==5),"imputacion_deuda",ifelse((traic[,i]==0 & traic[,paste0(i,"_rezago1")]==0),"continua",ifelse((traic[,i]==0 & traic[,paste0(i,"_var_mes_ant")]!=0) | (traic[,paste0(i,"_regla_de_imputacion")]==1  & traic[,paste0(i,"_moda_value")]<=1 & traic[,i]!=0 & abs(traic[,paste0(i,"_var_mes_ant")])>0.2) ,"imputacion_caso_especial","continua")))
   }
-
   #crear un data frame final con las variables que necesitaremos para el proceso de imputación
   final <- traic %>%
     select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,CLASE_CIIU4,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
@@ -231,7 +230,14 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
            AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
            AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS,ends_with("caso_de_imputacion")) %>% arrange(ID_NUMORD) %>% as.data.frame()
 
-
+  final <- final %>%
+    mutate(
+      TOTAL_VENTAS=(AJU_III_PE_VENTASIN+AJU_III_PE_VENTASEX),
+      TotalHoras= (AJU_II_HORAS_HORDI_T+AJU_II_HORAS_HEXTR_T),
+      TOT_PERS=(II_PA_PP_NPERS_EP+II_PA_TD_NPERS_ET+II_PA_TI_NPERS_ETA+
+                  II_PA_AP_AAEP+II_PP_PP_NPERS_OP+II_PP_TD_NPERS_OT+
+                  II_PP_TI_NPERS_OTA+II_PP_AP_APEP)
+    )
 
 
   # Exportar data frame con la identificación de posibles casos de imputación -------------------------------
