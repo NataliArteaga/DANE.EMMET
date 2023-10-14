@@ -24,7 +24,7 @@ colnames_format <- function(base){
 
 # Bases -------------------------------------------------------------------
 
-base_panel<- read.csv(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"), sep = ",")
+base_panel<- read.csv(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"),fileEncoding = "latin1")
 
 alertas <- fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"))
 

@@ -85,13 +85,17 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
   datos <- filter(datos, !(ANIO == anio & MES == mes))
   #cargar la base de alertas
   if(avance==100){
-    wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"))
+    wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"),encoding = "Latin-1")
 
     }else{
- wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"))
+ wowimp=fread(paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"),encoding = "Latin-1")
 
       }
   wowimp=as.data.frame(wowimp)
+  for (i in variablesinte) {
+    wowimp[,i] <- as.numeric(wowimp[,i])
+    wowimp[,i] <- ifelse(is.na(wowimp[,i]),0,wowimp[,i])
+  }
   # Convertir los datos que son casos de imputación en NA
   for (i in variablesinte) {
     wowimp[!grepl("continua", tolower(wowimp[, paste0(i, "_caso_de_imputacion")])),i]<- NA
@@ -119,7 +123,11 @@ f4_imputacion <- function(directorio,mes,anio,avance=100) {
     tra[,paste0(i,"_var_mes_ant")]=(tra[,i]-tra[,paste0(i,"_rezago1")])/tra[,paste0(i,"_rezago1")]
     tra[tra[,i]==0 & !is.na(tra[,i]) & tra[,paste0(i,"_rezago1")]==0& !is.na(tra[,paste0(i,"_rezago1")]),paste0(i,"_var_mes_ant")] <- 0
     tra[tra[,i]!=0 & !is.na(tra[,i]) & tra[,paste0(i,"_rezago1")]==0 & !is.na(tra[,paste0(i,"_rezago1")]),paste0(i,"_var_mes_ant")] <- 1
-  }
+    tra[,paste0(i,"_var_anio_ant")]=(tra[,i]-tra[,paste0(i,"_mes_anio_ant")])/tra[,paste0(i,"_mes_anio_ant")]
+    tra[tra[,i]==0 & !is.na(tra[,i]) & tra[,paste0(i,"_mes_anio_ant")]==0& !is.na(tra[,paste0(i,"_mes_anio_ant")]),paste0(i,"_var_anio_ant")] <- 0
+    tra[tra[,i]!=0 & !is.na(tra[,i]) & tra[,paste0(i,"_mes_anio_ant")]==0 & !is.na(tra[,paste0(i,"_mes_anio_ant")]),paste0(i,"_var_anio_ant")] <- 1
+
+      }
 
   #Convertir algunas variables como factor para la función KNN
   base_imputar$ANIO=as.factor(base_imputar$ANIO)
