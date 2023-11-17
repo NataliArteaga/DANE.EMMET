@@ -109,6 +109,7 @@
 f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   ### función detección de outliers
 
+  ##Identificar si el archivo existe y preguntarle al usuario si desea sobreescribirlo
   archivo=paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv")
   if (file.exists(archivo)) {
     respuesta <- readline(paste("El archivo", archivo, "ya existe. ¿Desea sobreescribirlo? (S/N): "))
