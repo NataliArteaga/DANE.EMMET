@@ -16,12 +16,10 @@ require(forecast)
 
 capitulo3=c("Ajuste_Producción","Ajuste_Venta_productos_elaborados_país",
             "Ajuste_Venta_productos_elaborados_exterior","Valor_existencias_precio_costo" )
-variablesinte=c("II_PA_PP_NPERS_EP","AJU_II_PA_PP_SUELD_EP","II_PA_TD_NPERS_ET",
-                "AJU_II_PA_TD_SUELD_ET","II_PA_TI_NPERS_ETA","AJU_II_PA_TI_SUELD_ETA",
-                "II_PA_AP_AAEP","AJU_II_PA_AP_AAS_AP","II_PP_PP_NPERS_OP","AJU_II_PP_PP_SUELD_OP",
-                "II_PP_TD_NPERS_OT","AJU_II_PP_TD_SUELD_OT","II_PP_TI_NPERS_OTA","AJU_II_PP_TI_SUELD_OTA",
-                "II_PP_AP_APEP","AJU_II_PP_AP_AAS_PP","AJU_II_HORAS_HORDI_T","AJU_II_HORAS_HEXTR_T",
-                "AJU_III_PE_PRODUCCION","AJU_III_PE_VENTASIN","AJU_III_PE_VENTASEX","III_EX_VEXIS")
+variablesinte <- c("NPERS_EP","AJU_SUELD_EP","NPERS_ET","AJU_SUELD_ET","NPERS_ETA","AJU_SUELD_ETA",
+                   "NPERS_APREA","AJU_SUELD_APREA","NPERS_OP","AJU_SUELD_OP","NPERS_OT","AJU_SUELD_OT",
+                   "NPERS_OTA","AJU_SUELD_OTA","NPERS_APREO","AJU_SUELD_APREO","AJU_HORAS_ORDI",
+                   "AJU_HORAS_EXT","AJU_PRODUCCION","AJU_VENTASIN","AJU_VENTASEX","EXISTENCIAS")
 
 
 for (i in variablesinte) {
@@ -30,13 +28,17 @@ for (i in variablesinte) {
   base_panel[,i] <- ifelse(is.na(base_panel[,i]),0,base_panel[,i])
 }
 base_variables_encuesta <- base_panel %>%
-  select(ANIO,MES,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,
-         II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,AJU_II_PA_TD_SUELD_ET,
-         II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
-         II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,
-         II_PP_TI_NPERS_OTA,AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,
-         AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,AJU_III_PE_PRODUCCION,
-         AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS)
+  select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,
+         NORDEST,NOMBRE_ESTABLECIMIENTO,DOMINIO_39,CLASE_CIIU4,
+         NPERS_EP,AJU_SUELD_EP,NPERS_ET,
+         AJU_SUELD_ET,NPERS_ETA,
+         AJU_SUELD_ETA,NPERS_APREA,AJU_SUELD_APREA,
+         NPERS_OP,AJU_SUELD_OP,NPERS_OT,
+         AJU_SUELD_OT,NPERS_OTA,
+         AJU_SUELD_OTA,NPERS_APREO,AJU_SUELD_APREO,
+         AJU_HORAS_ORDI,AJU_HORAS_EXT,
+         AJU_PRODUCCION,AJU_VENTASIN,
+         AJU_VENTASEX,EXISTENCIAS)
 
 base_variables_encuesta=as.data.frame(base_variables_encuesta)
 
@@ -55,27 +57,21 @@ varinteres=paste0(variablesinte,"_caso_de_imputacion")
 
 des2 <- alertas %>% filter(ANIO==anio & MES==mes) %>%
   pivot_longer(cols=varinteres,names_to = "Variables",values_to ="Caso_imputacion")  %>%
-  select(ANIO,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,Variables,Caso_imputacion)
+  select(ANIO,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,NORDEST,NOMBRE_ESTABLECIMIENTO,DOMINIO_39,Variables,Caso_imputacion)
 des2$Variables <- sub("\\_caso_de_imputacion", "", des2$Variables)
 des2=as.data.frame(des2)
 df_merge <- merge(des, des2, by = c("ANIO","NOMBREDEPARTAMENTO","NOMBREMUNICIPIO",
-                                    "ID_NUMORD","NOMBRE_ESTAB","DOMINIOEMMET39" ,"Variables"))
+                                    "NORDEST","NOMBRE_ESTABLECIMIENTO","DOMINIO_39" ,"Variables"))
 
 # Seleccionar todas las columnas de la tabla B y la columna valores 2 de la tabla A
 desf <- df_merge[, c(names(des), "Caso_imputacion")]
 desf[, paste0(meses_c[mes - 1])]=format(round(desf[, paste0(meses_c[mes - 1])], 1), big.mark=".",decimal.mark = ",")
 desf[, paste0(meses_c[mes])]=format(round(desf[, paste0(meses_c[mes])], 1), big.mark=".",decimal.mark = ",")
 desf$variacion=format(round(desf$variacion, 1), big.mark=".",decimal.mark = ",")
-desf=arrange(desf,ID_NUMORD)
+desf=arrange(desf,NORDEST)
 # Renombrar variables -----------------------------------------------------
 
-variablesinte=c("II_PA_PP_NPERS_EP","AJU_II_PA_PP_SUELD_EP","II_PA_TD_NPERS_ET",
-                "AJU_II_PA_TD_SUELD_ET","II_PA_TI_NPERS_ETA","AJU_II_PA_TI_SUELD_ETA",
-                "II_PA_AP_AAEP","AJU_II_PA_AP_AAS_AP","II_PP_PP_NPERS_OP",
-                "AJU_II_PP_PP_SUELD_OP","II_PP_TD_NPERS_OT","AJU_II_PP_TD_SUELD_OT",
-                "II_PP_TI_NPERS_OTA","AJU_II_PP_TI_SUELD_OTA","II_PP_AP_APEP",
-                "AJU_II_PP_AP_AAS_PP","AJU_II_HORAS_HORDI_T","AJU_II_HORAS_HEXTR_T",
-                "AJU_III_PE_PRODUCCION","AJU_III_PE_VENTASIN","AJU_III_PE_VENTASEX","III_EX_VEXIS")
+
 cambio=c("Empleados_permanentes","Ajuste_sueldos_Empleados_Permanentes",
          "Empleados_temporales", "Ajuste_sueldos_Empleados_Temporales",
          "Empleados_temporales_agencias","Ajuste_sueldos_Empleados_Temporales_Agencia",
@@ -100,6 +96,6 @@ colnames(base_variables_encuesta)[8:length(colnames(base_variables_encuesta))]=c
                                                                                  "Ajuste_Producción","Ajuste_Venta_productos_elaborados_país",
                                                                                  "Ajuste_Venta_productos_elaborados_exterior","Valor_existencias_precio_costo")
 desf["MES"] <- mes
-desf["LLAVE"] <- as.numeric(paste0(desf$ANIO,desf$MES,desf$ID_NUMORD))
+desf["LLAVE"] <- as.numeric(paste0(desf$ANIO,desf$MES,desf$NORDEST))
 desf$OBSERVACIONES <- NA
 desf$EDITADO <- NA

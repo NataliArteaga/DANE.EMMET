@@ -15,11 +15,11 @@
 #' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
 #' @param directorio definir el directorio donde se encuentran ubicado los datos de entrada
-#' @param tipo Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "pdf", ej: "html
+#' @param tipo Definir si se quiere un archivo pdf, word, o html, por defecto esta la opción "word", ej: "html
 #'
 #'
 #'
-#' @examples f8_boletin(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022,tipo="word")
+#' @examples f7_boletin(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022,tipo="pdf")
 #'
 #' @details
 #' Esta función requiere del uso de Google Chrome, pues para la creación de
@@ -44,7 +44,7 @@
 
 
 
-f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
+f7_boletin <- function(directorio, mes, anio, tipo = "word") {
   library(rmarkdown)
   library(installr)
   library(readxl)
@@ -78,7 +78,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
   } else {
     ruta_boletin_rmd <- file.path(directorio, "boletin","boletin", "boletin_versionP.Rmd")
   }
-  parametros <- as.data.frame(read_excel(paste0(directorio,"/results/S7_boletin/parametros_boletin.xlsx")))
+  parametros <- as.data.frame(read_excel(paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx")))
   meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
 
@@ -110,7 +110,7 @@ f8_boletin <- function(directorio, mes, anio, tipo = "pdf") {
                                   TI_empl= parametros[7,2]
                                   ),
                     output_file = paste0("boletin_", fecha_formateada2),
-                    output_dir = file.path(directorio, "results", "S7_boletin"))
+                    output_dir = file.path(directorio, "results", "S6_boletin"))
 }
 
 

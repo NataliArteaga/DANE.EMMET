@@ -70,34 +70,31 @@ crearCarpeta(ruta)
 ruta=paste0(directorio,"/results/S1_integracion")
 crearCarpeta(ruta)
 
-#crear la carpeta de estandarizacion
-ruta=paste0(directorio,"/results/S2_estandarizacion")
-crearCarpeta(ruta)
 
 #crear la carpeta de alertas
-ruta=paste0(directorio,"/results/S3_identificacion_alertas")
+ruta=paste0(directorio,"/results/S2_identificacion_alertas")
 crearCarpeta(ruta)
 
 #crear la carpeta de imputacion
-ruta=paste0(directorio,"/results/S4_imputacion")
+ruta=paste0(directorio,"/results/S3_imputacion")
 crearCarpeta(ruta)
 
 
 #crear la carpeta de tematica
-ruta=paste0(directorio,"/results/S5_tematica")
+ruta=paste0(directorio,"/results/S4_tematica")
 crearCarpeta(ruta)
 
 
 #crear la carpeta anexos
-ruta=paste0(directorio,"/results/S6_anexos")
+ruta=paste0(directorio,"/results/S5_anexos")
 crearCarpeta(ruta)
 
 #crear la carpeta boletin
-ruta=paste0(directorio,"/results/S7_boletin")
+ruta=paste0(directorio,"/results/S6_boletin")
 crearCarpeta(ruta)
 
 para_boletin <- data.frame(parametro = c("IC_prod","IC_ven","IC_empl","TNR","TI_prod","TI_ven","TI_empl"),
                            valores = c(98.1,98.1,98.5,2,2.6,2.5,2.7))
-write.xlsx(para_boletin, file = paste0(directorio,"/results/S7_boletin/parametros_boletin.xlsx"),row.names = FALSE)
-print(paste0("Se creo el archivo parametros_boletin.xlsx en ",directorio,"/results/S7_boletin/"))
+write.xlsx(para_boletin, file = paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx"),row.names = FALSE)
+print(paste0("Se creo el archivo parametros_boletin.xlsx en ",directorio,"/results/S6_boletin/"))
 }

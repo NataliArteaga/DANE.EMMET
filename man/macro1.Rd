@@ -29,8 +29,8 @@ archivo de salida de la función de alertas y poder realizar el proceso de criti
 Recuerde que si el archivo de alertas ya está creado, al correr esta función le pedira que
 responda S si quiere sobreescribirlo, de lo contrario otro valor para cancelar la función
 
-Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}}, \code{\link{f2_estandarizacion}},
-\code{\link{f3_identificacion_alertas}}
+Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}},
+\code{\link{f2_identificacion_alertas}}
 }
 \examples{
  macro1(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",

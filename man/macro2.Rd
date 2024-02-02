@@ -29,8 +29,8 @@ luego de haber realizado el proceso de critica al archivo de alertas, para imput
 valores necesarios. Esta función le pedira una confirmación de que ya valido el archivo de
 alertas, marque 1 para que la función corra, marque otro valor para cancelar.
 
-Ver:\code{\link{f4_imputacion}}, \code{\link{f5_tematica}}, \code{\link{f6_anacional}},
-\code{\link{f7_aterritorial}}, \code{\link{f8_boletin}}
+Ver:\code{\link{f3_imputacion}}, \code{\link{f4_tematica}}, \code{\link{f5_anacional}},
+\code{\link{f6_aterritorial}}, \code{\link{f7_boletin}}
 }
 \examples{
 macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",

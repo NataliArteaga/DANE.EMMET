@@ -103,14 +103,14 @@
 #'
 #'
 #'
-#' @examples f3_identificacion_alertas(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f2_identificacion_alertas(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022,avance=100)
 #'
-f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
+f2_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   ### función detección de outliers
 
   ##Identificar si el archivo existe y preguntarle al usuario si desea sobreescribirlo
-  archivo=paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv")
+  archivo=paste0(directorio,"/results/S2_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv")
   if (file.exists(archivo)) {
     respuesta <- readline(paste("El archivo", archivo, "ya existe. ¿Desea sobreescribirlo? (S/N): "))
     if (toupper(respuesta) != "S") {
@@ -132,9 +132,10 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
 
 
   #cargar la base de datos
-  base_panel <- fread(paste0(directorio,"/results/S2_estandarizacion/EMMET_PANEL_estandarizado",meses[mes],anio,".csv"))
+  base_panel <-  fread(paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"), encoding = "Latin-1")
 
 
+  #base_panel[base_panel$ANIO==2023 & base_panel$MES==7 & base_panel$NORDEST==11123,'AJU_SUELD_EP']=1641
   #convertir la base en data frame y convertir variables de año y mes en numéricas
   datos<- as.data.frame(base_panel)
   for (i in variablesinte) {
@@ -148,16 +149,23 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
 
 
   #crear un data frame con solo las variables de interés
-  tra<- datos %>% select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,CLASE_CIIU4,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
-                         AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
-                         II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
-                         AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
-                         AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS)
+  tra<- datos %>% select(ANIO,MES,NOVEDAD,DEPARTAMENTO,NOMBREMPIO,
+                         NORDEST,NOMBRE_ESTABLECIMIENTO,DOMINIO_39,CLASE_CIIU4,
+                         NPERS_EP,AJU_SUELD_EP,NPERS_ET,
+                         AJU_SUELD_ET,NPERS_ETA,
+                         AJU_SUELD_ETA,NPERS_APREA,AJU_SUELD_APREA,
+                         NPERS_OP,AJU_SUELD_OP,NPERS_OT,
+                         AJU_SUELD_OT,NPERS_OTA,
+                         AJU_SUELD_OTA,NPERS_APREO,AJU_SUELD_APREO,
+                         AJU_HORAS_ORDI,AJU_HORAS_EXT,
+                         AJU_PRODUCCION,AJU_VENTASIN,
+                         AJU_VENTASEX,EXISTENCIAS)
 
   #Calcular métricas de interés como el promedio, la desviación estándar,etc; en los últimos 2 años
-  tra <- tra  %>% group_by(ID_NUMORD) %>%  filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
+  tra <- tra  %>% group_by(NORDEST) %>%
+    filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
     mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.),mes_anio_ant=~ifelse(sum(MES==mes & ANIO==(anio-1))>=1,.[MES==mes & ANIO==anio-1],NA),
-                                          promedio=~mean(.,na.rm = T),devest=~sd(.,na.rm=T),moda_value=~sum(.%in%.[MES==mes & ANIO==anio])))#,
+                                          promedio=~mean(.,na.rm = T),devest=~sd(.,na.rm=T),moda_value=~sum(.%in%.[MES==mes & ANIO==anio]),tamano=~n()))#,
 
 
   #filtrar solo por el periodo actual
@@ -170,26 +178,28 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
     tra[,paste0(i,"_var_mes_anio_ant")]=(tra[,i]-tra[,paste0(i,"_mes_anio_ant")])/tra[,paste0(i,"_mes_anio_ant")]
     tra[tra[,i]!=0 & tra[,paste0(i,"_rezago1")]==0,paste0(i,"_var_mes_ant")] <- 1
     tra[tra[,i]==0 & tra[,paste0(i,"_rezago1")]==0,paste0(i,"_var_mes_ant")] <- 0
-    tra[,paste0(i,"_Li")]=tra[,paste0(i,"_promedio")]-1.96*tra[,paste0(i,"_devest")]
-    tra[,paste0(i,"_Ls")]=tra[,paste0(i,"_promedio")]+1.96*tra[,paste0(i,"_devest")]
+    tra[,paste0(i,"_Li")]=tra[,paste0(i,"_promedio")]-1.96*tra[,paste0(i,"_devest")]/sqrt(tra[,paste0(i,"_tamano")])
+    tra[,paste0(i,"_Ls")]=tra[,paste0(i,"_promedio")]+1.96*tra[,paste0(i,"_devest")]/sqrt(tra[,paste0(i,"_tamano")])
 
     tra[,paste0(i,"_caso_de_imputacion")]=ifelse((tra$NOVEDAD==5),"imputacion_deuda",ifelse((tra[,i]==0 & tra[,paste0(i,"_rezago1")]==0),"continua",ifelse((tra[,i]==0 & tra[,paste0(i,"_var_mes_ant")]!=0) | (tra[,i]!=0 & abs(tra[,paste0(i,"_var_mes_ant")])>0.2 &
-                                                                                                                                                                                                                (tra[,i]<tra[,paste0(i,"_Li")] | tra[,i]>tra[,paste0(i,"_Ls")]) & tra[,paste0(i,"_moda_value")]<=1) ,
-                                                                                                                                                                                                              "imputacion_caso_especial","continua")))
+                                                                                                                                                                                                                 (tra[,i]<tra[,paste0(i,"_Li")] | tra[,i]>tra[,paste0(i,"_Ls")]) & tra[,paste0(i,"_moda_value")]<=1) ,
+                                                                                                                                                           "imputacion_caso_especial","continua")))
   }
+
+
   # identificación individuos a imputar para las variables del capitulo 3 -----------------------------------------------
 
   #crear un data frame del mes actual
-  novorg=datos %>% filter(ANIO==anio & MES==mes) %>% arrange(ID_NUMORD)
+  novorg=datos %>% filter(ANIO==anio & MES==mes) %>% arrange(NORDEST)
   #vector con el id del establecimiento del mes actual
-  id_estab=novorg$ID_NUMORD
+  id_estab=novorg$NORDEST
   #crea un data frame vacio
   datafinal=NULL
 
   for (i in id_estab) {
     prueba=data.frame()
-    prueba[1,"ID_NUMORD"]=i
-    mmm <- datos %>% filter(ID_NUMORD==i) %>%
+    prueba[1,"NORDEST"]=i
+    mmm <- datos %>% filter(NORDEST==i) %>%
       as.data.frame()
     for (j in cap3){
       if ((sum(mmm[!is.na(mmm[,j]),j]==0)/dim(mmm)[1])<0.3){
@@ -204,7 +214,7 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
         prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse(sum(ts$ind==which(mmm$MES==mes & mmm$ANIO==anio))>=1,1,0)
 
       }else{
-        mmm2 <- mmm %>% filter(ID_NUMORD==i) %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
+        mmm2 <- mmm %>% filter(NORDEST==i) %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
           as.data.frame()
         prueba[1,paste0(j,"_metodo_de_imputacion")]="IC"
         LI <- mean(mmm2[,j],na.rm=T)-1.96*sd(mmm2[,j],na.rm=T)
@@ -217,7 +227,7 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
     datafinal=rbind(datafinal,prueba)
   }
   #crea un solo dataframe con los resultados de la función que identifica datos atipicos
-  traic=left_join(tra,datafinal,by= "ID_NUMORD")
+  traic=left_join(tra,datafinal,by= "NORDEST")
 
   #crear la regla de indentificación de individuos a imputar para las variables del capitulo 3
   for (i in cap3) {
@@ -225,27 +235,28 @@ f3_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   }
   #crear un data frame final con las variables que necesitaremos para el proceso de imputación
   final <- traic %>%
-    select(ANIO,MES,NOVEDAD,NOMBREDEPARTAMENTO,NOMBREMUNICIPIO,ID_NUMORD,NOMBRE_ESTAB,DOMINIOEMMET39,CLASE_CIIU4,II_PA_PP_NPERS_EP,AJU_II_PA_PP_SUELD_EP,II_PA_TD_NPERS_ET,
-           AJU_II_PA_TD_SUELD_ET,II_PA_TI_NPERS_ETA,AJU_II_PA_TI_SUELD_ETA,II_PA_AP_AAEP,AJU_II_PA_AP_AAS_AP,
-           II_PP_PP_NPERS_OP,AJU_II_PP_PP_SUELD_OP,II_PP_TD_NPERS_OT,AJU_II_PP_TD_SUELD_OT,II_PP_TI_NPERS_OTA,
-           AJU_II_PP_TI_SUELD_OTA,II_PP_AP_APEP,AJU_II_PP_AP_AAS_PP,AJU_II_HORAS_HORDI_T,AJU_II_HORAS_HEXTR_T,
-           AJU_III_PE_PRODUCCION,AJU_III_PE_VENTASIN,AJU_III_PE_VENTASEX,III_EX_VEXIS,ends_with("caso_de_imputacion")) %>% arrange(ID_NUMORD) %>% as.data.frame()
+    select(ANIO,MES,NOVEDAD,DEPARTAMENTO,NOMBREMPIO,NORDEST,NOMBRE_ESTABLECIMIENTO,
+           DOMINIO_39,CLASE_CIIU4,NPERS_EP,AJU_SUELD_EP,
+           NPERS_ET,AJU_SUELD_ET,NPERS_ETA,AJU_SUELD_ETA,NPERS_APREA,AJU_SUELD_APREA,
+           NPERS_OP,AJU_SUELD_OP,NPERS_OT,AJU_SUELD_OT,NPERS_OTA,AJU_SUELD_OTA,
+           NPERS_APREO,AJU_SUELD_APREO,AJU_HORAS_ORDI,AJU_HORAS_EXT,
+           AJU_PRODUCCION,AJU_VENTASIN,AJU_VENTASEX,EXISTENCIAS,ends_with("caso_de_imputacion")) %>% arrange(NORDEST) %>% as.data.frame()
 
   final <- final %>%
     mutate(
-      TOTAL_VENTAS=(AJU_III_PE_VENTASIN+AJU_III_PE_VENTASEX),
-      TotalHoras= (AJU_II_HORAS_HORDI_T+AJU_II_HORAS_HEXTR_T),
-      TOT_PERS=(II_PA_PP_NPERS_EP+II_PA_TD_NPERS_ET+II_PA_TI_NPERS_ETA+
-                  II_PA_AP_AAEP+II_PP_PP_NPERS_OP+II_PP_TD_NPERS_OT+
-                  II_PP_TI_NPERS_OTA+II_PP_AP_APEP)
+      TOTAL_VENTAS=(AJU_VENTASIN+AJU_VENTASEX),
+      TotalHoras= (AJU_HORAS_ORDI+AJU_HORAS_EXT),
+      TOT_PERS=(NPERS_EP+NPERS_ET+NPERS_ETA+
+                  NPERS_APREA+NPERS_OP+NPERS_OT+
+                  NPERS_OTA+NPERS_APREO)
     )
 
 
   # Exportar data frame con la identificación de posibles casos de imputación -------------------------------
 if(avance==100){
-  write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
+  write.csv(final,paste0(directorio,"/results/S2_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
 }else{
-  write.csv(final,paste0(directorio,"/results/S3_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"),row.names=F,fileEncoding = "latin1")
+  write.csv(final,paste0(directorio,"/results/S2_identificacion_alertas/EMMET_PANEL_alertas_",meses[mes],anio,"_",avance,".csv"),row.names=F,fileEncoding = "latin1")
 }
 }
 

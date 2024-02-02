@@ -20,8 +20,8 @@
 #' Recuerde que si el archivo de alertas ya está creado, al correr esta función le pedira que
 #' responda S si quiere sobreescribirlo, de lo contrario otro valor para cancelar la función
 #'
-#' Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}}, \code{\link{f2_estandarizacion}},
-#' \code{\link{f3_identificacion_alertas}}
+#' Ver:\code{\link{f0_inicial}},\code{\link{f1_integracion}},
+#' \code{\link{f2_identificacion_alertas}}
 #'
 #'
 #' @examples
@@ -34,11 +34,9 @@ f0_inicial(directorio)
   print("Se ejecuto la funcion inicial")
 f1_integracion(directorio,mes,anio)
 print("Se ejecuto la funcion integracion")
-f2_estandarizacion(directorio,mes,anio)
-print("Se ejecuto la funcion estandarizacion")
-f3_identificacion_alertas(directorio,mes,anio,avance)
+f2_identificacion_alertas(directorio,mes,anio,avance)
 print(paste0("Se ejecuto la funcion identificacion outliers, por favor verifique el archivo en la
-      carpeta",directorio,"results/S3_identificacion_alertas y realice el proceso de critica."))
+      carpeta",directorio,"results/S2_identificacion_alertas y realice el proceso de critica."))
 print("Recuerde seguir las instrucciones para guardar el archivo y continue con el
       proceso llamando la funcion macro2(directorio,mes,anio) ")
 }

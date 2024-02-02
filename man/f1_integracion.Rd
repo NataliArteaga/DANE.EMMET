@@ -18,33 +18,23 @@ CSV file
 }
 \description{
 Con esta función se integraran los archivos de entrada que son necesarios en el proceso EMMET, con el fin
- de trabajar con una base llamada "base panel.csv".
+ de trabajar con una base llamada "base panel.csv". Adicionalmente, en las variables numeticas, los datos faltantes se cambian por cero.
+ A estas mismas variables se es establece un formato numerico para la porterior manipulación.
 }
 \details{
 En esta función se leen las siguientes bases:
 
 1 Base logística: Es la base con todos los datos desde enero de 2018 hasta el mes
-anterior al indicado en el parámetro mes.
+ indicado en el parámetro.
 
-2 Base Original: Es la base con los registros de los 3000 establecimientos para el mes y año
-indicados en los parámetros.
+2 Base paramétrica: Base con las características de cada establecimiento.
 
-3 Base paramétrica: Base con las características de cada establecimiento.
-
-4 Base deflactor: base con los datos de IPP e IPC para cada CIIU4.
-
-5 Base divipola: base con los códigos de los departamentos y municipios, con sus nombres estandarizados.
 
 El procedimiento para unificar las bases es el siguiente:
 
-1 Se pegan las filas de la base original debajo de la base logística y se nombra base panel.
+1 Se cambia el formato de la base logistica de xlsx a csv renombrandola como base panel.
 
 2 Se agregan las columnas de la base paramétrica a la base panel por medio del ID_NUMORD.
-
-3 Adicionar las columnas de la base deflactor a partir del CIIU4, mes y año.
-
-4 Finalmente se estandarizan los nombres de los departamentos y municipios, uniendo las columnas de la base
-divipola por el ID_municipio.
 }
 \examples{
 f1_integracion(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",

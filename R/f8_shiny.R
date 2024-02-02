@@ -29,13 +29,13 @@
 #'
 #'
 #'
-#' @examples f9_shiny(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022)
+#' @examples f8_shiny(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022)
 
 
 
 
 
-f9_shiny <- function(directorio, mes, anio) {
+f8_shiny <- function(directorio, mes, anio) {
   library(rmarkdown)
   library(readxl)
   library(lubridate)
@@ -54,13 +54,13 @@ f9_shiny <- function(directorio, mes, anio) {
 
   ruta_app_shiny <- file.path(directorio,"Shiny_alertas/app_fun_critica_2.R")
 
-  ruta_archivo_excel<-paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv")
+  ruta_archivo_excel<-paste0(directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv")
 
   #identificar si el archivo de tematica existe
   if (!file.exists(ruta_archivo_excel)) {
     # Si el archivo no está presente, ejecuta la función f4_imputacion y f5_tematica
-    f4_imputacion(directorio,mes,anio)
-    f5_tematica(directorio,mes,anio)
+    f3_imputacion(directorio,mes,anio)
+    f4_tematica(directorio,mes,anio)
   } else {
   }
 

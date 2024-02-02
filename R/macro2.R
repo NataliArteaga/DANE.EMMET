@@ -18,8 +18,8 @@
 #' valores necesarios. Esta función le pedira una confirmación de que ya valido el archivo de
 #' alertas, marque 1 para que la función corra, marque otro valor para cancelar.
 #'
-#' Ver:\code{\link{f4_imputacion}}, \code{\link{f5_tematica}}, \code{\link{f6_anacional}},
-#' \code{\link{f7_aterritorial}}, \code{\link{f8_boletin}}
+#' Ver:\code{\link{f3_imputacion}}, \code{\link{f4_tematica}}, \code{\link{f5_anacional}},
+#' \code{\link{f6_aterritorial}}, \code{\link{f7_boletin}}
 #'
 #'
 #' @examples macro2(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
@@ -33,15 +33,15 @@ macro2<-function(directorio,mes,anio,avance=100,tipo="pdf"){
     cat("Operación cancelada. Valide el archivo de alertas y luego llame de nuevo la función .\n")
     return(invisible())
   }else{
-  f4_imputacion(directorio,mes,anio,avance)
+  f3_imputacion(directorio,mes,anio,avance)
   print("Se ejecuto la funcion imputacion")
-  f5_tematica(directorio,mes,anio)
+  f4_tematica(directorio,mes,anio)
   print("Se ejecuto la funcion construccion base tematica")
-  f6_anacional(directorio,mes,anio)
+  f5_anacional(directorio,mes,anio)
   print("Se ejecuto la funcion construccion anexo nacional")
-  f7_aterritorial(directorio,mes,anio)
+  f6_aterritorial(directorio,mes,anio)
   print("Se ejecuto la funcion construccion anexo territorial")
-  f8_boletin(directorio,mes,anio,tipo="pdf")
+  f7_boletin(directorio,mes,anio,tipo="pdf")
   print("Se ejecuto la funcion construccion  boletin")
   print(paste0("por favor consulte ",directorio,"/results encontrara los archivos para la
                publicacion de los resultados EMMET"))

@@ -1,7 +1,9 @@
 #'  Integración
 #'
 #'  Con esta función se integraran los archivos de entrada que son necesarios en el proceso EMMET, con el fin
-#'  de trabajar con una base llamada "base panel.csv".
+#'  de trabajar con una base llamada "base panel.csv". Adicionalmente, en las variables numeticas, los datos faltantes se cambian por cero.
+#'  A estas mismas variables se es establece un formato numerico para la porterior manipulación.
+#'
 #'
 #' @param mes Definir el mes a ejecutar, ej: 11
 #' @param anio Definir el año a ejecutar, ej: 2022
@@ -13,27 +15,17 @@
 #' @details En esta función se leen las siguientes bases:
 #'
 #' 1 Base logística: Es la base con todos los datos desde enero de 2018 hasta el mes
-#' anterior al indicado en el parámetro mes.
+#'  indicado en el parámetro.
 #'
-#' 2 Base Original: Es la base con los registros de los 3000 establecimientos para el mes y año
-#' indicados en los parámetros.
+#' 2 Base paramétrica: Base con las características de cada establecimiento.
 #'
-#' 3 Base paramétrica: Base con las características de cada establecimiento.
-#'
-#' 4 Base deflactor: base con los datos de IPP e IPC para cada CIIU4.
-#'
-#' 5 Base divipola: base con los códigos de los departamentos y municipios, con sus nombres estandarizados.
 #'
 #' El procedimiento para unificar las bases es el siguiente:
 #'
-#' 1 Se pegan las filas de la base original debajo de la base logística y se nombra base panel.
+#' 1 Se cambia el formato de la base logistica de xlsx a csv renombrandola como base panel.
 #'
 #' 2 Se agregan las columnas de la base paramétrica a la base panel por medio del ID_NUMORD.
 #'
-#' 3 Adicionar las columnas de la base deflactor a partir del CIIU4, mes y año.
-#'
-#' 4 Finalmente se estandarizan los nombres de los departamentos y municipios, uniendo las columnas de la base
-#' divipola por el ID_municipio.
 #'
 #'
 #'
@@ -69,71 +61,97 @@ f1_integracion <- function(directorio,
 
   # librerias ---------------------------------------------------------------
 
-
-  library(readr)
-  library(readxl)
-  library(stringr)
-  library(tidyr)
-  library(dplyr)
-  library(data.table)
-  library(writexl)
-  source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
-
+ library(readr)
+ library(readxl)
+ library(stringr)
+ library(tidyr)
+ library(dplyr)
+ library(data.table)
+ library(writexl)
+ source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
 
 
-  # Cargar bases necesarias y aplicar funcion de formato de nombres
 
-  base_logistica          <- read_csv(paste0(directorio,"/data/",anio,"/",meses[mes-1],"/EMMET_PANEL_imputada_",meses[mes-1],anio,".csv"))
+ # Cargar bases necesarias y aplicar funcion de formato de nombres
 
-  base_original           <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_original_",meses[mes],anio,".xlsx"))
-  colnames(base_original) <- colnames_format(base_original)
-  colnames(base_original)[!colnames(base_original)%in%colnames(base_logistica)] <- c("IMP_IMPUTACION","TOTAL_VENTAS","LOGISTICO_NUEVO","OBSERVACION_DE_AJUSTES")
-  #cambia en las columnas que contienen la palabra "OBSE" cualquier caracter que no sea alfanumerico por un espacio
-  base_original           <-  base_original %>%
-    mutate_at(vars(contains("OBSE")),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+ #Cambio: se agrea , sheet = "LOGISTICA"
+ base_logistica          <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_PANEL_imputada_",meses[mes],anio,".xlsx"))
+ base_logistica          <- base_logistica[,1:76]
 
-  base_parametrica           <- read_excel(paste0(directorio,"/data/EMMET_parametrica.xlsx"),sheet = "Paramétrica")
-  colnames(base_parametrica) <- colnames_format(base_parametrica)
-  base_deflactor             <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/DEFLACTOR_",meses[mes],anio,".xlsx"))
-  colnames(base_deflactor)   <- colnames_format(base_deflactor)
-  divipola                   <- read_excel(paste0(directorio,"/data/DIVIPOLA.xlsx"))
-  colnames(divipola)         <- colnames_format(divipola)
+ #cambia en las columnas que contienen la palabra "OBSE" cualquier caracter que no sea alfanumerico por un espacio
+ base_logistica           <-  base_logistica %>%
+   mutate_at(vars(contains("OBSER")),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
-  # Concatenar base Logistica con base Original ----------------------------------------------------
+ base_logistica           <-  base_logistica %>%
+   mutate_at(vars("Dominio39_Descrip"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
-  base_panel <- rbind.data.frame(base_logistica,base_original)
+ base_logistica           <-  base_logistica %>%
+   mutate_at(vars("nombre_establecimiento"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
-  # Concatenar con Base Parametrica ---------------------------------------------
-  base_panel <- base_panel %>%
-    left_join(base_parametrica,by=c("ID_NUMORD"="ID_NUMORD"))
+ base_logistica           <-  base_logistica %>%
+   mutate_at(vars("DEPARTAMENTO"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
-  # Concatenar con Base Deflactor ----------------------------------------------------
-  base_panel <- base_panel %>%
-    left_join(base_deflactor,by=c("EMMET_CLASE"="CIIU4","ANIO"="ANO","MES"="MES"))
+ write.csv(base_logistica,paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F)
 
-  # Arreglos Base Panel (De Base Parametrica) -------------------------------
+ base_logistica          <-  read_csv(paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_PANEL_imputada_",meses[mes],anio,".csv"))
+ colnames(base_logistica) <- colnames_format(base_logistica)
 
-  #borrar variables que no son necesarias o estan repetidas
-  drop <- names(base_panel) %in% c("NOVEDADEMMET","DOMINIO_39","NOMBRE_ESTAB.x")
-  base_panel<-base_panel[,!drop]
-  colnames(base_panel) <- gsub(".y","",colnames(base_panel),fixed = TRUE)
 
-  # Estandarizacion nombres Departamento y Municipio ------------------------------------------------
-  divipola <- divipola[!is.na(divipola$CODIGOMUNICIPIO),-dim(divipola)[2]]
+ #Cargar bases insumo
 
-  base_panel <- base_panel %>%
-    left_join(divipola,by=c("ID_MUNICIPIO"="CODIGOMUNICIPIO"))
+ base_parametrica           <- read_excel(paste0(directorio,"/data/EMMET_parametrica_historico.xlsx"))
+ colnames(base_parametrica) <- colnames_format(base_parametrica)
 
-  drop <- names(base_panel) %in% c("NOMBREMPIO","NOMBREDEPTO","DESDEPTO")
-  base_panel <- base_panel[,!drop]
+ # Concatenar base Logistica con base Original ----------------------------------------------------
 
-  base_panel<-base_panel %>%
-    mutate_at(vars("DESCRIPCIONDOMINIOEMMET39"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
-  # Exportar bases de Datos integradas -------------------------------------------------
+ #base_panel <- rbind.data.frame(base_logistica,base_original)
+ base_panel <- base_logistica
 
-  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
+ # Concatenar con Base Parametrica ---------------------------------------------
+ base_panel <- base_panel %>%
+   left_join(base_parametrica %>% select(!c(NOMBRE_ESTABLECIMIENTO,NOVEDAD,CLASE_CIIU4,
+                                            DOMINIO_39,DOMINIO39_DESCRIP,ID_MUNICIPIO,
+                                            NOMBREMPIO)),
+             by=c("NORDEST"="NORDEST","ANIO"="ANIO","MES"="MES"))
 
-}
+ # Estandarizacion nombres Departamento y Municipio ------------------------------------------------
+ base_panel <- base_panel %>%
+   rename(NOMBREDEPARTAMENTO=DEPARTAMENTO,NOMBREMUNICIPIO=NOMBREMPIO)
+
+ mutate_at(vars("DESCRIPCIONDOMINIOEMMET39"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+
+ # Estandarizar Variables Numericas ----------------------------------------
+
+ base_panel<-base_panel %>%
+   mutate(
+     AJU_VENTASIN=ifelse(is.na(AJU_VENTASIN),0,AJU_VENTASIN),
+     AJU_VENTASEX=ifelse(is.na(AJU_VENTASEX),0,AJU_VENTASEX),
+     NPERS_EP=ifelse(is.na(NPERS_EP),0,NPERS_EP),
+     NPERS_ET=ifelse(is.na(NPERS_ET),0,NPERS_ET),
+     NPERS_ETA=ifelse(is.na(NPERS_ETA),0,NPERS_ETA),
+     NPERS_APREA=ifelse(is.na(NPERS_APREA),0,NPERS_APREA),
+     NPERS_OP=ifelse(is.na(NPERS_OP),0,NPERS_OP),
+     NPERS_OT=ifelse(is.na(NPERS_OT),0,NPERS_OT),
+     NPERS_OTA=ifelse(is.na(NPERS_OTA),0,NPERS_OTA),
+     NPERS_APREO=ifelse(is.na(NPERS_APREO),0,NPERS_APREO),
+     AJU_SUELD_EP=ifelse(is.na(AJU_SUELD_EP),0,AJU_SUELD_EP),
+     AJU_SUELD_ET=ifelse(is.na(AJU_SUELD_ET),0,AJU_SUELD_ET),
+     AJU_SUELD_ETA=ifelse(is.na(AJU_SUELD_ETA),0,AJU_SUELD_ETA),
+     AJU_SUELD_APREA=ifelse(is.na(AJU_SUELD_APREA),0,AJU_SUELD_APREA),
+     AJU_SUELD_OP=ifelse(is.na(AJU_SUELD_OP),0,AJU_SUELD_OP),
+     AJU_SUELD_OT=ifelse(is.na(AJU_SUELD_OT),0,AJU_SUELD_OT),
+     AJU_SUELD_OTA=ifelse(is.na(AJU_SUELD_OTA),0,AJU_SUELD_OTA),
+     AJU_SUELD_APREO=ifelse(is.na(AJU_SUELD_APREO),0,AJU_SUELD_APREO),
+     AJU_HORAS_ORDI=ifelse(is.na(AJU_HORAS_ORDI),0,AJU_HORAS_ORDI),
+     AJU_HORAS_EXT=ifelse(is.na(AJU_HORAS_EXT),0,AJU_HORAS_EXT),
+     AJU_PRODUCCION=ifelse(is.na(AJU_PRODUCCION),0,AJU_PRODUCCION),
+     EXISTENCIAS=ifelse(is.na(EXISTENCIAS),0,EXISTENCIAS)
+   )
+
+ # Exportar bases de Datos integradas -------------------------------------------------
+
+ write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
+ }
 
 

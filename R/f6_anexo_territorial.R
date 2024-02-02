@@ -23,7 +23,7 @@
 #' @return CSV file
 #' @export
 #'
-#' @examples f7_aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
+#' @examples f6_aterritorial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET",
 #'                        mes=11,anio=2022)
 #'
 #' @details
@@ -248,12 +248,13 @@
 #'  19 hojas.
 
 
-f7_aterritorial <- function(directorio,
+f6_aterritorial <- function(directorio,
                             mes,
                             anio){
 
 
 # Librerias ---------------------------------------------------------------
+
 
   library(readxl)
   library(dplyr)
@@ -267,20 +268,35 @@ f7_aterritorial <- function(directorio,
   library("webshot")
   library(openxlsx)
   library(xlsx)
+  library(DT)
+  library(data.table)
 
   source("https://raw.githubusercontent.com/NataliArteaga/DANE.EMMET/main/R/utils.R")
 
   # Cargar bases y variables ------------------------------------------------
 
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
-  data<-read.csv(paste0(directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),fileEncoding = "latin1")
+  data<-read.csv(paste0(directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),fileEncoding = "latin1")
+
+   deptos <- data %>%
+    select(INCLUSION_NOMBRE_DEPTO,ORDEN_DEPTO)
+  deptos <- unique(deptos)
+
+  areas <- data %>%
+    select(AREA_METROPOLITANA,ORDEN_AREA)
+  areas <- unique(areas)
+
+  ciudades <- data %>%
+    select(CIUDAD,ORDEN_CIUDAD)
+  ciudades <- unique(ciudades)
+
 
 
   # Archivos de entrada y salida --------------------------------------------
 
-  formato <- paste0(directorio,"/data/anexos_territorial_emmet_",meses[mes],"_formato.xlsx")
-  Salida<-paste0(directorio,"/results/S6_anexos/anexos_territorial_emmet_",meses[mes],".xlsx")
 
+  formato <- paste0(directorio,"/data/anexos_territorial_emmet_",meses[mes],"_formato.xlsx")
+  Salida<-paste0(directorio,"/results/S5_anexos/anexos_territorial_emmet_",meses[mes],".xlsx")
 
   # Limpieza de nombres de variable -----------------------------------------
 
@@ -292,7 +308,7 @@ f7_aterritorial <- function(directorio,
 
   wb <- loadWorkbook(formato)
   sheets <- getSheets(wb)
-
+  names(sheets)
 
   # Funciones ---------------------------------------------------------------
 
@@ -451,7 +467,7 @@ f7_aterritorial <- function(directorio,
 
   #Calculo de la contribucion total
   contribucion_total <- data %>%
-    filter(MES==mes & ANIO%in%c(anio-1,anio))
+    filter(MES==mes & ANIO%in%c(anio-1))
   contribucion_total <- cont_tot_summ(contribucion_total,1)
 
   #Calculo de la contribucion mensual
@@ -483,10 +499,50 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+  #Total industria
+
+  contribucion1 <- data %>%
+    filter(MES==mes & ANIO%in%c(anio-1,anio)) %>%
+    mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
+    group_by(ANIO,MES)
+  contribucion1 <- cont_summ(contribucion1,1)
+  contribucion1["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+  contribucion1 <- contribucion1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO)
+  contribucion1 <- cont_summ(contribucion1,2)
+
+
+  #Calculo de la variación por departamentos
+  tabla2 <- data %>%
+    filter(ANIO%in%c(anio-1,anio) & MES%in%mes) %>%
+    group_by(ANIO,MES)
+  tabla2 <- tabla_sum_mut(tabla2,1)
+  tabla2 <- tabla_piv_pas(tabla2,1)
+  tabla2 <- tabla2 %>% pivot_longer(cols = colnames(tabla2)[-c(1:2)],names_to = "variables",values_to = "value" )
+
+  tabla2 <- tabla_sapp(tabla2)
+
+
+  tabla2["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+
+  #Empalme de la variacion y contribucion anual por departamentos
+  tabla2 <- inner_join(x=tabla2,y=contribucion1,by=c("INCLUSION_NOMBRE_DEPTO"))
+  tabla2 <- tabla2[,c("INCLUSION_NOMBRE_DEPTO","varprodnom","varprod","produccion",
+                      "varventasnom","varventas","ventas","varpersonas","personal")]
+
+  for( i in c("varprodnom","varprod","produccion","varventasnom",
+              "varventas","ventas","varpersonas","personal")){
+    tabla2[,i] <-  tabla2[,i]*100
+  }
+
+  tabla1_1 <- rbind(tabla2,tabla1)
 
   #Exportar
 
@@ -541,11 +597,38 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personas")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+  tabla1_1["AGREG_DOMINIO_REG"]<- ""
+  tabla1_1 <- tabla1_1 %>%
+    rename(personas=personal)
+  tabla1_1 <- tabla1_1 %>%
+    select(names(tabla1))
+  tabla1_1 <- tabla1_1[2:nrow(tabla1_1),]
 
+  conteo <- tabla1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO) %>%
+    summarise(Total=n()) %>%
+    filter(Total==1)
+
+  tabla1_1 <- tabla1_1 %>%
+    filter( !INCLUSION_NOMBRE_DEPTO %in% conteo$INCLUSION_NOMBRE_DEPTO)
+
+  tabla1 <- rbind(tabla1_1,tabla1)
+
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2["AGREG_DOMINIO_REG"]<- ""
+  tabla2 <- tabla2 %>%
+    rename(personas=personal)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+
+  tabla1 <- rbind(tabla2,tabla1)
 
   #Exportar
 
@@ -595,12 +678,21 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(AREA_METROPOLITANA)
+
+  tabla1 <- tabla1 %>% inner_join(areas, by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_AREA)
+  tabla1 <- tabla1[,-ncol(tabla1)]
 
 
+  tabla2 <- tabla2 %>%
+    rename(personal=personas,
+           AREA_METROPOLITANA=INCLUSION_NOMBRE_DEPTO)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
 
   #Exportar
 
@@ -649,10 +741,18 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(CIUDAD)
+  tabla1 <- tabla1 %>% inner_join(ciudades, by=c("CIUDAD"="CIUDAD"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_CIUDAD)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+  tabla2 <- tabla2 %>%
+    rename(CIUDAD=AREA_METROPOLITANA)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Exportar
@@ -703,15 +803,58 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  #Total Industria
+
+  contribucion1 <- data %>%
+    filter(MES%in%c(1:mes) & ANIO%in%c(anio,anio-1)) %>%
+    mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
+    group_by(ANIO)
+  contribucion1 <- cont_summ(contribucion1,1)
+  contribucion1["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+  contribucion1 <- contribucion1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO)
+  contribucion1 <- cont_summ(contribucion1,2)
+
+
+  #Calculo de la variación por departamentos
+  tabla2 <- data %>%
+    filter(ANIO%in%c(anio,anio-1) & MES%in%c(1:mes))%>%
+    group_by(ANIO)
+  tabla2 <- tabla_sum_mut(tabla2,1)
+  tabla2 <- tabla_piv_pas(tabla2,1)
+  tabla2 <- tabla2 %>% pivot_longer(cols = colnames(tabla2)[-c(1:2)],names_to = "variables",values_to = "value" )
+
+  tabla2 <- tabla_sapp(tabla2)
+
+
+  tabla2["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+
+  #Empalme de la variacion y contribucion anual por departamentos
+  tabla2 <- inner_join(x=tabla2,y=contribucion1,by=c("INCLUSION_NOMBRE_DEPTO"))
+  tabla2 <- tabla2[,c("INCLUSION_NOMBRE_DEPTO","varprodnom","varprod","produccion",
+                      "varventasnom","varventas","ventas","varpersonas","personal")]
+
+  for( i in c("varprodnom","varprod","produccion","varventasnom",
+              "varventas","ventas","varpersonas","personal")){
+    tabla2[,i] <-  tabla2[,i]*100
+  }
+
+  tabla1_1 <- rbind(tabla2,tabla1)
+
 
   #Exportar
 
   sheet <- sheets[[7]]
-  addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
+  addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
@@ -764,10 +907,41 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personas")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+
+  tabla1_1["AGREG_DOMINIO_REG"]<- ""
+  tabla1_1 <- tabla1_1 %>%
+    rename(personas=personal)
+  tabla1_1 <- tabla1_1 %>%
+    select(names(tabla1))
+  tabla1_1 <- tabla1_1[2:nrow(tabla1_1),]
+
+  conteo <- tabla1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO) %>%
+    summarise(Total=n()) %>%
+    filter(Total==1)
+
+  tabla1_1 <- tabla1_1 %>%
+    filter( !INCLUSION_NOMBRE_DEPTO %in% conteo$INCLUSION_NOMBRE_DEPTO)
+
+  tabla1 <- rbind(tabla1_1,tabla1)
+
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2["AGREG_DOMINIO_REG"]<- ""
+  tabla2 <- tabla2 %>%
+    rename(personas=personal)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+
+  tabla1 <- rbind(tabla2,tabla1)
+
+
 
 
   #Exportar
@@ -817,10 +991,20 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(AREA_METROPOLITANA)
+  tabla1 <- tabla1 %>% inner_join(areas, by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_AREA)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2 <- tabla2 %>%
+    rename(personal=personas,
+           AREA_METROPOLITANA=INCLUSION_NOMBRE_DEPTO)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Exportar
@@ -869,10 +1053,21 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(CIUDAD)
+
+  tabla1 <- tabla1 %>% inner_join(ciudades, by=c("CIUDAD"="CIUDAD"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_CIUDAD)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2 <- tabla2 %>%
+    rename(CIUDAD=INCLUSION_NOMBRE_DEPTO)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Esportar
@@ -926,15 +1121,53 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+  #Total Industria
+
+  contribucion1 <- data %>%
+    filter(ANIO2%in%c(anio-1,anio)) %>%
+    mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
+    group_by(ANIO2)
+  contribucion1 <- cont_summ(contribucion1,1)
+  contribucion1["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+  contribucion1 <- contribucion1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO)
+  contribucion1 <- cont_summ(contribucion1,2)
+
+
+  #Calculo de la variación por departamentos
+  tabla2 <- data %>%
+    filter(ANIO2%in%c(anio,anio-1)) %>%
+    group_by(ANIO2)
+  tabla2 <- tabla_sum_mut(tabla2,1)
+
+  tabla2 <- tabla_piv_pas(tabla2,2)
+  tabla2 <- tabla2 %>% pivot_longer(cols = colnames(tabla2)[-c(1)],names_to = "variables",values_to = "value" )
+
+  tabla2 <- tabla_sapp(tabla2)
+
+  tabla2["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+
+  #Empalme de la contribucion y la variacion
+  tabla2 <- inner_join(x=tabla2,y=contribucion1,by=c("INCLUSION_NOMBRE_DEPTO"))
+  tabla2 <- tabla2[,c("INCLUSION_NOMBRE_DEPTO","varprodnom",
+                      "varprod","produccion","varventasnom","varventas","ventas",
+                      "varpersonas","personal")]
+
+  for( i in c("varprodnom",
+              "varprod","produccion","varventasnom","varventas","ventas",
+              "varpersonas","personal")){
+    tabla2[,i] <-  tabla2[,i]*100
+  }
+
+  tabla1_1 <- rbind(tabla2,tabla1)
 
   #Exportar
 
   sheet <- sheets[[11]]
-  addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
+  addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
   mes_sig=meses[mes+1]
 
@@ -990,10 +1223,39 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personas")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+
+  tabla1_1["AGREG_DOMINIO_REG"]<- ""
+  tabla1_1 <- tabla1_1 %>%
+    rename(personas=personal)
+  tabla1_1 <- tabla1_1 %>%
+    select(names(tabla1))
+  tabla1_1 <- tabla1_1[2:nrow(tabla1_1),]
+
+  conteo <- tabla1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO) %>%
+    summarise(Total=n()) %>%
+    filter(Total==1)
+
+  tabla1_1 <- tabla1_1 %>%
+    filter( !INCLUSION_NOMBRE_DEPTO %in% conteo$INCLUSION_NOMBRE_DEPTO)
+
+  tabla1 <- rbind(tabla1_1,tabla1)
+
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2["AGREG_DOMINIO_REG"]<- ""
+  tabla2 <- tabla2 %>%
+    rename(personas=personal)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Exportar
@@ -1047,11 +1309,20 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(AREA_METROPOLITANA)
+  tabla1 <- tabla1 %>% inner_join(areas, by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_AREA)
+  tabla1 <- tabla1[,-ncol(tabla1)]
 
+
+  tabla2 <- tabla2 %>%
+    rename(personal=personas,
+           AREA_METROPOLITANA=INCLUSION_NOMBRE_DEPTO)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Exportar
@@ -1104,10 +1375,19 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(CIUDAD)
+  tabla1 <- tabla1 %>% inner_join(ciudades, by=c("CIUDAD"="CIUDAD"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_CIUDAD)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2 <- tabla2 %>%
+    rename(CIUDAD=AREA_METROPOLITANA)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Exportar
@@ -1125,25 +1405,107 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     group_by(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG)
-  contribucion_total <- cont_tot_summ(contribucion_total,4)
+  #contribucion_total <- cont_tot_summ(contribucion_total,4)
+
+  contribucion_total <- contribucion_total  %>%
+    summarise(produccionNom_total = sum(PRODUCCIONNOMPOND),
+              produccion_total = sum(PRODUCCIONREALPOND),
+              ventasnom_total=sum(VENTASNOMINPOND),
+              ventas_total=sum(VENTASREALESPOND),
+              personal_total=sum(II_TOT_TOT_PERS))
+
 
   #Calculo de la contribucion mensual por dpto
   contribucion_total <- contribucion_total %>%
     group_by(INCLUSION_NOMBRE_DEPTO,ANIO,AGREG_DOMINIO_REG)
-  contribucion_total <- cont_tot_summ(contribucion_total,3)
+  #contribucion_total <- cont_tot_summ(contribucion_total,3)
+
+  contribucion_total <- contribucion_total  %>%
+    filter(ANIO==2018) %>%
+    summarise(produccionNom_total = mean(produccionNom_total),
+              produccion_total = mean(produccion_total),
+              ventasnom_total=mean(ventasnom_total),
+              ventas_total=mean(ventas_total),
+              personal_total=mean(personal_total))
 
   #Calculo de indices
   contribucion_mensual <- data %>%
     group_by(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG)
-  contribucion_mensual <- cont_summ(contribucion_mensual,4)
+  #contribucion_mensual <- cont_summ(contribucion_mensual,4)
+  contribucion_mensual <- contribucion_mensual %>%
+    summarise(produccionNom_mensual = sum(PRODUCCIONNOMPOND),
+              produccion_mensual = sum(PRODUCCIONREALPOND),
+              ventasnom_mensual=sum(VENTASNOMINPOND),
+              ventas_mensual=sum(VENTASREALESPOND),
+              personal_mensual=sum(II_TOT_TOT_PERS))
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO",
-                                      "ANIO"="ANIO"))
+                                      "AGREG_DOMINIO_REG"="AGREG_DOMINIO_REG"))
 
-  tabla1 <- tabla_sum_mut(contribucion,2) %>%
-    select(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG.x,produccionNom,
+  # tabla1 <- tabla_sum_mut(contribucion,2) %>%
+  #   select(INCLUSION_NOMBRE_DEPTO,ANIO.x,MES,AGREG_DOMINIO_REG.x,produccionNom,
+  #          produccion,ventasnom,ventas,personal)
+
+
+  tabla1<-contribucion %>%
+    mutate(produccionNom=(produccionNom_mensual/produccionNom_total)*100,
+           produccion   =(produccion_mensual/produccion_total)*100,
+           ventasnom    =(ventasnom_mensual/ventasnom_total)*100,
+           ventas       =(ventas_mensual/ventas_total)*100,
+           personal     =(personal_mensual/personal_total)*100)%>%
+    select(INCLUSION_NOMBRE_DEPTO,ANIO.x,MES,AGREG_DOMINIO_REG,produccionNom,
+           produccion,ventasnom,ventas,personal) %>%
+    rename("ANIO"="ANIO.x")
+
+
+  #Calculo de la contribucion mensual
+  contribucion_mensual <- data %>%
+    group_by(ANIO,MES,INCLUSION_NOMBRE_DEPTO) %>%
+    summarise(produccionNom_mensual=sum(PRODUCCIONNOMPOND),
+              produccion_mensual   =sum(PRODUCCIONREALPOND),
+              ventasNom_mensual    = sum(VENTASNOMINPOND),
+              ventas_mensual       = sum(VENTASREALESPOND),
+              #personas_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
+              personas_mensual     =sum(II_TOT_TOT_PERS))
+
+  #Calculo de la contribucion por el anio base
+  contribucion_base <- contribucion_mensual %>%
+    filter(ANIO==2018) %>%
+    group_by(INCLUSION_NOMBRE_DEPTO) %>%
+    summarise(produccionNom_total=mean(produccionNom_mensual),
+              produccion_total=mean(produccion_mensual),
+              ventasNom_total= mean(ventasNom_mensual),
+              ventas_total= mean(ventas_mensual),
+              personas_total=mean(personas_mensual))
+
+
+  contribucion_mensual<-contribucion_mensual %>%
+    mutate(produccionNom_total=contribucion_base$produccionNom_total,
+           produccion_total=contribucion_base$produccion_total,
+           ventasNom_total=contribucion_base$ventasNom_total,
+           ventas_total=contribucion_base$ventas_total,
+           personas_total=contribucion_base$personas_total)
+
+
+  #Calculo de la variables nominales y totales
+  tabla1_1<-contribucion_mensual %>%
+    mutate(produccionNom =(produccionNom_mensual/produccionNom_total)*100,
+           produccion    =(produccion_mensual/produccion_total)*100,
+           ventasnom     =(ventasNom_mensual/ventasNom_total)*100,
+           ventas        =(ventas_mensual/ventas_total)*100,
+           personal      =(personas_mensual/personas_total)*100) %>%
+    mutate(AGREG_DOMINIO_REG= "Total") %>%
+    select(INCLUSION_NOMBRE_DEPTO,ANIO,MES,AGREG_DOMINIO_REG,produccionNom,
            produccion,ventasnom,ventas,personal)
+
+  tabla1<- tabla1 %>% filter(!grepl("Total", AGREG_DOMINIO_REG, ignore.case = TRUE))
+
+  tabla1<-rbind(tabla1,tabla1_1)
+
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO,AGREG_DOMINIO_REG)
+  tabla1 <- tabla1[,-ncol(tabla1)]
 
 
   #Exportar
@@ -1161,25 +1523,62 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     group_by(AREA_METROPOLITANA,ANIO,MES)
-  contribucion_total <- cont_tot_summ(contribucion_total,4)
+  #contribucion_total <- cont_tot_summ(contribucion_total,4)
+
+  contribucion_total <- contribucion_total  %>%
+    summarise(produccionNom_total = sum(PRODUCCIONNOMPOND),
+              produccion_total = sum(PRODUCCIONREALPOND),
+              ventasnom_total=sum(VENTASNOMINPOND),
+              ventas_total=sum(VENTASREALESPOND),
+              personal_total=sum(II_TOT_TOT_PERS))
 
   #Calculo de la contribucion mensual por area mtp
   contribucion_total <- contribucion_total %>%
     group_by(AREA_METROPOLITANA,ANIO)
-  contribucion_total <- cont_tot_summ(contribucion_total,3)
+  #contribucion_total <- cont_tot_summ(contribucion_total,3)
+
+  contribucion_total <- contribucion_total  %>%
+    filter(ANIO==2018) %>%
+    summarise(produccionNom_total = mean(produccionNom_total),
+              produccion_total = mean(produccion_total),
+              ventasnom_total=mean(ventasnom_total),
+              ventas_total=mean(ventas_total),
+              personal_total=mean(personal_total))
 
   #Calculo de los indices
   contribucion_mensual <- data %>%
     group_by(AREA_METROPOLITANA,ANIO,MES)
-  contribucion_mensual <- cont_summ(contribucion_mensual,4)
+  #contribucion_mensual <- cont_summ(contribucion_mensual,4)
+
+  contribucion_mensual <- contribucion_mensual %>%
+    summarise(produccionNom_mensual = sum(PRODUCCIONNOMPOND),
+              produccion_mensual = sum(PRODUCCIONREALPOND),
+              ventasnom_mensual=sum(VENTASNOMINPOND),
+              ventas_mensual=sum(VENTASREALESPOND),
+              personal_mensual=sum(II_TOT_TOT_PERS))
 
   contribucion<-contribucion_mensual %>%
-    left_join(contribucion_total,by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA","ANIO"="ANIO"))
+    left_join(contribucion_total,by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
 
 
-  tabla1 <- tabla_sum_mut(contribucion,2) %>%
-    select(AREA_METROPOLITANA,ANIO,MES,produccionNom,
+
+  # tabla1 <- tabla_sum_mut(contribucion,2) %>%
+  #   select(AREA_METROPOLITANA,ANIO,MES,produccionNom,
+  #          produccion,ventasnom,ventas,personal)
+
+
+  tabla1<-contribucion %>%
+    mutate(produccionNom=(produccionNom_mensual/produccionNom_total)*100,
+           produccion   =(produccion_mensual/produccion_total)*100,
+           ventasnom    =(ventasnom_mensual/ventasnom_total)*100,
+           ventas       =(ventas_mensual/ventas_total)*100,
+           personal     =(personal_mensual/personal_total)*100) %>%
+    select(AREA_METROPOLITANA,ANIO.x,MES,produccionNom,
            produccion,ventasnom,ventas,personal)
+
+  tabla1 <- tabla1 %>% inner_join(areas, by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_AREA)
+  tabla1 <- tabla1[,-ncol(tabla1)]
 
 
   #Exportar
@@ -1196,25 +1595,62 @@ f7_aterritorial <- function(directorio,
   #Calculo de la contribucion total
   contribucion_total <- data %>%
     group_by(CIUDAD,ANIO,MES)
-  contribucion_total <- cont_tot_summ(contribucion_total,4)
+  #contribucion_total <- cont_tot_summ(contribucion_total,4)
+
+  contribucion_total <- contribucion_total  %>%
+    summarise(produccionNom_total = sum(PRODUCCIONNOMPOND),
+              produccion_total = sum(PRODUCCIONREALPOND),
+              ventasnom_total=sum(VENTASNOMINPOND),
+              ventas_total=sum(VENTASREALESPOND),
+              personal_total=sum(II_TOT_TOT_PERS))
+
 
   #Calculo de la contribucion mensual por ciudad
   contribucion_total <- contribucion_total %>%
     group_by(CIUDAD,ANIO)
-  contribucion_total <- cont_tot_summ(contribucion_total,3)
+  #contribucion_total <- cont_tot_summ(contribucion_total,3)
+
+  contribucion_total <- contribucion_total  %>%
+    filter(ANIO==2018) %>%
+    summarise(produccionNom_total = mean(produccionNom_total),
+              produccion_total = mean(produccion_total),
+              ventasnom_total=mean(ventasnom_total),
+              ventas_total=mean(ventas_total),
+              personal_total=mean(personal_total))
+
 
   #Calculo de los indices
   contribucion_mensual <- data %>%
     group_by(CIUDAD,ANIO,MES)
-  contribucion_mensual <- cont_summ(contribucion_mensual,4)
+  #contribucion_mensual <- cont_summ(contribucion_mensual,4)
+
+  contribucion_mensual <- contribucion_mensual %>%
+    summarise(produccionNom_mensual = sum(PRODUCCIONNOMPOND),
+              produccion_mensual = sum(PRODUCCIONREALPOND),
+              ventasnom_mensual=sum(VENTASNOMINPOND),
+              ventas_mensual=sum(VENTASREALESPOND),
+              personal_mensual=sum(II_TOT_TOT_PERS))
 
   contribucion<-contribucion_mensual %>%
-    left_join(contribucion_total,by=c("CIUDAD"="CIUDAD","ANIO"="ANIO"))
+    left_join(contribucion_total,by=c("CIUDAD"="CIUDAD"))
 
-  tabla1 <- tabla_sum_mut(contribucion,2) %>%
-    select(CIUDAD,ANIO,MES,produccionNom,
+  # tabla1 <- tabla_sum_mut(contribucion,2) %>%
+  #   select(CIUDAD,ANIO,MES,produccionNom,
+  #          produccion,ventasnom,ventas,personal)
+
+  tabla1<-contribucion %>%
+    mutate(produccionNom=(produccionNom_mensual/produccionNom_total)*100,
+           produccion   =(produccion_mensual/produccion_total)*100,
+           ventasnom    =(ventasnom_mensual/ventasnom_total)*100,
+           ventas       =(ventas_mensual/ventas_total)*100,
+           personal     =(personal_mensual/personal_total)*100) %>%
+    select(CIUDAD,ANIO.x,MES,produccionNom,
            produccion,ventasnom,ventas,personal)
 
+
+  tabla1 <- tabla1 %>% inner_join(ciudades, by=c("CIUDAD"="CIUDAD"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_CIUDAD)
+  tabla1 <- tabla1[,-ncol(tabla1)]
 
   #Exportar
 
@@ -1264,10 +1700,55 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+  #Total Industria
+
+  #Calculo de la contribucion mensual
+  contribucion1 <- data %>%
+    filter(MES==mes & ANIO%in%c(anio,2019)) %>%
+    mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
+    group_by(ANIO,MES)
+  contribucion1 <- cont_summ(contribucion1,1)
+  contribucion1["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+  contribucion1 <- contribucion1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO)
+  contribucion1 <- cont_summ(contribucion1,2)
+
+
+  #Calculo de la variación por dpto
+  tabla2 <- data %>%
+    filter(ANIO%in%c(anio,2019) & MES%in%mes) %>%
+    group_by(ANIO,MES)
+  tabla2 <- tabla_sum_mut(tabla2,1)
+
+  tabla2 <- tabla_piv_pas(tabla2,3)
+  tabla2 <- tabla2 %>% pivot_longer(cols = colnames(tabla2)[-c(1:5)],names_to = "variables",values_to = "value" )
+
+  tabla2 <- tabla_sapp(tabla2)
+
+  tabla2["INCLUSION_NOMBRE_DEPTO"] <- "Total Industria"
+
+  #Empalme de la contribucion y la variacion
+  tabla2 <- inner_join(x=tabla2,y=contribucion1,by=c("INCLUSION_NOMBRE_DEPTO"))
+  tabla2 <- tabla2[,c("INCLUSION_NOMBRE_DEPTO","varprodnom",
+                      "varprod","produccion","varventasnom","varventas","ventas",
+                      "varpersonas","personal")]
+
+  for( i in c("varprodnom",
+              "varprod","produccion","varventasnom","varventas","ventas",
+              "varpersonas","personal")){
+    tabla2[,i] <-  tabla2[,i]*100
+  }
+
+
+  tabla1_1 <- rbind(tabla2,tabla1)
+
 
   #Exportar
 
@@ -1322,10 +1803,38 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personas")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(INCLUSION_NOMBRE_DEPTO)
+  tabla1_1["AGREG_DOMINIO_REG"]<- ""
+  tabla1_1 <- tabla1_1 %>%
+    rename(personas=personal)
+  tabla1_1 <- tabla1_1 %>%
+    select(names(tabla1))
+  tabla1_1 <- tabla1_1[2:nrow(tabla1_1),]
+
+  conteo <- tabla1 %>%
+    group_by(INCLUSION_NOMBRE_DEPTO) %>%
+    summarise(Total=n()) %>%
+    filter(Total==1)
+
+  tabla1_1 <- tabla1_1 %>%
+    filter( !INCLUSION_NOMBRE_DEPTO %in% conteo$INCLUSION_NOMBRE_DEPTO)
+
+  tabla1 <- rbind(tabla1_1,tabla1)
+
+  tabla1 <- tabla1 %>% inner_join(deptos, by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_DEPTO)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2["AGREG_DOMINIO_REG"]<- ""
+  tabla2 <- tabla2 %>%
+    rename(personas=personal)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+
+  tabla1 <- rbind(tabla2,tabla1)
 
   #Exportar
 
@@ -1375,10 +1884,23 @@ f7_aterritorial <- function(directorio,
   for( i in c("varprodnom",
               "varprod","produccion","varventasnom","varventas","ventas",
               "varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(AREA_METROPOLITANA)
+
+  tabla1 <- tabla1 %>% inner_join(areas, by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_AREA)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+
+  tabla2 <- tabla2 %>%
+    rename(personal=personas,
+           AREA_METROPOLITANA=INCLUSION_NOMBRE_DEPTO)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
+
+
 
   #Exportar
 
@@ -1428,10 +1950,18 @@ f7_aterritorial <- function(directorio,
 
   for( i in c("varprodnom","varprod","produccion","varventasnom",
               "varventas","ventas","varpersonas","personal")){
-    tabla1[,i] <-  round(tabla1[,i]*100,1)
+    tabla1[,i] <-  tabla1[,i]*100
   }
 
-  tabla1 <- tabla1 %>% arrange(CIUDAD)
+  tabla1 <- tabla1 %>% inner_join(ciudades, by=c("CIUDAD"="CIUDAD"))
+  tabla1 <- tabla1 %>% arrange(ORDEN_CIUDAD)
+  tabla1 <- tabla1[,-ncol(tabla1)]
+
+  tabla2 <- tabla2 %>%
+    rename(CIUDAD=AREA_METROPOLITANA)
+  tabla2 <- tabla2 %>%
+    select(names(tabla1))
+  tabla1 <- rbind(tabla2,tabla1)
 
 
   #Exportar
@@ -1447,4 +1977,5 @@ f7_aterritorial <- function(directorio,
   # Guardar archivo de salida -----------------------------------------------
 
   saveWorkbook(wb, Salida)
+
 }
