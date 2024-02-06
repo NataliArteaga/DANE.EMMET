@@ -127,13 +127,6 @@ f3_imputacion <- function(directorio,mes,anio,avance=100) {
 
 
 
-  #Convertir algunas variables como factor para la función KNN
-  base_imputar$ANIO=as.factor(base_imputar$ANIO)
-  base_imputar$MES=as.factor(base_imputar$MES)
-  base_imputar$NORDEST=as.factor(base_imputar$NORDEST)
-  base_imputar$DOMINIO_39=as.factor(base_imputar$DOMINIO_39)
-  base_imputar$CLASE_CIIU4=as.factor(base_imputar$CLASE_CIIU4)
-
   #base_imputar=rbind(datos,wowimp)
   base_imputar2=base_imputar %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio))
 
@@ -168,8 +161,6 @@ f3_imputacion <- function(directorio,mes,anio,avance=100) {
                                         AJU_VENTASEX,EXISTENCIAS) %>% filter(MES==mes & ANIO==anio) %>%
     arrange(NORDEST)
 
-  #convierte el NORDEST en factor
-  tra$NORDEST <- as.factor(tra$NORDEST)
 
 
 
@@ -177,6 +168,9 @@ f3_imputacion <- function(directorio,mes,anio,avance=100) {
   #crear una base con los valores del mes anterior
   tra <- base_imputar  %>% group_by(NORDEST) %>%
     mutate_at(c(variablesinte),.funs=list(rezago1=~lag(.)))#,
+
+  #convierte el NORDEST en factor
+  tra$NORDEST <- as.factor(tra$NORDEST)
 
   mes_ant <- tra  %>% filter(MES==mes & ANIO==anio)
 
@@ -275,7 +269,7 @@ mes_ant[,"existencias_prueba"]=ifelse((mes_ant[,"AJU_PRODUCCION"]>(mes_ant[,"AJU
   imputa <- imputa %>%
     mutate(
       TOTAL_VENTAS=(AJU_VENTASIN+AJU_VENTASEX),
-      TotalHoras= (AJU_HORAS_ORDI+AJU_HORAS_EXT),
+      TOTAL_HORAS= (AJU_HORAS_ORDI+AJU_HORAS_EXT),
       TOT_PERS=(NPERS_EP+NPERS_ET+NPERS_ETA+
                   NPERS_APREA+NPERS_OP+NPERS_OT+
                   NPERS_OTA+NPERS_APREO)

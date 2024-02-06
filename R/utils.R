@@ -45,6 +45,6 @@ personas=c("NPERS_EP","NPERS_ET","NPERS_ETA",
            "NPERS_OTA","NPERS_APREO")
 
 #crea un vector con las variables relacionadas a sueldos
-sueldos=c("AJU_SUELD_EP","AJU_SUELD_ET","AJU_SUELD_ETA,",
+sueldos=c("AJU_SUELD_EP","AJU_SUELD_ET","AJU_SUELD_ETA",
           "AJU_SUELD_APREA","AJU_SUELD_OP","AJU_SUELD_OT",
           "AJU_SUELD_OTA","AJU_SUELD_APREO")

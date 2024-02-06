@@ -77,7 +77,7 @@ f1_integracion <- function(directorio,
 
  #Cambio: se agrea , sheet = "LOGISTICA"
  base_logistica          <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_PANEL_imputada_",meses[mes],anio,".xlsx"))
- base_logistica          <- base_logistica[,1:76]
+ base_logistica          <- base_logistica[,1:78]
 
  #cambia en las columnas que contienen la palabra "OBSE" cualquier caracter que no sea alfanumerico por un espacio
  base_logistica           <-  base_logistica %>%
@@ -116,10 +116,8 @@ f1_integracion <- function(directorio,
              by=c("NORDEST"="NORDEST","ANIO"="ANIO","MES"="MES"))
 
  # Estandarizacion nombres Departamento y Municipio ------------------------------------------------
- base_panel <- base_panel %>%
-   rename(NOMBREDEPARTAMENTO=DEPARTAMENTO,NOMBREMUNICIPIO=NOMBREMPIO)
-
- mutate_at(vars("DESCRIPCIONDOMINIOEMMET39"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+base_panel=base_panel %>%
+    mutate_at(vars("Dominio39_Descrip"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
  # Estandarizar Variables Numericas ----------------------------------------
 

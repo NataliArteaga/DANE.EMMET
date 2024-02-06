@@ -132,12 +132,12 @@ f4_tematica <- function(directorio,mes,anio){
   base_panel2 <- as.data.frame(base_panel2)
   base_panel2$MES=as.numeric(base_panel2$MES)
   base_panel2$ANIO=as.numeric(base_panel2$ANIO)
-  variablesinte=c("NPERS_EP","AJU_SUELD_EP","NPERS_ET","AJU_SUELD_ET",
-                  "NPERS_ETA","AJU_SUELD_ETA","NPERS_APREA","AJU_SUELD_APREA",
-                  "NPERS_OP","AJU_SUELD_OP","NPERS_OT","AJU_SUELD_OT",
-                  "NPERS_OTA","AJU_SUELD_OTA","NPERS_APREO","AJU_SUELD_APREO",
-                  "AJU_HORAS_ORDI","AJU_HORAS_EXT",
-                  "AJU_PRODUCCION","AJU_VENTASIN","AJU_VENTASEX","EXISTENCIAS")
+  # variablesinte=c("NPERS_EP","AJU_SUELD_EP","NPERS_ET","AJU_SUELD_ET",
+  #                 "NPERS_ETA","AJU_SUELD_ETA","NPERS_APREA","AJU_SUELD_APREA",
+  #                 "NPERS_OP","AJU_SUELD_OP","NPERS_OT","AJU_SUELD_OT",
+  #                 "NPERS_OTA","AJU_SUELD_OTA","NPERS_APREO","AJU_SUELD_APREO",
+  #                 "AJU_HORAS_ORDI","AJU_HORAS_EXT",
+  #                 "AJU_PRODUCCION","AJU_VENTASIN","AJU_VENTASEX","EXISTENCIAS")
 
   for (i in variablesinte) {
 
@@ -170,14 +170,14 @@ f4_tematica <- function(directorio,mes,anio){
              AJU_SUELD_APREA,NPERS_OP,AJU_SUELD_OP,
              NPERS_OT,AJU_SUELD_OT,NPERS_OTA,
              AJU_SUELD_OTA,NPERS_APREO,AJU_SUELD_APREO,TOTPERS,
-             AJU_HORAS_ORDI,AJU_HORAS_EXT,TOTAL_HORAS,
+             AJU_HORAS_ORDI,AJU_HORAS_EXT,TotalHoras,
              AJU_PRODUCCION,AJU_VENTASIN,AJU_VENTASEX,
              TOTAL_VENTAS,ID_MUNICIPIO,ORDEN_AREA,
              AREA_METROPOLITANA,ORDEN_CIUDAD,CIUDAD,ORDEN_DEPTO,
              INCLUSION_NOMBRE_DEPTO,NOMBRE_ESTABLECIMIENTO,CLASE_CIIU4,DIVISION,EMMET_CLASE,
-             ORDENDOMINDEPTO,AGREG_DOMINIO_REG,DOMINIOEMMET43,DOMINIOEMMET39,
+             ORDENDOMINDEPTO,AGREG_DOMINIO_REG,DOMINIO_43,DOMINIO_39,
              DOMINIO39_DESCRIP,DOM_PONDERADOR_CIUDADES,PONDERADOR,
-             DEFLACTOR,IPP_PYC,IPP_EXP,IPC,CODIGODEPARTAMENTO,DEPARTAMENTO) %>%
+             DEFLACTOR,IPP_PYC,IPP_EXP,IPC,DEPARTAMENTO) %>%
       mutate(VentasReales=round((AJU_VENTASIN/IPP_PYC)+(AJU_VENTASEX/IPP_EXP),8),
              TotalSueldosNominal=round((AJU_SUELD_EP+AJU_SUELD_ET+
                                           AJU_SUELD_ETA+AJU_SUELD_APREA+
@@ -238,10 +238,11 @@ f4_tematica <- function(directorio,mes,anio){
   }
 
 
-  names(base_panel2)
+
   base_tematica<-base_tematica(base_panel2)
   base_tematica           <-  base_tematica %>%
     mutate_at(vars("DOMINIO39_DESCRIP"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
   write.csv(base_tematica,paste0(directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),row.names=F,fileEncoding ="latin1")
-  }
+
+}

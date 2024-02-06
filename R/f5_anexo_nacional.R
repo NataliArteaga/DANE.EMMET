@@ -265,7 +265,7 @@
 f5_anacional <- function(directorio,
                       mes,
                       anio){
-  # Cargar librerC-as --------------------------------------------------------
+  # Cargar librerías --------------------------------------------------------
   library(readxl)
   library(dplyr)
   library(ggplot2)
@@ -319,7 +319,7 @@ f5_anacional <- function(directorio,
 
   wb <- loadWorkbook(formato)
   sheets <- getSheets(wb)
-  names(sheets)
+  #names(sheets)
 
 
   # Funcion -----------------------------------------------------------------
@@ -468,7 +468,7 @@ f5_anacional <- function(directorio,
     filter(MES==mes & ANIO%in%c(anio-1)) %>%
     summarise(produccion_total = sum(PRODUCCIONREALPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
   #contribucion_total <- contr_sum_an(contribucion_total)
 
@@ -479,7 +479,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO,MES,DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS)) %>%
+              per=sum(TOTPERS)) %>%
     group_by(DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
               ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
@@ -497,7 +497,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC)
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla1 <- tabla_summarise(1,tabla1)
 
@@ -546,7 +546,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO,MES) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS))
+              per=sum(TOTPERS))
   contribucion1["DOMINIO39_DESCRIP"] <- ""
   contribucion1["DOMINIO_39"] <- "Total Industia"
   contribucion1 <- contribucion1 %>%
@@ -567,7 +567,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC)
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla1 <- tabla_summarise(1,tabla1)
 
@@ -630,7 +630,7 @@ f5_anacional <- function(directorio,
     summarise(produccion=sum(PRODUCCIONREALPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas=sum(II_TOT_TOT_PERS),
+              personas=sum(TOTPERS),
               empleo=sum(TOTALEMPLEOPERMANENTE),
               emptem=sum(TOTALEMPLEOTEMPORAL),
               empleados=sum(TOTALEMPLEOADMON),
@@ -701,7 +701,7 @@ f5_anacional <- function(directorio,
     summarise(produccion=sum(PRODUCCIONREALPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas=sum(II_TOT_TOT_PERS),
+              personas=sum(TOTPERS),
               empleo=sum(TOTALEMPLEOPERMANENTE),
               emptem=sum(TOTALEMPLEOTEMPORAL),
               empleados=sum(TOTALEMPLEOADMON),
@@ -788,7 +788,7 @@ f5_anacional <- function(directorio,
     filter(MES%in%c(1:mes) & ANIO%in%c(anio-1)) %>%
     summarise(produccion_total = sum(PRODUCCIONREALPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
   #contribucion_total <- contr_sum_an(contribucion_total)
 
@@ -799,7 +799,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO,DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS)) %>%
+              per=sum(TOTPERS)) %>%
     group_by(DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
               ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
@@ -817,7 +817,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla1 <- tabla_summarise(3,tabla1)
 
@@ -867,7 +867,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS))
+              per=sum(TOTPERS))
   contribucion1["DOMINIO_39"] <- "Total Industria"
   contribucion1["DOMINIO39_DESCRIP"] <- ""
   contribucion1 <- contribucion1 %>%
@@ -888,7 +888,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla2 <- tabla_summarise(3,tabla2)
 
@@ -1106,7 +1106,7 @@ f5_anacional <- function(directorio,
     filter(ANIO2%in%(anio-1)) %>%
     summarise(produccion_total = sum(PRODUCCIONREALPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
   #contribucion_total <- contr_sum_an(contribucion_total)
 
@@ -1117,7 +1117,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO2,DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS)) %>%
+              per=sum(TOTPERS)) %>%
     group_by(DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
               ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
@@ -1135,7 +1135,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC)
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla1 <- tabla_summarise(5,tabla1)
 
@@ -1184,7 +1184,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO2) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS))
+              per=sum(TOTPERS))
   contribucion1["DOMINIO_39"] <- "Total Industria"
   contribucion1["DOMINIO39_DESCRIP"] <- ""
   contribucion1 <- contribucion1 %>%
@@ -1205,7 +1205,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC)
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla2 <- tabla_summarise(5,tabla2)
 
@@ -1277,7 +1277,7 @@ f5_anacional <- function(directorio,
     filter(ANIO2%in%(anio-1)) %>%
     summarise(produccion_total = sum(PRODUCCIONREALPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
   #contribucion_total <- contr_sum_an(contribucion_total)
 
@@ -1288,7 +1288,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO2,INCLUSION_NOMBRE_DEPTO) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS)) %>%
+              per=sum(TOTPERS)) %>%
     group_by(INCLUSION_NOMBRE_DEPTO)  %>%
     summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
               ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
@@ -1305,7 +1305,7 @@ f5_anacional <- function(directorio,
     summarise(produccion=sum(PRODUCCIONREALPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas=sum(II_TOT_TOT_PERS),
+              personas=sum(TOTPERS),
               empleo=sum(TOTALEMPLEOPERMANENTE),
               emptem=sum(TOTALEMPLEOTEMPORAL),
               empleados=sum(TOTALEMPLEOADMON),
@@ -1390,7 +1390,7 @@ f5_anacional <- function(directorio,
     summarise(produccion=sum(PRODUCCIONREALPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas=sum(II_TOT_TOT_PERS),
+              personas=sum(TOTPERS),
               empleo=sum(TOTALEMPLEOPERMANENTE),
               emptem=sum(TOTALEMPLEOTEMPORAL),
               empleados=sum(TOTALEMPLEOADMON),
@@ -1495,7 +1495,7 @@ f5_anacional <- function(directorio,
               ventasNom_mensual = sum(VENTASNOMINPOND),
               ventas_mensual = sum(VENTASREALESPOND),
               #personas_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas_mensual=sum(II_TOT_TOT_PERS),
+              personas_mensual=sum(TOTPERS),
               empleo_mensual=sum(TOTALEMPLEOPERMANENTE),
               emptem_mensual=sum(TOTALEMPLEOTEMPORAL),
               empleados_mensual=sum(TOTALEMPLEOADMON),
@@ -1564,7 +1564,7 @@ f5_anacional <- function(directorio,
               ventasNom_mensual = sum(VENTASNOMINPOND),
               ventas_mensual = sum(VENTASREALESPOND),
               #personas_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas_mensual=sum(II_TOT_TOT_PERS),
+              personas_mensual=sum(TOTPERS),
               empleo_mensual=sum(TOTALEMPLEOPERMANENTE),
               emptem_mensual=sum(TOTALEMPLEOTEMPORAL),
               empleados_mensual=sum(TOTALEMPLEOADMON),
@@ -1773,7 +1773,8 @@ f5_anacional <- function(directorio,
                              ifelse(DOMINIO_39_ENLACE=="2020d" , "Fabricación de otros productos químicos",
                                     ifelse(DOMINIO_39_ENLACE=="1900c" , "RefinaciC3n de petróleo",DOMINIO39_DESCRIP))))))
 
-
+  data2$TOTPERS <- as.numeric(data2$TOTPERS)
+  data2$TOTPERS <- ifelse(is.na(data2$TOTPERS),0,data2$TOTPERS)
   #Calculo de la contribucion mensual
   contribucion_mensual <- data2 %>%
     group_by(ANIO,MES,DOMINIO_39_ENLACE,DOMINIO39_DESCRIP_ENLACE) %>%
@@ -1781,7 +1782,7 @@ f5_anacional <- function(directorio,
               produccion_mensual=sum(PRODUCCIONREALPOND),
               ventasNom_mensual = sum(VENTASNOMINPOND),
               ventas_mensual = sum(VENTASREALESPOND),
-              personas_mensual=sum(II_TOT_TOT_PERS),
+              personas_mensual = sum(TOTPERS),
               personal_admon=sum(TOTALEMPLEOADMON),
               personal_operario=sum(TOTALEMPLEOPRODUC))
 
@@ -1816,13 +1817,17 @@ f5_anacional <- function(directorio,
            produccion,ventasNom,ventas,personas,admon,operarios)
 
   #Calculo de variables de contribucion mensual
+
+  data$TOTPERS <- as.numeric(data$TOTPERS)
+  data$TOTPERS <- ifelse(is.na(data$TOTPERS),0,data$TOTPERS)
+
   contribucion_mensual <- data %>%
     group_by(ANIO,MES) %>%
     summarise(produccionNom_mensual=sum(PRODUCCIONNOMPOND),
               produccion_mensual=sum(PRODUCCIONREALPOND),
               ventasNom_mensual = sum(VENTASNOMINPOND),
               ventas_mensual = sum(VENTASREALESPOND),
-              personas_mensual=sum(II_TOT_TOT_PERS),
+              personas_mensual=sum(TOTPERS),
               personal_admon=sum(TOTALEMPLEOADMON),
               personal_operario=sum(TOTALEMPLEOPRODUC))
 
@@ -1875,7 +1880,7 @@ f5_anacional <- function(directorio,
               ventasNom_mensual = sum(VENTASNOMINPOND),
               ventas_mensual = sum(VENTASREALESPOND),
               #personas_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas_mensual=sum(II_TOT_TOT_PERS),
+              personas_mensual=sum(TOTPERS),
               empleados_mensual=sum(TOTALEMPLEOADMON),
               operarios_mensual=sum(TOTALEMPLEOPRODUC))
 
@@ -1918,7 +1923,7 @@ f5_anacional <- function(directorio,
               ventasNom_mensual = sum(VENTASNOMINPOND),
               ventas_mensual = sum(VENTASREALESPOND),
               #personas_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas_mensual=sum(II_TOT_TOT_PERS),
+              personas_mensual=sum(TOTPERS),
               empleados_mensual=sum(TOTALEMPLEOADMON),
               operarios_mensual=sum(TOTALEMPLEOPRODUC))
 
@@ -2047,7 +2052,7 @@ f5_anacional <- function(directorio,
 
   #Exportar
 
-  names(sheets)
+  #names(sheets)
   sheet <- sheets[[13]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE,
                row.names=FALSE, startRow = 14, startColumn = 1)
@@ -2101,7 +2106,7 @@ f5_anacional <- function(directorio,
     calendar_final <- calendar_final[,c("year","month",days[-1])]
     return(calendar_final)
   }
-  calendar<-as.data.frame(CALENDAR.FN(2001,year))
+  calendar<-as.data.frame(CALENDAR.FN(2001,anio))
 
 
   # Produccion Real ---------------------------------------------------------
@@ -2222,8 +2227,6 @@ f5_anacional <- function(directorio,
     x = empleototal_ts,
     #arima.model = " ",
     series.span = paste0(" 2001.1,",anio,".",mes," "),
-    #series.span = "2001.1,2022.11",
-    #series.modelspan = "2001.1,2022.11",
     transform.function = "auto",
     xreg = calendar_ts,
     regression.variables = c("easter[2]", "lpyear", "AO2016.Jul", "AO2016.Aug",
@@ -2248,7 +2251,7 @@ f5_anacional <- function(directorio,
 
   #Exportar
 
-  names(sheets)
+  #names(sheets)
   sheet <- sheets[[11]]
   addDataFrame(data.frame(deses), sheet, col.names=FALSE,
                row.names=FALSE, startRow = 14, startColumn = 1)
@@ -2267,7 +2270,7 @@ f5_anacional <- function(directorio,
     filter(MES==mes & ANIO%in%c(2019)) %>%
     summarise(produccion_total = sum(PRODUCCIONREALPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
   #contribucion_total <- contr_sum_an(contribucion_total)
 
@@ -2278,7 +2281,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO,MES,DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS)) %>%
+              per=sum(TOTPERS)) %>%
     group_by(DOMINIO_39,DOMINIO39_DESCRIP) %>%
     summarise(produccion=(prod[2]-prod[1])/contribucion_total$produccion_total,
               ventas=(vent[2]-vent[1])/contribucion_total$ventas_total,
@@ -2296,7 +2299,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC)
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla1 <- tabla_summarise(11,tabla1)
 
@@ -2348,7 +2351,7 @@ f5_anacional <- function(directorio,
     group_by(ANIO,MES) %>%
     summarise(prod = sum(PRODUCCIONREALPOND),
               vent=sum(VENTASREALESPOND),
-              per=sum(II_TOT_TOT_PERS))
+              per=sum(TOTPERS))
   contribucion1["DOMINIO_39"] <- "Total Industria"
   contribucion1["DOMINIO39_DESCRIP"] <- ""
   contribucion1 <- contribucion1 %>%
@@ -2369,7 +2372,7 @@ f5_anacional <- function(directorio,
               ventasNom = sum(VENTASNOMINPOND),
               ventas = sum(VENTASREALESPOND),
               #personas=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC)
-              personas=sum(II_TOT_TOT_PERS))
+              personas=sum(TOTPERS))
 
   #tabla2 <- tabla_summarise(11,tabla2)
 
@@ -2433,6 +2436,5 @@ f5_anacional <- function(directorio,
   # Guardar archivo de salida -----------------------------------------------
 
   saveWorkbook(wb, Salida)
-
 
 }

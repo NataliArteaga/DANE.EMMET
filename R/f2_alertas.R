@@ -245,7 +245,7 @@ f2_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
   final <- final %>%
     mutate(
       TOTAL_VENTAS=(AJU_VENTASIN+AJU_VENTASEX),
-      TotalHoras= (AJU_HORAS_ORDI+AJU_HORAS_EXT),
+      TOTAL_HORAS= (AJU_HORAS_ORDI+AJU_HORAS_EXT),
       TOT_PERS=(NPERS_EP+NPERS_ET+NPERS_ETA+
                   NPERS_APREA+NPERS_OP+NPERS_OT+
                   NPERS_OTA+NPERS_APREO)

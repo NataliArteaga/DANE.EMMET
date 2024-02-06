@@ -255,7 +255,6 @@ f6_aterritorial <- function(directorio,
 
 # Librerias ---------------------------------------------------------------
 
-
   library(readxl)
   library(dplyr)
   library(ggplot2)
@@ -278,7 +277,7 @@ f6_aterritorial <- function(directorio,
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
   data<-read.csv(paste0(directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),fileEncoding = "latin1")
 
-   deptos <- data %>%
+  deptos <- data %>%
     select(INCLUSION_NOMBRE_DEPTO,ORDEN_DEPTO)
   deptos <- unique(deptos)
 
@@ -290,10 +289,7 @@ f6_aterritorial <- function(directorio,
     select(CIUDAD,ORDEN_CIUDAD)
   ciudades <- unique(ciudades)
 
-
-
   # Archivos de entrada y salida --------------------------------------------
-
 
   formato <- paste0(directorio,"/data/anexos_territorial_emmet_",meses[mes],"_formato.xlsx")
   Salida<-paste0(directorio,"/results/S5_anexos/anexos_territorial_emmet_",meses[mes],".xlsx")
@@ -308,7 +304,7 @@ f6_aterritorial <- function(directorio,
 
   wb <- loadWorkbook(formato)
   sheets <- getSheets(wb)
-  names(sheets)
+  #names(sheets)
 
   # Funciones ---------------------------------------------------------------
 
@@ -1063,7 +1059,7 @@ f6_aterritorial <- function(directorio,
 
 
   tabla2 <- tabla2 %>%
-    rename(CIUDAD=INCLUSION_NOMBRE_DEPTO)
+    rename(CIUDAD=AREA_METROPOLITANA)
   tabla2 <- tabla2 %>%
     select(names(tabla1))
 
@@ -1412,7 +1408,7 @@ f6_aterritorial <- function(directorio,
               produccion_total = sum(PRODUCCIONREALPOND),
               ventasnom_total=sum(VENTASNOMINPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
 
   #Calculo de la contribucion mensual por dpto
@@ -1437,7 +1433,7 @@ f6_aterritorial <- function(directorio,
               produccion_mensual = sum(PRODUCCIONREALPOND),
               ventasnom_mensual=sum(VENTASNOMINPOND),
               ventas_mensual=sum(VENTASREALESPOND),
-              personal_mensual=sum(II_TOT_TOT_PERS))
+              personal_mensual=sum(TOTPERS))
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("INCLUSION_NOMBRE_DEPTO"="INCLUSION_NOMBRE_DEPTO",
@@ -1467,7 +1463,7 @@ f6_aterritorial <- function(directorio,
               ventasNom_mensual    = sum(VENTASNOMINPOND),
               ventas_mensual       = sum(VENTASREALESPOND),
               #personas_mensual=sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC),
-              personas_mensual     =sum(II_TOT_TOT_PERS))
+              personas_mensual     =sum(TOTPERS))
 
   #Calculo de la contribucion por el anio base
   contribucion_base <- contribucion_mensual %>%
@@ -1530,7 +1526,7 @@ f6_aterritorial <- function(directorio,
               produccion_total = sum(PRODUCCIONREALPOND),
               ventasnom_total=sum(VENTASNOMINPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
   #Calculo de la contribucion mensual por area mtp
   contribucion_total <- contribucion_total %>%
@@ -1555,7 +1551,7 @@ f6_aterritorial <- function(directorio,
               produccion_mensual = sum(PRODUCCIONREALPOND),
               ventasnom_mensual=sum(VENTASNOMINPOND),
               ventas_mensual=sum(VENTASREALESPOND),
-              personal_mensual=sum(II_TOT_TOT_PERS))
+              personal_mensual=sum(TOTPERS))
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("AREA_METROPOLITANA"="AREA_METROPOLITANA"))
@@ -1602,7 +1598,7 @@ f6_aterritorial <- function(directorio,
               produccion_total = sum(PRODUCCIONREALPOND),
               ventasnom_total=sum(VENTASNOMINPOND),
               ventas_total=sum(VENTASREALESPOND),
-              personal_total=sum(II_TOT_TOT_PERS))
+              personal_total=sum(TOTPERS))
 
 
   #Calculo de la contribucion mensual por ciudad
@@ -1629,7 +1625,7 @@ f6_aterritorial <- function(directorio,
               produccion_mensual = sum(PRODUCCIONREALPOND),
               ventasnom_mensual=sum(VENTASNOMINPOND),
               ventas_mensual=sum(VENTASREALESPOND),
-              personal_mensual=sum(II_TOT_TOT_PERS))
+              personal_mensual=sum(TOTPERS))
 
   contribucion<-contribucion_mensual %>%
     left_join(contribucion_total,by=c("CIUDAD"="CIUDAD"))
@@ -1977,5 +1973,4 @@ f6_aterritorial <- function(directorio,
   # Guardar archivo de salida -----------------------------------------------
 
   saveWorkbook(wb, Salida)
-
 }
