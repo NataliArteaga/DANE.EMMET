@@ -25,6 +25,7 @@ params:
   TI_prod: 2.6
   TI_ven: 2.5
   TI_empl: 2.7
+  Anio_grafico: 2018
   fecha_publicacion: 14 de Diciembre de 2022
   directorio: C:/Users/Asus/Desktop/Dane/pilotoEMMET/pilotoEMMET
 header-includes:
@@ -62,12 +63,13 @@ library(purrr)
 library(knitr)
 library(tinytex)
 library(webshot2)
+library(flextable)
 
 meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
 
-data<-read.csv(paste0(params$directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"),fileEncoding = "latin1")
+data<-read.csv(paste0(params$directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"),fileEncoding = "latin1")
 #data <- fread(params$directorio)
 
 colnames_format <- function(base){
@@ -169,6 +171,7 @@ tab_acople <- function(base){
 
 
 # Encuesta Mensual Manufacturera con Enfoque Territorial – EMMET  `r paste0(meses_b[params$month]," ",params$year)`{.unlisted .unnumbered}
+
 
 **Gráfico 1. Variación anual y trienal de la producción real, ventas y personal ocupado de la industria manufacturera**\
 **Total nacional**\
@@ -333,17 +336,25 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMIN
 tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
-tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
+
+
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
-    
+tabla1[40,c("varprod","varventas","varpersonas")]<-NA
+tabla1[40,c("varprod_por","varventas_por","varpersonas_por")]<-0
 ```
 
 De las 39 actividades industriales representadas por la encuesta, un total de `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r paste0(sum(tabla1$produccion[tabla1$varprod>=0]))` puntos porcentuales a la variación total anual y `r paste0(sum(tabla1$varprod<0))` subsectores con variaciones negativas restaron en conjunto `r abs(sum(tabla1$produccion[tabla1$varprod<0]))` puntos porcentuales a la variación total (Tabla 1).
@@ -399,7 +410,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
                      personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                                                                                                                    locations=cells_body(rows=is.na(varprod)))
 
 gtsave(tabla_paginada[[i]],paste0("tabla1_",i,".png"))
 }
@@ -413,6 +424,48 @@ cat("\n\n")
 ```{r tabla1_2,echo=FALSE,fig.align='center'}
 knitr::include_graphics(paste0("tabla1_", 2, ".png"))
 cat("\n\n")
+```
+
+\
+\
+\
+\
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+tabla1<-tabla1[1:(nrow(tabla1)-1),1:ncol(tabla1)]
+tabla1$Descripción <- as.character(tabla1$Descripción)
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+tb %>% autofit() %>%align(
+  j = -2,
+  align = "center",
+  part = "body"
+)
 ```
 
 
@@ -517,18 +570,27 @@ tabla1 <- tabla1 %>% pivot_wider(names_from = variables,values_from = value)
 tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
 tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
+
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
 }
 
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
+}
+
+
 tabla1 <- tabla1 %>% arrange(desc(produccion))
-tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
+
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
-
+tabla1[40,c("varprod","varventas","varpersonas")]<-NA
+tabla1[40,c("varprod_por","varventas_por","varpersonas_por")]<-0
 ```
 
 \pagrebreack
@@ -584,7 +646,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
                      personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                                                                                                                    locations=cells_body(rows=is.na(varprod)))
 
 gtsave(tabla_paginada[[i]],paste0("tabla2_",i,".png"))
 }
@@ -601,6 +663,52 @@ cat("\n\n")
 knitr::include_graphics(paste0("tabla2_", 2, ".png"))
 cat("\n\n")
 ```
+
+\
+\
+\
+\
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+tabla1<-tabla1[1:(nrow(tabla1)-1),1:ncol(tabla1)]
+tabla1$Descripción <- as.character(tabla1$Descripción)
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -2,
+  align = "center",
+  part = "body"
+)
+```
+
+
+
 
 **Fuente:** DANE-EMMET\
 P:Cifras provisionales\
@@ -713,18 +821,26 @@ tabla1 <- tabla1 %>% pivot_wider(names_from = variables,values_from = value)
 tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
 tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
+
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
-tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
+
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
-
+tabla1[40,c("varprod","varventas","varpersonas")]<-NA
+tabla1[40,c("varprod_por","varventas_por","varpersonas_por")]<-0
 ```
 
 De las 39 actividades industriales representadas por la encuesta, un total de `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` puntos porcentuales a la variación total doce meses y `r sum(tabla1$varprod<0)` subsectores con variaciones negativas restaron en conjunto `r sum(tabla1$produccion[tabla1$varprod<0])` puntos porcentuales a la variación total. (Tabla 3)\
@@ -784,7 +900,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
                      personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                                                                                                                    locations=cells_body(rows=is.na(varprod)))
 
 gtsave(tabla_paginada[[i]],paste0("tabla3_",i,".png"))
 }
@@ -799,6 +915,49 @@ cat("\n\n")
 ```{r tabla3_2,echo=FALSE,fig.align='center'}
 knitr::include_graphics(paste0("tabla3_", 2, ".png"))
 cat("\n\n")
+```
+
+\
+\
+\
+\
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+tabla1<-tabla1[1:(nrow(tabla1)-1),1:ncol(tabla1)]
+tabla1$Descripción <- as.character(tabla1$Descripción)
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -2,
+  align = "center",
+  part = "body"
+)
 ```
 
 
@@ -847,8 +1006,15 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("INCLUSION_NOMBRE_DEPTO"))
 tabla1 <- tabla1[,c("INCLUSION_NOMBRE_DEPTO","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
 }
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
+}
+
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
 
@@ -859,7 +1025,20 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 
-De los 14 dominios de departamentos representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional.\
+
+```{r, eval=TRUE, echo=FALSE}
+if(sum(tabla1$varprod>0)==0){a <- paste0("Los 14 dominios de departamentos representados por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional.")}else if (sum(tabla1$varprod<0)==0){a <- paste0("Los 14 dominios de departamentos representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. a la variación total nacional.")}else if(sum(tabla2$produccion)<0){a <- paste0("De los 14 dominios de departamentos representados por la encuesta, ", sum(tabla1$varprod>0), " registraron variaciones positivas en su producción real, sumando ", round(sum(tabla2$produccion[tabla2$varprod>0]),1), " p.p. a la variación total nacional.")}else if(sum(tabla2$produccion)>=0){a <- paste0("De los 14 dominios de departamentos representados por la encuesta, ", sum(tabla1$varprod<0), "registraron variaciones negativas en su producción real, sumando ", round(sum(tabla2$produccion[tabla2$varprod<0]),1), " p.p. a la variación total nacional.")}
+
+
+
+```
+
+`r if(sum(tabla1$varprod>0)==0){a <- paste0("Los 14 dominios de departamentos representados por la encuesta, registraron variaciones negativas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional.")}else if (sum(tabla1$varprod<0)==0){a <- paste0("Los 14 dominios de departamentos representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. a la variación total nacional.")}else if(sum(tabla2$produccion)<0){ a <- paste0("De los 14 dominios de departamentos representados por la encuesta, ", sum(tabla1$varprod>0), " registraron variaciones positivas en su producción real, sumando ", round(sum(tabla2$produccion[tabla2$varprod>0]),1), " p.p. a la variación total nacional.")}else if(sum(tabla2$produccion)>=0){a <- paste0("De los 14 dominios de departamentos representados por la encuesta, ", sum(tabla1$varprod<0), "registraron variaciones negativas en su producción real, sumando ", round(sum(tabla2$produccion[tabla2$varprod<0]),1), " p.p. a la variación total nacional.")}`
+
+`r a`
+
+<!-- De los 14 dominios de departamentos representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional.\ -->
+
 \pagrebreack
 **Tabla 4. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Departamentos**\
@@ -921,6 +1100,44 @@ knitr::include_graphics(paste0("tabla4_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
@@ -967,7 +1184,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("AREA_METROPOLITANA"))
 tabla1 <- tabla1[,c("AREA_METROPOLITANA","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -979,7 +1202,22 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," ",params$year-1)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional.\
+
+```{r, eval=TRUE, echo=FALSE}
+if(sum(tabla1$varprod>0)==0 | sum(tabla2$produccion)<0){
+  a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," ",params$year-1),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", round(abs(tabla2$produccion[which.max(abs(tabla2$varprod))]),1)," p.p. a la variación total nacional (",round(sum(tabla2$produccion),1),"%).")
+}else if (sum(tabla1$varprod<0)==0 | sum(tabla2$produccion)>=0){
+    a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," ",params$year-1),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, sumando ", round(abs(tabla2$produccion[which.max(abs(tabla2$varprod))]),1)," p.p. a la variación total nacional(",round(sum(tabla2$produccion),1),"%).")
+}
+
+```
+
+
+`r if(sum(tabla1$varprod>0)==0 | sum(tabla2$produccion)<0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," ",params$year-1),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", round(abs(tabla2$produccion[which.max(abs(tabla2$varprod))]),1)," p.p. a la variación total nacional (",round(sum(tabla2$produccion),1),"%).")}else if (sum(tabla1$varprod<0)==0 | sum(tabla2$produccion)>=0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," ",params$year-1),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, sumando ", round(abs(tabla2$produccion[which.max(abs(tabla2$varprod))]),1)," p.p. a la variación total nacional(",round(sum(tabla2$produccion),1),"%).")}`
+
+`r a`
+
+<!-- En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," ",params$year-1)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional.\ -->
 \
 **Tabla 5. Variación anual y contribución de la producción real, ventas reales y personal ocupado en Áreas Metropolitanas**\
 **`r paste0(meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**
@@ -1040,6 +1278,44 @@ knitr::include_graphics(paste0("tabla5_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 
 **Fuente**: DANE-EMMET\
 P: Cifras provisionales\
@@ -1080,8 +1356,15 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("CIUDAD"))
 tabla1 <- tabla1[,c("CIUDAD","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
 }
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
+}
+
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
 
@@ -1094,7 +1377,27 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
 **`r paste0(meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
 \
-En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)` de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>0])` p.p. de la variación total nacional (Tabla 6)\
+
+```{r eval=TRUE,echo=FALSE}
+
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 6)")
+  }else if(sum(tabla2$varprod<0)==0){
+   a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 6)")
+  }else if ( sum(tabla2$produccion)<0){
+     a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 6)")
+  }else if(sum(tabla2$produccion)>=0){
+      a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 6)")
+   }
+
+
+```
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 6)")}else if(sum(tabla2$varprod<0)==0){ a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 6)")}else if ( sum(tabla2$produccion)<0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 6)")}else if(sum(tabla2$produccion)>=0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente a ", paste0(tolower(meses_b[params$month])," de ",params$year-1),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 6)")}`
+
+`r a`
+
+<!-- En `r paste0(meses_b[params$month]," de ",params$year)` frente a `r paste0(meses_b[params$month]," de ",params$year-1)` de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>0])` p.p. de la variación total nacional (Tabla 6)\ -->
 \pagrebreack
 **Tabla 6. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
@@ -1156,6 +1459,44 @@ knitr::include_graphics(paste0("tabla6_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
@@ -1200,8 +1541,15 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("INCLUSION_NOMBRE_DEPTO"))
 tabla1 <- tabla1[,c("INCLUSION_NOMBRE_DEPTO","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
 }
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
+}
+
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
 
@@ -1215,8 +1563,25 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación año corrido (\%) y contribución, del valor de la producción, ventas y empleo total, según departamentos{.unlisted }
 **`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
 
-De los 14 dominios de departamentos representado por la encuesta, `r sum(tabla1$varprod>0)` registraton variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional. (Tabla 7)\
 
+```{r eval=TRUE,echo=FALSE}
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional. (Tabla 7)")
+  }else if(sum(tabla2$varprod<0)==0){
+   a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>=0]),1))," p.p. a la variación total nacional. (Tabla 7)")
+  }else if ( sum(tabla2$produccion)<0){
+     a <- paste0(" De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod<0)," registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional. (Tabla 7)")
+  }else if(sum(tabla2$produccion)>=0){
+      a <- paste0("Los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod>0)," registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. a la variación total nacional. (Tabla 7)")
+   }
+```
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional. (Tabla 7)")}else if(sum(tabla2$varprod<0)==0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>=0]),1))," p.p. a la variación total nacional. (Tabla 7)")}else if ( sum(tabla2$produccion)<0){a <- paste0(" De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod<0)," registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional. (Tabla 7)")}else if(sum(tabla2$produccion)>=0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod>0)," registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. a la variación total nacional. (Tabla 7)")}`
+
+`r a`
+
+<!-- De los 14 dominios de departamentos representado por la encuesta, `r sum(tabla1$varprod>0)` registraton variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional. (Tabla 7)\ -->
+\
 **Tabla 7. Variación año corrido y contribución de la producción real, ventas reales y personal ocupado**\
 **Departamentos**\
 **`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**\
@@ -1275,6 +1640,47 @@ gtsave(tabla_paginada[[i]],paste0("tabla7_",i,".png"))
 knitr::include_graphics(paste0("tabla7_", 1, ".png"))
 
 ```
+
+
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
+
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -1319,8 +1725,15 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("AREA_METROPOLITANA"))
 tabla1 <- tabla1[,c("AREA_METROPOLITANA","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
 }
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
+}
+
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
 
@@ -1331,8 +1744,22 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 
-En lo corrido del año hasta`r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 8)\
 
+```{r eval=TRUE,echo=FALSE}
+if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0 ){
+  a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", abs(round(tabla2$produccion[which.max(abs(tabla2$varprod))],1))," p.p. a la variación total nacional.",round(sum(tabla2$produccion),1), " (Tabla 8)")
+  }else if(sum(tabla2$varprod<0)==0 | sum(tabla2$produccion)>0){
+    a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]," con una variación de ", tabla1$varprod[which.max(tabla1$varprod)],"%, sumando ", tabla1$produccion[which.max(tabla1$varprod)]," p.p. a la variación total nacional. (Tabla 8)")
+  }
+
+```
+
+`r if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0 ){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", abs(round(tabla2$produccion[which.max(abs(tabla2$varprod))],1))," p.p. a la variación total nacional ",round(sum(tabla2$produccion),1), "% (Tabla 8)")}else if(sum(tabla2$varprod<0)==0 | sum(tabla2$produccion)>0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]," con una variación de ", tabla1$varprod[which.max(tabla1$varprod)],"%, sumando ", tabla1$produccion[which.max(tabla1$varprod)]," p.p. a la variación total nacional",round(sum(tabla2$produccion),1), "% (Tabla 8)")}`
+
+`r a`
+
+<!-- En lo corrido del año hasta`r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 8)\ -->
+\
 **Tabla 8. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Áreas Metropolitanas**\
 **`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**
@@ -1393,6 +1820,44 @@ knitr::include_graphics(paste0("tabla8_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -1433,7 +1898,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("CIUDAD"))
 tabla1 <- tabla1[,c("CIUDAD","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -1449,8 +1920,25 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación anual (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
 **`r paste0("Enero - ",meses_b[params$month]," ",params$year,"/",params$year-1,"P")`**\
 
-En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 9)\
+```{r eval=TRUE,echo=FALSE}
 
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones negativas en su producción real, restando ",abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 9)")
+  }else if(sum(tabla2$varprod<0)==0){
+   a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 9)")
+  }else if ( sum(tabla2$produccion)<0){
+     a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 9)")
+  }else if(sum(tabla2$produccion)>=0){
+    a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 9)")
+   }
+```
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones negativas en su producción real, restando ",abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 9)")}else if(sum(tabla2$varprod<0)==0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 9)")}else if ( sum(tabla2$produccion)<0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 9)")}else if(sum(tabla2$produccion)>=0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 9)")}`
+
+`r a`
+
+<!-- En lo corrido del año hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 9)\ -->
+\
 **Tabla 9. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
 **`r paste0("Enero - ",meses_b[params$month]," (",params$year,"/",params$year-1,")P")`**\
@@ -1510,6 +1998,44 @@ knitr::include_graphics(paste0("tabla9_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -1551,7 +2077,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("INCLUSION_NOMBRE_DEPTO"))
 tabla1 <- tabla1[,c("INCLUSION_NOMBRE_DEPTO","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -1566,8 +2098,27 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación doce meses (\%) y contribución, del valor de la producción, ventas y empleo total, según departamentos {.unlisted }
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
 
-De los 14 dominios de departamentos representado por la encuesta, `r sum(tabla1$varprod>0)` registraton variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional (Tabla 10)\
-\
+
+
+```{r eval=TRUE,echo=FALSE}
+
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla1$varprod<0]),1))," p.p. a la variación total nacional (Tabla 10)")
+  }else if(sum(tabla2$varprod<0)==0){
+    a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla1$varprod>0]),1))," p.p. a la variación total nacional (Tabla 10)")
+  }else if ( sum(tabla2$produccion)<0){
+      a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla1$varprod<0)," registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional (Tabla 10)")
+  }else if(sum(tabla2$produccion)>=0){
+    a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla1$varprod>0)," registraton variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. a la variación total nacional (Tabla 10)")
+   }
+```
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla1$varprod<0]),1))," p.p. a la variación total nacional (Tabla 10)")}else if(sum(tabla2$varprod<0)==0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraton variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla1$varprod>0]),1))," p.p. a la variación total nacional (Tabla 10)")}else if ( sum(tabla2$produccion)<0){a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla1$varprod<0)," registraton variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. a la variación total nacional (Tabla 10)")}else if(sum(tabla2$produccion)>=0){a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla1$varprod>0)," registraton variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. a la variación total nacional (Tabla 10)")}`
+
+`r a`
+
+<!-- De los 14 dominios de departamentos representado por la encuesta, `r sum(tabla1$varprod>0)` registraton variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. a la variación total nacional (Tabla 10)\ -->
+\\
 **Tabla 10. Variación doce meses y contribución de la producción real, ventas reales y personal ocupado**\
 **Departamentos**\
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
@@ -1628,6 +2179,44 @@ knitr::include_graphics(paste0("tabla10_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -1673,7 +2262,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("AREA_METROPOLITANA"))
 tabla1 <- tabla1[,c("AREA_METROPOLITANA","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -1685,8 +2280,23 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 
-Durante los últimos doce meses hasta el mes de `r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 11)\
 
+```{r eval=TRUE,echo=FALSE}
+
+if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0){
+  a <- paste0("Durante los últimos doce meses hasta el mes de ", paste0(tolower(meses_b[params$month])," de ",params$year),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional. (Tabla 11)")
+  }else if(sum(tabla2$varprod<0)==0 | sum(tabla2$varprod)>0){
+    a <- paste0("Durante los últimos doce meses hasta el mes de ", paste0(tolower(meses_b[params$month])," de ",params$year),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, sumando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional. (Tabla 11)")
+  }
+```
+
+
+`r if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0){a <- paste0("Durante los últimos doce meses hasta el mes de ", paste0(tolower(meses_b[params$month])," de ",params$year),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional. (Tabla 11)")}else if(sum(tabla2$varprod<0)==0 | sum(tabla2$varprod)>0){a <- paste0("Durante los últimos doce meses hasta el mes de ", paste0(tolower(meses_b[params$month])," de ",params$year),", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, sumando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional. (Tabla 11)")}`
+
+`r a`
+
+<!-- Durante los últimos doce meses hasta el mes de `r paste0(meses_b[params$month]," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 11)\ -->
+\
 **Tabla 11. Variación anual y contribución de la producción real, ventas reales y personal ocupado**\
 **Áreas Metropolitanas**\
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
@@ -1747,6 +2357,44 @@ knitr::include_graphics(paste0("tabla11_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -1787,7 +2435,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("CIUDAD"))
 tabla1 <- tabla1[,c("CIUDAD","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -1802,8 +2456,27 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación doce meses (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
 
-Durante los últimos doce meses hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 12)\
+```{r eval=TRUE,echo=FALSE}
 
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 12)")
+  }else if(sum(tabla2$varprod<0)==0){
+  a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 12)")
+  }else if ( sum(tabla2$produccion)<0){
+  a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 12)")
+  }else if(sum(tabla2$produccion)>=0){
+  a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 12)")
+  }
+
+```
+
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 12)")}else if(sum(tabla2$varprod<0)==0){a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 12)")}else if ( sum(tabla2$produccion)<0){a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional (Tabla 12)")}else if(sum(tabla2$produccion)>=0){a <- paste0("Durante los últimos doce meses hasta ", paste0(tolower(meses_b[params$month])," de ",params$year),", de los 10 dominios de ciudades representados por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional (Tabla 12)")}`
+
+`r a`
+
+<!-- Durante los últimos doce meses hasta `r paste0(meses_b[params$month]," de ",params$year)`, de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional (Tabla 12)\ -->
+\
 **Tabla 12. Variación doce meses y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
 **`r paste0(ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-1))," - ",meses_b[params$month]," ",params$year,"/",ifelse(meses_b[params$month]=="Diciembre",paste0("Enero ",params$year),paste0(meses_b[params$month+1]," ",params$year-2))," - ",meses_b[params$month]," ",params$year-1,"P")`**\
@@ -1864,6 +2537,44 @@ knitr::include_graphics(paste0("tabla12_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -1954,17 +2665,24 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMIN
 tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
-tabla1[40,c("varprod","varventas","varpersonas")]<-0.001
+
 
 
 tabla1["varprod_por"] <- round((abs(tabla1$varprod)/max(tabla1$varprod))*100,1)
 tabla1["varventas_por"] <- round((abs(tabla1$varventas)/max(tabla1$varventas))*100,1)
 tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varpersonas))*100,1)
-
+tabla1[40,c("varprod","varventas","varpersonas")]<-NA
+tabla1[40,c("varprod_por","varventas_por","varpersonas_por")]<-0
 ```
 
 ## Variación trienal (\%) y contribución, del valor de la producción, ventas y empleo total según clase industrial {.unlisted }
@@ -2026,7 +2744,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
                      varpersonas_plot ="",
                      varpersonas =md("**Variación<br>Personas**"),
                      personal =md("**Contribución<br>Personas**")) %>% tab_options(table.font.size=7) %>% tab_style(style=cell_text(color="white"),
-                                                                                                                    locations=cells_body(rows=varprod==0.001))
+                                                                                                                    locations=cells_body(rows=is.na(varprod)))
 
 gtsave(tabla_paginada[[i]],paste0("tabla13_",i,".png"))
 }
@@ -2042,6 +2760,49 @@ cat("\n\n")
 ```{r tabla13_2,echo=FALSE,fig.align='center'}
 knitr::include_graphics(paste0("tabla13_", 2, ".png"))
 cat("\n\n")
+```
+
+\
+\
+\
+\
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+tabla1<-tabla1[1:(nrow(tabla1)-1),1:ncol(tabla1)]
+tabla1$Descripción <- as.character(tabla1$Descripción)
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Descripción",
+                     "Clase",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -2,
+  align = "center",
+  part = "body"
+)
 ```
 
 
@@ -2084,7 +2845,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("INCLUSION_NOMBRE_DEPTO"))
 tabla1 <- tabla1[,c("INCLUSION_NOMBRE_DEPTO","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -2099,8 +2866,27 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación trienal (%) y contribución, del valor de la producción, ventas y empleo total según departamentos {.unlisted }
 **`r paste0(meses_b[params$month], " (",params$year,"/",2019,")P")`**
 
-De los 14 dominios de departamentos representado por la encuesta, `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$produccion>=0])` p.p. a la variación total nacional.\
 
+```{r eval=TRUE,echo=FALSE}
+
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$produccion<0]),1))," p.p. a la variación total nacional.")
+  }else if(sum(tabla2$varprod<0)==0){
+  a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$produccion>0]),1))," p.p. a la variación total nacional.")
+  }else if ( sum(tabla2$produccion)<0){
+  a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$produccion<0]),1))," p.p. a la variación total nacional.")
+  }else if(sum(tabla2$produccion)>=0){
+  a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$produccion>0]),1))," p.p. a la variación total nacional.")
+  }
+
+```
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$produccion<0]),1))," p.p. a la variación total nacional.")} else if(sum(tabla2$varprod<0)==0){a <- paste0("Los 14 dominios de departamentos representado por la encuesta, registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$produccion>0]),1))," p.p. a la variación total nacional.")} else if ( sum(tabla2$produccion)<0){  a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod<0)," registraron variaciones negativas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$produccion<0]),1))," p.p. a la variación total nacional.")}else if(sum(tabla2$produccion)>=0){a <- paste0("De los 14 dominios de departamentos representado por la encuesta, ", sum(tabla2$varprod>0)," registraron variaciones positivas en su producción real, sumando ", abs(round(sum(tabla2$produccion[tabla2$produccion>0]),1))," p.p. a la variación total nacional.")}`
+
+`r a`
+
+<!-- De los 14 dominios de departamentos representado por la encuesta, `r paste0(sum(tabla1$varprod>=0))` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$produccion>=0])` p.p. a la variación total nacional.\ -->
+\
 **Tabla 14. Variación trienal y contribución de la producción real, ventas reales y personal ocupado**\
 **Departamentos**\
 **`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`**\
@@ -2160,6 +2946,44 @@ knitr::include_graphics(paste0("tabla14_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Departamento",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P:Cifras provisionales\
 Nota: La diferencia en la suma se da por aproximaciones decimales\
@@ -2203,7 +3027,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("AREA_METROPOLITANA"))
 tabla1 <- tabla1[,c("AREA_METROPOLITANA","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -2215,8 +3045,22 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 
 ```
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 15)\
 
+```{r eval=TRUE,echo=FALSE}
+
+if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0){
+  a <- paste0("En ",paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional.",round(sum(tabla2$produccion),1),"%. (Tabla 15)")
+  }else if(sum(tabla2$varprod<0)==0 | sum(tabla2$varprod)>0){
+   a <- paste0("En ",paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, sumando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional.",round(sum(tabla2$produccion),1),"%. (Tabla 15)")
+  }
+
+```
+
+`r if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0){a <- paste0("En ",paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional.",round(sum(tabla2$produccion),1),"%. (Tabla 15)")}else if(sum(tabla2$varprod<0)==0 | sum(tabla2$varprod)>0){a <- paste0("En ",paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de ",tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, sumando ", round(tabla2$produccion[which.max(abs(tabla2$varprod))],1)," p.p. a la variación total nacional.",round(sum(tabla2$produccion),1),"%. (Tabla 15)")}`
+`r a`
+
+<!-- En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes del 2019, el área metropolitana que más constribuye a la variación trienal de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 15)\ -->
+\
 **Tabla 15. Variación trienal y contribución de la producción real, ventas reales y personal ocupado en Áreas Metropolitanas**\
 **`r paste0(meses_b[params$month]," (",params$year,"/",2019,")P")`**\
 
@@ -2275,6 +3119,44 @@ knitr::include_graphics(paste0("tabla15_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Área Metropolitana",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\
@@ -2314,7 +3196,13 @@ tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("CIUDAD"))
 tabla1 <- tabla1[,c("CIUDAD","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
-  tabla1[,i] <-  round(tabla1[,i]*100,1)
+  tabla1[,i] <-  tabla1[,i]*100
+}
+
+tabla2 <- tabla1
+
+for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
+  tabla1[,i] <-  round(tabla1[,i],1)
 }
 
 tabla1 <- tabla1 %>% arrange(desc(produccion))
@@ -2329,8 +3217,26 @@ tabla1["varpersonas_por"] <- round((abs(tabla1$varpersonas)/max(tabla1$varperson
 ## Variación trienal (\%) y contribución, del valor de la producción, ventas, y empleo total según ciudades {.unlisted }
 **`r paste0(meses_b[params$month]," ",params$year,"/",2019,"P")`**\
 
-En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional. (Tabla 16)\
 
+```{r eval=TRUE,echo=FALSE}
+if(sum(tabla2$varprod>=0)==0){
+  a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional. (Tabla 16)")
+  }else if(sum(tabla2$varprod<0)==0){
+  a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ",  abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional. (Tabla 16)")
+  }else if ( sum(tabla2$produccion)<0){
+  a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, ", round(sum(tabla2$varprod<0),1), " registraron variaciones negativas en su producción real, restando ", round(sum(tabla2$produccion[tabla2$varprod>0]),1)," p.p. de la variación total nacional. (Tabla 16)")
+  }else if(sum(tabla2$produccion)>=0){
+  a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, ", round(sum(tabla2$varprod>=0),1), " registraron variaciones positivas en su producción real, sumando ", round(sum(tabla2$produccion[tabla2$varprod>0]),1)," p.p. de la variación total nacional. (Tabla 16)")
+  }
+
+```
+
+`r if(sum(tabla2$varprod>=0)==0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, restando ", abs(round(sum(tabla2$produccion[tabla2$varprod<0]),1))," p.p. de la variación total nacional. (Tabla 16)")}else if(sum(tabla2$varprod<0)==0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 los 10 dominios de ciudades representados por la encuesta, registraron variaciones positivas en su producción real, sumando ",  abs(round(sum(tabla2$produccion[tabla2$varprod>0]),1))," p.p. de la variación total nacional. (Tabla 16)")}else if ( sum(tabla2$produccion)<0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, ", round(sum(tabla2$varprod<0),1), " registraron variaciones negativas en su producción real, restando ", round(sum(tabla2$produccion[tabla2$varprod>0]),1)," p.p. de la variación total nacional. (Tabla 16)")}else if(sum(tabla2$produccion)>=0){a <- paste0("En ", paste0(tolower(meses_b[params$month])," de ",params$year)," frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, ", round(sum(tabla2$varprod>=0),1), " registraron variaciones positivas en su producción real, sumando ", round(sum(tabla2$produccion[tabla2$varprod>0]),1)," p.p. de la variación total nacional. (Tabla 16)")}`
+
+`r a`
+
+<!-- En `r paste0(meses_b[params$month]," de ",params$year)` frente al mismo mes de 2019 de los 10 dominios de ciudades representados por la encuesta, `r sum(tabla1$varprod>=0)` registraron variaciones positivas en su producción real, sumando `r sum(tabla1$produccion[tabla1$varprod>=0])` p.p. de la variación total nacional. (Tabla 16)\ -->
+\
 \pagrebreack
 **Tabla 16. Variación trienal y contribución de la producción real, ventas reales y personal ocupado**\
 **Ciudades**\
@@ -2391,6 +3297,44 @@ knitr::include_graphics(paste0("tabla16_", 1, ".png"))
 
 ```
 
+\
+\
+
+```{r, echo=FALSE}
+
+colnames(tabla1)<- c("Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas")
+
+set_flextable_defaults(
+  font.size = 5, 
+  padding = 4,
+  line_spacing = 0.8,
+  border.width = 0.1
+  )
+
+tb <- flextable(tabla1, col_keys = c(
+                     "Ciudad",
+                     "Variación \n Producción",
+                     "Contribución \n Producción",
+                     "Variación \n Ventas",
+                     "Contribución \n Ventas",
+                     "Variación \n Personas",
+                     "Contribución \n Personas"))
+
+tb <- theme_box(tb)
+tb <- empty_blanks(tb)
+#tb <- width(tabla1,width = .1)
+tb %>% autofit() %>%align(
+  j = -1,
+  align = "center",
+  part = "body"
+)
+```
 **Fuente**: DANE-EMMET\
 P: Cifras provisionales\
 Nota: La diferencua en la suma se da por aproximaciones decimales\

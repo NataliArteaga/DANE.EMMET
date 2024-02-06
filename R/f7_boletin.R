@@ -107,7 +107,8 @@ f7_boletin <- function(directorio, mes, anio, tipo = "word") {
                                   TNR= parametros[4,2],
                                   TI_prod= parametros[5,2],
                                   TI_ven=parametros[6,2],
-                                  TI_empl= parametros[7,2]
+                                  TI_empl= parametros[7,2],
+                                  Anio_grafico=parametros[8,2]
                                   ),
                     output_file = paste0("boletin_", fecha_formateada2),
                     output_dir = file.path(directorio, "results", "S6_boletin"))

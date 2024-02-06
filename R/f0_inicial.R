@@ -35,7 +35,7 @@ f0_inicial<-function(directorio){
                  "tsoutliers","data.table","VIM","scales","kableExtra","formattable","htmltools","webshot",
                  "openxlsx","seasonal","xlsx","rmarkdown","roxygen2","plotly","gt","purrr","knitr","tinytex",
                  "webshot2","installr","shiny","shinyauthr","flexdashboard","shinydashboard","shinyjs",
-                 "DT","RSQLite","pool","uuid","zoo","xts","TSstudio","tseries")
+                 "DT","RSQLite","pool","uuid","zoo","xts","TSstudio","tseries","flextable")
 
   # Verificar si las librerías están instaladas
   librerias_faltantes <- librerias[!sapply(librerias, requireNamespace, quietly = TRUE)]
@@ -93,8 +93,8 @@ crearCarpeta(ruta)
 ruta=paste0(directorio,"/results/S6_boletin")
 crearCarpeta(ruta)
 
-para_boletin <- data.frame(parametro = c("IC_prod","IC_ven","IC_empl","TNR","TI_prod","TI_ven","TI_empl"),
-                           valores = c(98.1,98.1,98.5,2,2.6,2.5,2.7))
+para_boletin <- data.frame(parametro = c("IC_prod","IC_ven","IC_empl","TNR","TI_prod","TI_ven","TI_empl","Anio_grafico"),
+                           valores = c(98.1,98.1,98.5,2,2.6,2.5,2.7,2018))
 write.xlsx(para_boletin, file = paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx"),row.names = FALSE)
 print(paste0("Se creo el archivo parametros_boletin.xlsx en ",directorio,"/results/S6_boletin/"))
 }
