@@ -117,7 +117,7 @@ f1_integracion <- function(directorio,
 
  # Estandarizacion nombres Departamento y Municipio ------------------------------------------------
 base_panel=base_panel %>%
-    mutate_at(vars("Dominio39_Descrip"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+    mutate_at(vars("DOMINIO39_DESCRIP"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
  # Estandarizar Variables Numericas ----------------------------------------
 
