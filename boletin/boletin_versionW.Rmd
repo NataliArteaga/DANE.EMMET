@@ -68,7 +68,7 @@ meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Di
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
 
-data<-read.csv(paste0(params$directorio,"/results/S5_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"),fileEncoding = "latin1")
+data<-read.csv(paste0(params$directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"),fileEncoding = "latin1")
 #data <- fread(params$directorio)
 
 colnames_format <- function(base){
