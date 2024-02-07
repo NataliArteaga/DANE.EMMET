@@ -288,7 +288,8 @@ variaciones_totales$variables <-
 
 variaciones_totales$periodo <- paste0(substr(meses,1,3)[as.numeric(variaciones_totales$MES)],"-",substr(variaciones_totales$ANIO,3,4))
 variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste0(rep(substr(meses,1,3),length(c(2018:params$year))),"-",rep(18:substr(params$year,3,4),each=12))))
-
+variaciones_totales <- variaciones_totales %>% 
+  filter(ANIO>=params$Anio_grafico)
 
 ggplot(data=variaciones_totales,aes(x=periodo,y=value,group=variables,color=variables))+
   geom_line(size=0.8)+geom_point(aes(x=max(value)+1,y=0),color="transparent")+
@@ -472,7 +473,8 @@ variaciones_totales <- variaciones_totales %>% filter(ANIO>=2020)
 variaciones_totales$variables <- factor(variaciones_totales$variables,levels=c("varprod","varventas","varpersonas"),labels=c("Producción Real","Ventas Reales","Personal Ocupado"))
 variaciones_totales$periodo <- paste0(substr(meses,1,3)[as.numeric(variaciones_totales$MES)],"-",substr(variaciones_totales$ANIO,3,4))
 variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste0(rep(substr(meses,1,3),length(c(2018:params$year))),"-",rep(18:substr(params$year,3,4),each=12))))
-
+variaciones_totales <- variaciones_totales %>% 
+  filter(ANIO>=params$Anio_grafico)
 ```
 En lo corrido del año hasta `r paste0(tolower(meses_b[params$month])," de ",params$year)`, la producción real de la industria manufacturera presentó una variación de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Producción Real","value"]*100,1),"%")`, las ventas reales de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Ventas Reales","value"]*100,1),"%")` y el personal ocupado de `r paste0(round(variaciones_totales[variaciones_totales$periodo%in%paste0(meses[params$month],"-",substr(params$year,3,4)) & variaciones_totales$variables=="Personal Ocupado","value"]*100,1),"%")`.\
 
@@ -673,7 +675,8 @@ variaciones_totales <- variaciones_totales %>% filter((ANIO>=2019 & MES==12) | A
 variaciones_totales$variables <- factor(variaciones_totales$variables,levels=c("varprod","varventas","varpersonas"),labels=c("Producción Real","Ventas Reales","Personal Ocupado"))
 variaciones_totales$periodo <- paste0(substr(meses,1,3)[as.numeric(variaciones_totales$MES)],"-",substr(variaciones_totales$ANIO,3,4))
 variaciones_totales$periodo <- factor(variaciones_totales$periodo,levels=c(paste0(rep(substr(meses,1,3),length(c(2018:params$year))),"-",rep(18:substr(params$year,3,4),each=12))))
-
+variaciones_totales <- variaciones_totales %>% 
+  filter(ANIO>=params$Anio_grafico)
 ```
 
 
