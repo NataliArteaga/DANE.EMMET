@@ -63,12 +63,16 @@ library(purrr)
 library(knitr)
 library(tinytex)
 library(webshot2)
+library(data.table)
+library(DT)
+library(flextable)
 
 meses <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 meses_b <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
 
 
-data<-read.csv(paste0(params$directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"),fileEncoding = "latin1")
+data<-read.csv(paste0(params$directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[params$month],params$year,".csv"),fileEncoding="latin1")
+#data <- fread(params$directorio)
 #data <- fread(params$directorio)
 
 colnames_format <- function(base){
@@ -183,7 +187,7 @@ variacion <- data %>%
   group_by(ANIO,MES) %>% 
   summarise(produccion=sum(PRODUCCIONREALPOND),
               ventas = sum(VENTASREALESPOND),
-              personas = sum( II_TOT_TOT_PERS)) #sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
+              personas = sum( TOTPERS)) #sum(TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC))
 
 
 #variacion <- var_cont(variacion)
@@ -320,9 +324,9 @@ contribucion_total <- cont_sum(contribucion_total)
 contribucion <- data %>% 
   filter(MES==params$month & ANIO%in%c(params$year,params$year-1)) %>% 
   mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
-  group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO,MES,DOMINIO_39,DOMINIO39_DESCRIP) 
 contribucion <- cont_sum_2(contribucion) %>% 
-  group_by(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(DOMINIO_39,DOMINIO39_DESCRIP) 
 contribucion <- cont_sum_3(contribucion) %>% 
   arrange(produccion)
 
@@ -330,7 +334,7 @@ contribucion <- cont_sum_3(contribucion) %>%
 
 tabla1 <- data %>% 
   filter(ANIO%in%c(params$year,params$year-1) & MES%in%params$month) %>%
-  group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO,MES,DOMINIO_39,DOMINIO39_DESCRIP) 
 tabla1 <- var_cont(tabla1)
 
 tabla1 <- tabla1 %>% pivot_wider(names_from = c("ANIO"),values_from = c("produccion","ventas","personas"))
@@ -341,8 +345,8 @@ tabla1 <- tab_acople(tabla1)
 
 tabla1 <- tabla1 %>% pivot_wider(names_from = variables,values_from = value)
 
-tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
-tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
+tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DOMINIO39_DESCRIP"))
+tabla1 <- tabla1[,c("DOMINIO_39","DOMINIO39_DESCRIP","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
   tabla1[,i] <-  tabla1[,i]*100
@@ -390,11 +394,11 @@ for (i in 1:num_pages) {
                                      ~bar_chart(label = .x, fill = colores[2])),
         varpersonas_plot = purrr::map(varpersonas_por, 
                                      ~bar_chart(label = .x, fill = colores[3])))  %>% 
-     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
+     select(DOMINIO_39,DOMINIO39_DESCRIP,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ pct(18),
+    DOMINIO39_DESCRIP ~ pct(18),
     varprod_plot ~  pct(5),
     varventas_plot ~  pct(5),
     varpersonas_plot ~  pct(5),
@@ -404,7 +408,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
     varpersonas ~ pct(8),
     everything() ~ pct(9)
     ) %>% cols_label(varprod_plot ="",
-                     DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
+                     DOMINIO39_DESCRIP=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
@@ -508,15 +512,15 @@ contribucion_total <- cont_sum(contribucion_total)
 contribucion <- data %>% 
   filter(MES%in%c(1:params$month) & ANIO%in%c(params$year,params$year-1)) %>% 
   mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
-  group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO,DOMINIO_39,DOMINIO39_DESCRIP) 
 contribucion <- cont_sum_2(contribucion) %>% 
-  group_by(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(DOMINIO_39,DOMINIO39_DESCRIP) 
 contribucion <- cont_sum_3(contribucion) %>% 
   arrange(produccion)
 
 tabla1 <- data %>% 
   filter(ANIO%in%c(params$year,params$year-1) & MES%in%c(1:params$month)) %>%
-  group_by(ANIO,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO,DOMINIO_39,DOMINIO39_DESCRIP) 
 tabla1 <- var_cont(tabla1)
 
 tabla1 <- tabla1 %>% pivot_wider(names_from = c("ANIO"),values_from = c("produccion","ventas","personas"))
@@ -529,8 +533,8 @@ tabla1 <- tab_acople(tabla1)
 
 tabla1 <- tabla1 %>% pivot_wider(names_from = variables,values_from = value)
 
-tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
-tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
+tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DOMINIO39_DESCRIP"))
+tabla1 <- tabla1[,c("DOMINIO_39","DOMINIO39_DESCRIP","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
   tabla1[,i] <-  tabla1[,i]*100
@@ -580,11 +584,11 @@ for (i in 1:num_pages) {
                                      ~bar_chart(label = .x, fill = colores[2])),
         varpersonas_plot = purrr::map(varpersonas_por, 
                                      ~bar_chart(label = .x, fill = colores[3])))  %>% 
-     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
+     select(DOMINIO_39,DOMINIO39_DESCRIP,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ pct(18),
+    DOMINIO39_DESCRIP ~ pct(18),
     varprod_plot ~  pct(5),
     varventas_plot ~  pct(5),
     varpersonas_plot ~  pct(5),
@@ -594,7 +598,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
     varpersonas ~ pct(8),
     everything() ~ pct(9)
     ) %>% cols_label(varprod_plot ="",
-                     DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
+                     DOMINIO39_DESCRIP=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
@@ -709,15 +713,15 @@ contribucion_total <- cont_sum(contribucion_total)
 contribucion <- data %>% 
   filter(ANIO2%in%c(params$year-1,params$year)) %>%
   mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
-  group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO2,DOMINIO_39,DOMINIO39_DESCRIP) 
 contribucion <- cont_sum_2(contribucion) %>%
-  group_by(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(DOMINIO_39,DOMINIO39_DESCRIP) 
 contribucion <- cont_sum_3(contribucion) %>% 
   arrange(produccion)
 
 
 tabla1 <- data %>% filter(ANIO2%in%c(params$year,params$year-1)) %>%
-  group_by(ANIO2,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO2,DOMINIO_39,DOMINIO39_DESCRIP) 
 tabla1 <- var_cont(tabla1)
 
 
@@ -731,8 +735,8 @@ tabla1 <- tab_acople(tabla1)
 
 tabla1 <- tabla1 %>% pivot_wider(names_from = variables,values_from = value)
 
-tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
-tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
+tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DOMINIO39_DESCRIP"))
+tabla1 <- tabla1[,c("DOMINIO_39","DOMINIO39_DESCRIP","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
   tabla1[,i] <-  tabla1[,i]*100
@@ -788,11 +792,11 @@ for (i in 1:num_pages) {
                                      ~bar_chart(label = .x, fill = colores[2])),
         varpersonas_plot = purrr::map(varpersonas_por, 
                                      ~bar_chart(label = .x, fill = colores[3])))  %>% 
-     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
+     select(DOMINIO_39,DOMINIO39_DESCRIP,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ pct(18),
+    DOMINIO39_DESCRIP ~ pct(18),
     varprod_plot ~  pct(5),
     varventas_plot ~  pct(5),
     varpersonas_plot ~  pct(5),
@@ -802,7 +806,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
     varpersonas ~ pct(8),
     everything() ~ pct(9)
     ) %>% cols_label(varprod_plot ="",
-                     DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
+                     DOMINIO39_DESCRIP=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
@@ -1465,8 +1469,7 @@ if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0 ){
 
 ```
 
-`r if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0 ){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", abs(round(tabla2$produccion[which.max(abs(tabla2$varprod))],1))," p.p. a la variación total nacional ",round(sum(tabla2$produccion),1), "% (Tabla 8)")}else if(sum(tabla2$varprod<0)==0 | sum(tabla2$produccion)>0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]," con una variación de ", tabla1$varprod[which.max(tabla1$varprod)],"%, sumando ", tabla1$produccion[which.max(tabla1$varprod)]," p.p. a la variación total nacional ",round(sum(tabla2$produccion),1), "% (Tabla 8)"))}`
-
+`r if(sum(tabla2$varprod>=0)==0 | sum(tabla2$produccion)<0 ){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla2$AREA_METROPOLITANA[which.max(abs(tabla2$varprod))]," con una variación de ", round(tabla2$varprod[which.max(abs(tabla2$varprod))],1),"%, restando ", abs(round(tabla2$produccion[which.max(abs(tabla2$varprod))],1))," p.p. a la variación total nacional ",round(sum(tabla2$produccion),1), "% (Tabla 8)")}else if(sum(tabla2$varprod<0)==0 | sum(tabla2$produccion)>0){a <- paste0("En lo corrido del año hasta ",paste0(tolower(meses_b[params$month])," de ",params$year), ", el área metropolitana que más constribuye a la variación anual de la producción real es la de ", tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]," con una variación de ", tabla1$varprod[which.max(tabla1$varprod)],"%, sumando ", tabla1$produccion[which.max(tabla1$varprod)]," p.p. a la variación total nacional",round(sum(tabla2$produccion),1), "% (Tabla 8)")}`
 `r a`
 
 <!-- En lo corrido del año hasta`r paste0(tolower(meses_b[params$month])," de ",params$year)`, el área metropolitana que más constribuye a la variación anual de la producción real es la de `r tabla1$AREA_METROPOLITANA[which.max(tabla1$varprod)]` con una variación de `r tabla1$varprod[which.max(tabla1$varprod)]`%, sumando `r tabla1$produccion[which.max(tabla1$varprod)]` p.p. a la variación total nacional. (Tabla 8)\ -->
@@ -2159,17 +2162,17 @@ contribucion <- data %>%
   filter(MES==params$month & ANIO%in%c(params$year,2019)) %>% 
   mutate(PERSONAL=TOTALEMPLEOPERMANENTE+TOTALEMPLEOTEMPORAL+
            TOTALEMPLEOADMON+TOTALEMPLEOPRODUC) %>%
-  group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39)
+  group_by(ANIO,MES,DOMINIO_39,DOMINIO39_DESCRIP)
 
 contribucion <- cont_sum_2(contribucion) %>% 
-  group_by(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(DOMINIO_39,DOMINIO39_DESCRIP) 
 
 contribucion <- cont_sum_3(contribucion) %>% 
   arrange(produccion)
 
 tabla1 <- data %>% 
   filter(ANIO%in%c(params$year,2019) & MES%in%params$month) %>%
-  group_by(ANIO,MES,DOMINIO_39,DESCRIPCIONDOMINIOEMMET39) 
+  group_by(ANIO,MES,DOMINIO_39,DOMINIO39_DESCRIP) 
 
 tabla1 <- var_cont(tabla1)
 
@@ -2183,8 +2186,8 @@ tabla1 <- tab_acople(tabla1)
 
 tabla1 <- tabla1 %>% pivot_wider(names_from = variables,values_from = value)
 
-tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39"))
-tabla1 <- tabla1[,c("DOMINIO_39","DESCRIPCIONDOMINIOEMMET39","varprod","produccion","varventas","ventas","varpersonas","personal")]
+tabla1 <- inner_join(x=tabla1,y=contribucion,by=c("DOMINIO_39","DOMINIO39_DESCRIP"))
+tabla1 <- tabla1[,c("DOMINIO_39","DOMINIO39_DESCRIP","varprod","produccion","varventas","ventas","varpersonas","personal")]
 
 for( i in c("varprod","produccion","varventas","ventas","varpersonas","personal")){
   tabla1[,i] <-  tabla1[,i]*100
@@ -2242,11 +2245,11 @@ for (i in 1:num_pages) {
                                      ~bar_chart(label = .x, fill = colores[2])),
         varpersonas_plot = purrr::map(varpersonas_por, 
                                      ~bar_chart(label = .x, fill = colores[3])))  %>% 
-     select(DOMINIO_39,DESCRIPCIONDOMINIOEMMET39,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
+     select(DOMINIO_39,DOMINIO39_DESCRIP,varprod,varprod_plot,produccion,varventas,varventas_plot,ventas,varpersonas,varpersonas_plot,personal) 
 
   
 tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_col = "") %>% cols_width(
-    DESCRIPCIONDOMINIOEMMET39 ~ pct(18),
+    DOMINIO39_DESCRIP ~ pct(18),
     varprod_plot ~  pct(5),
     varventas_plot ~  pct(5),
     varpersonas_plot ~  pct(5),
@@ -2256,7 +2259,7 @@ tabla_paginada[[i]] <- tabla_paginada[[i]] %>% gt(rowname_col="Clase",groupname_
     varpersonas ~ pct(8),
     everything() ~ pct(9)
     ) %>% cols_label(varprod_plot ="",
-                     DESCRIPCIONDOMINIOEMMET39=md("**Descripción**"),
+                     DOMINIO39_DESCRIP=md("**Descripción**"),
                      DOMINIO_39 =md("**Clase**"),
                      varprod =md("**Variación<br>Producción**"),
                      produccion =md("**Contribución<br>Producción**"),
