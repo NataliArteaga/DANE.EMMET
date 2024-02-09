@@ -160,3 +160,5 @@ f1_integracion <- function(directorio,
  # Exportar bases de Datos integradas -------------------------------------------------
 
  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
+
+}
