@@ -265,7 +265,6 @@
 f5_anacional <- function(directorio,
                       mes,
                       anio){
-  # Cargar librerías --------------------------------------------------------
   library(readxl)
   library(dplyr)
   library(ggplot2)
@@ -615,7 +614,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[2]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
-               startRow = 14, startColumn = 1)
+               startRow = 13, startColumn = 1)
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
@@ -774,7 +773,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[3]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
-               startRow = 15, startColumn = 1)
+               startRow = 14, startColumn = 1)
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
@@ -937,7 +936,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[5]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
-               startRow = 14, startColumn = 1)
+               startRow = 13, startColumn = 1)
 
   Enunciado<-paste0(meses[1],"_",meses[mes],"(",anio,"/",anio-1,")")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
@@ -1088,7 +1087,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[6]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
-               startRow = 15, startColumn = 1)
+               startRow = 14, startColumn = 1)
 
 
   Enunciado<-paste0(meses[1],"-",meses[mes]," (",anio,"/",anio-1,")")
@@ -1258,7 +1257,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[7]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
-               startRow = 14, startColumn = 1)
+               startRow = 13, startColumn = 1)
 
 
 
@@ -1475,7 +1474,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[8]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE,
-               startRow = 15, startColumn = 1)
+               startRow = 13, startColumn = 1)
 
 
   Enunciado<-paste0(meses[mes+1]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[mes+1]," ",anio-2,"-",meses[mes]," ",anio-1)
@@ -1744,7 +1743,7 @@ f5_anacional <- function(directorio,
 
   sheet <- sheets[[12]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE,
-               row.names=FALSE, startRow = 14, startColumn = 1)
+               row.names=FALSE, startRow = 13, startColumn = 1)
 
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
@@ -2055,7 +2054,7 @@ f5_anacional <- function(directorio,
   #names(sheets)
   sheet <- sheets[[13]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE,
-               row.names=FALSE, startRow = 14, startColumn = 1)
+               row.names=FALSE, startRow = 13, startColumn = 1)
 
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")
@@ -2426,7 +2425,7 @@ f5_anacional <- function(directorio,
   names(sheets)
   sheet <- sheets[[14]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE,
-               row.names=FALSE, startRow = 14, startColumn = 1)
+               row.names=FALSE, startRow = 13, startColumn = 1)
 
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")")

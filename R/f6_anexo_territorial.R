@@ -253,7 +253,7 @@ f6_aterritorial <- function(directorio,
                             anio){
 
 
-# Librerias ---------------------------------------------------------------
+  # Librerias ---------------------------------------------------------------
 
   library(readxl)
   library(dplyr)
@@ -543,7 +543,7 @@ f6_aterritorial <- function(directorio,
   #Exportar
 
   sheet <- sheets[[3]]
-  addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
+  addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
@@ -1749,7 +1749,7 @@ f6_aterritorial <- function(directorio,
   #Exportar
 
   sheet <- sheets[[18]]
-  addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
+  addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
   Enunciado<-paste0(meses[mes],"(",anio,"/",anio-2,")")

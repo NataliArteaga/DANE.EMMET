@@ -77,20 +77,25 @@ f1_integracion <- function(directorio,
 
  #Cambio: se agrea , sheet = "LOGISTICA"
  base_logistica          <- read_excel(paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_PANEL_imputada_",meses[mes],anio,".xlsx"))
- base_logistica          <- base_logistica[,1:78]
+ colnames(base_logistica) <- colnames_format(base_logistica)
 
  #cambia en las columnas que contienen la palabra "OBSE" cualquier caracter que no sea alfanumerico por un espacio
  base_logistica           <-  base_logistica %>%
    mutate_at(vars(contains("OBSER")),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
  base_logistica           <-  base_logistica %>%
-   mutate_at(vars("Dominio39_Descrip"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+   mutate_at(vars("DOMINIO39_DESCRIP"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
  base_logistica           <-  base_logistica %>%
-   mutate_at(vars("nombre_establecimiento"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+   mutate_at(vars("NOMBRE_ESTABLECIMIENTO"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
  base_logistica           <-  base_logistica %>%
    mutate_at(vars("DEPARTAMENTO"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+
+ parametro <- read_excel(paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx"), sheet = "Vector")
+
+ base_logistica           <-  base_logistica %>%
+   select(parametro$Var_inicial)
 
  write.csv(base_logistica,paste0(directorio,"/data/",anio,"/",meses[mes],"/EMMET_PANEL_imputada_",meses[mes],anio,".csv"),row.names=F)
 
@@ -116,8 +121,8 @@ f1_integracion <- function(directorio,
              by=c("NORDEST"="NORDEST","ANIO"="ANIO","MES"="MES"))
 
  # Estandarizacion nombres Departamento y Municipio ------------------------------------------------
-base_panel=base_panel %>%
-    mutate_at(vars("DOMINIO39_DESCRIP"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
+ base_panel=base_panel %>%
+   mutate_at(vars("DOMINIO39_DESCRIP"),~str_replace_all(.,pattern="[^[:alnum:]]",replacement=" "))
 
  # Estandarizar Variables Numericas ----------------------------------------
 
@@ -133,6 +138,10 @@ base_panel=base_panel %>%
      NPERS_OT=ifelse(is.na(NPERS_OT),0,NPERS_OT),
      NPERS_OTA=ifelse(is.na(NPERS_OTA),0,NPERS_OTA),
      NPERS_APREO=ifelse(is.na(NPERS_APREO),0,NPERS_APREO),
+     TOTPERS=ifelse(is.na(TOTPERS),0,TOTPERS),
+     TOTPERS_ADM=ifelse(is.na(TOTPERS_ADM),0,TOTPERS_ADM),
+     TOTSUELD_ADM=ifelse(is.na(TOTSUELD_ADM),0,TOTSUELD_ADM),
+     TOTSUELD_PRO=ifelse(is.na(TOTSUELD_PRO),0,TOTSUELD_PRO),
      AJU_SUELD_EP=ifelse(is.na(AJU_SUELD_EP),0,AJU_SUELD_EP),
      AJU_SUELD_ET=ifelse(is.na(AJU_SUELD_ET),0,AJU_SUELD_ET),
      AJU_SUELD_ETA=ifelse(is.na(AJU_SUELD_ETA),0,AJU_SUELD_ETA),
@@ -144,12 +153,10 @@ base_panel=base_panel %>%
      AJU_HORAS_ORDI=ifelse(is.na(AJU_HORAS_ORDI),0,AJU_HORAS_ORDI),
      AJU_HORAS_EXT=ifelse(is.na(AJU_HORAS_EXT),0,AJU_HORAS_EXT),
      AJU_PRODUCCION=ifelse(is.na(AJU_PRODUCCION),0,AJU_PRODUCCION),
-     EXISTENCIAS=ifelse(is.na(EXISTENCIAS),0,EXISTENCIAS)
+     EXISTENCIAS=ifelse(is.na(EXISTENCIAS),0,EXISTENCIAS),
+     AJU_TOTAL_VENTAS=ifelse(is.na(AJU_TOTAL_VENTAS),0,AJU_TOTAL_VENTAS)
    )
 
  # Exportar bases de Datos integradas -------------------------------------------------
 
  write.csv(base_panel,paste0(directorio,"/results/S1_integracion/EMMET_PANEL_trabajo_original_",meses[mes],anio,".csv"),row.names=F,fileEncoding = "latin1")
- }
-
-

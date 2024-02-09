@@ -25,10 +25,9 @@
 #'
 #' @examples f0_inicial(directorio="Documents/DANE/Procesos DIMPE /PilotoEMMET")
 
-
 f0_inicial<-function(directorio){
 
-#instalar todas las librerias necesarias para el proceso
+  #instalar todas las librerias necesarias para el proceso
 
   # Lista de librerías que deseas instalar o cargar
   librerias <- c("tidyverse", "ggplot2", "dplyr","readr","readxl","stringr","tidyr","lubridate","forecast",
@@ -50,51 +49,80 @@ f0_inicial<-function(directorio){
 
 
 
-#crear la función que revisa si la carpeta existe, de lo contrario la crea
-crearCarpeta <- function(ruta) {
+  #crear la función que revisa si la carpeta existe, de lo contrario la crea
+  crearCarpeta <- function(ruta) {
 
-  if (!dir.exists(ruta)) {
-    dir.create(ruta)
-    mensaje <- paste("Se ha creado la carpeta:", ruta)
-    print(mensaje)
-  } else {
-    mensaje <- paste("La carpeta", ruta, "ya existe.")
-    print(mensaje)
+    if (!dir.exists(ruta)) {
+      dir.create(ruta)
+      mensaje <- paste("Se ha creado la carpeta:", ruta)
+      print(mensaje)
+    } else {
+      mensaje <- paste("La carpeta", ruta, "ya existe.")
+      print(mensaje)
+    }
   }
-}
-#crear la carpeta results
-ruta=paste0(directorio,"/results")
-crearCarpeta(ruta)
+  #crear la carpeta results
+  ruta=paste0(directorio,"/results")
+  crearCarpeta(ruta)
 
-#crear la carpeta de integracion
-ruta=paste0(directorio,"/results/S1_integracion")
-crearCarpeta(ruta)
-
-
-#crear la carpeta de alertas
-ruta=paste0(directorio,"/results/S2_identificacion_alertas")
-crearCarpeta(ruta)
-
-#crear la carpeta de imputacion
-ruta=paste0(directorio,"/results/S3_imputacion")
-crearCarpeta(ruta)
+  #crear la carpeta de integracion
+  ruta=paste0(directorio,"/results/S1_integracion")
+  crearCarpeta(ruta)
 
 
-#crear la carpeta de tematica
-ruta=paste0(directorio,"/results/S4_tematica")
-crearCarpeta(ruta)
+  #crear la carpeta de alertas
+  ruta=paste0(directorio,"/results/S2_identificacion_alertas")
+  crearCarpeta(ruta)
+
+  #crear la carpeta de imputacion
+  ruta=paste0(directorio,"/results/S3_imputacion")
+  crearCarpeta(ruta)
 
 
-#crear la carpeta anexos
-ruta=paste0(directorio,"/results/S5_anexos")
-crearCarpeta(ruta)
+  #crear la carpeta de tematica
+  ruta=paste0(directorio,"/results/S4_tematica")
+  crearCarpeta(ruta)
 
-#crear la carpeta boletin
-ruta=paste0(directorio,"/results/S6_boletin")
-crearCarpeta(ruta)
 
-para_boletin <- data.frame(parametro = c("IC_prod","IC_ven","IC_empl","TNR","TI_prod","TI_ven","TI_empl","Anio_grafico"),
-                           valores = c(98.1,98.1,98.5,2,2.6,2.5,2.7,2018))
-write.xlsx(para_boletin, file = paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx"),row.names = FALSE)
-print(paste0("Se creo el archivo parametros_boletin.xlsx en ",directorio,"/results/S6_boletin/"))
+  #crear la carpeta anexos
+  ruta=paste0(directorio,"/results/S5_anexos")
+  crearCarpeta(ruta)
+
+  #crear la carpeta boletin
+  ruta=paste0(directorio,"/results/S6_boletin")
+  crearCarpeta(ruta)
+
+  para_boletin <- data.frame(parametro = c("IC_prod","IC_ven","IC_empl","TNR","TI_prod","TI_ven","TI_empl","Anio_grafico"),
+                             valores = c(98.1,98.1,98.5,2,2.6,2.5,2.7,2018))
+  variables_iniciales <- list(Var_inicial=c("NORDEST","ANIO","MES","NOVEDAD","NOMBRE_ESTABLECIMIENTO",
+                                            "IMP","ID_ESTADO","NORDEMP","NIT","DEPARTAMENTO","CLASE_CIIU4",
+                                            "DOMINIO_39","DOMINIO39_DESCRIP","NOM_CODSEDE","NPERS_EP",
+                                            "SUELD_EP","AJU_SUELD_EP","FECHA_INI_EP","FECHA_FIN_EP",
+                                            "NPERS_ET","SUELD_ET","AJU_SUELD_ET","FECHA_INI_ET",
+                                            "FECHA_FIN_ET","NPERS_ETA","SUELD_ETA","AJU_SUELD_ETA",
+                                            "FECHA_INI_ETA","FECHA_FIN_ETA","NPERS_APREA","SUELD_APREA",
+                                            "AJU_SUELD_APREA","FECHA_INI_APREA","FECHA_FIN_APREA",
+                                            "TOTPERS_ADM","TOTSUELD_ADM","NPERS_OP","SUELD_OP",
+                                            "AJU_SUELD_OP","FECHA_INI_OP","FECHA_FIN_OP","NPERS_OT",
+                                            "SUELD_OT","AJU_SUELD_OT","FECHA_INI_OT","FECHA_FIN_OT",
+                                            "NPERS_OTA","SUELD_OTA","AJU_SUELD_OTA","FECHA_INI_OTA",
+                                            "FECHA_FIN_OTA","NPERS_APREO","SUELD_APREO","AJU_SUELD_APREO",
+                                            "FECHA_INI_APREO","FECHA_FIN_APREO","TOTPERS_PRO",
+                                            "TOTSUELD_PRO","TOTPERS","HORAS_ORDI","AJU_HORAS_ORDI",
+                                            "HORAS_EXT","AJU_HORAS_EXT","FECHA_INI_HORAS",
+                                            "FECHA_FIN_HORAS","PRODUCCION","AJU_PRODUCCION","VENTASIN",
+                                            "AJU_VENTASIN","VENTASEX","AJU_VENTASEX","FECHA_INI_PYV",
+                                            "FECHA_FIN_PYV","TOTAL_VENTAS","AJU_TOTAL_VENTAS",
+                                            "EXISTENCIAS","ID_MUNICIPIO","NOMBREMPIO"))
+  Var_inicial <- list(variables_iniciales)
+
+  library(openxlsx)
+
+  # Escribir la base de datos en la primera hoja del archivo Excel
+  write.xlsx(para_boletin, file =  paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx"), sheetName = "Parametros", row.names = FALSE)
+
+  # Escribir el vector en la segunda hoja del archivo Excel
+  write.xlsx(list(variables_iniciales), file =  paste0(directorio,"/results/S6_boletin/parametros_boletin.xlsx"), sheetName = "Vector", row.names = FALSE, append = TRUE)
+
+  print(paste0("Se creo el archivo parametros_boletin.xlsx en ",directorio,"/results/S6_boletin/"))
 }
