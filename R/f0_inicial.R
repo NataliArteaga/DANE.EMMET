@@ -47,6 +47,15 @@ f0_inicial<-function(directorio){
   # Cargar todas las librerías
   lapply(librerias, require, character.only = TRUE)
 
+#Descargar archivo necesario
+
+  url_excel <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/festivos.xlsx"
+
+  # Definir el nombre y la ubicación del archivo de Excel descargado
+  archivo_excel <- file.path(directorio, "data/festivos.xlsx")
+
+  # Descargar el archivo de Excel desde GitHub
+  download.file(url_excel, destfile = archivo_excel)
 
 
   #crear la función que revisa si la carpeta existe, de lo contrario la crea
