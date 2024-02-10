@@ -275,6 +275,8 @@ f6_aterritorial <- function(directorio,
   # Cargar bases y variables ------------------------------------------------
 
   meses <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
+  meses_enu <- c("Enero","Febrero","Marzo","Abril","Mayo","Junio",
+                 "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
   data<-read.csv(paste0(directorio,"/results/S4_tematica/EMMET_PANEL_tematica_",meses[mes],anio,".csv"),fileEncoding = "latin1")
 
   deptos <- data %>%
@@ -545,10 +547,12 @@ f6_aterritorial <- function(directorio,
   sheet <- sheets[[3]]
   addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0(meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
-
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 28, startColumn = 1)
   # 2. Var y Cont Anual Desagreg Dp -----------------------------------------
 
   #Calculo de la contribucion total
@@ -632,9 +636,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0(meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 93, startColumn = 1)
 
   # 3.Var y Cont Anual Áreas metrop -----------------------------------------
 
@@ -696,9 +703,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0(meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 18, startColumn = 1)
 
   # 4. Var y Cont Anual Ciudades --------------------------------------------
 
@@ -757,9 +767,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0(meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 24, startColumn = 1)
 
   # 5. Var y Cont Año corrido Dpto  -----------------------------------------
 
@@ -853,9 +866,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0("Enero - ",meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 28, startColumn = 1)
 
   # 6.Var y Cont Año corri Desag Dp -----------------------------------------
 
@@ -946,9 +962,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0("Enero - ",meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 93, startColumn = 1)
 
   # 7.Var y Cont Anio corrido areas met  -----------------------------------------
 
@@ -1008,9 +1027,12 @@ f6_aterritorial <- function(directorio,
   sheet <- sheets[[9]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0("Enero - ",meses_enu[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 18, startColumn = 1)
 
   # 8. Var y Cont Año corrid Ciudad -----------------------------------------
 
@@ -1072,9 +1094,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-1,")p")
+  Enunciado<-paste0("Enero - ",meses[mes],"(",anio,"/",anio-1,")p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 24, startColumn = 1)
 
   # 9. Var y Cont doce meses Dpto -------------------------------------------
 
@@ -1167,9 +1192,12 @@ f6_aterritorial <- function(directorio,
 
   mes_sig=meses[mes+1]
 
-  Enunciado<-paste0(meses[mes+1]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[mes+1]," ",anio-2,"-",meses[mes+1]," ", anio-1," ","p")
+  Enunciado<-paste0(meses_enu[mes+1]," ",anio-1," - ",meses_enu[mes]," ",anio," / ",meses_enu[mes+1]," ",anio-2,"-",meses_enu[mes]," ", anio-1,"p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 28, startColumn = 1)
 
   # 10.Var y Cont doce meses Desa  ------------------------------------------
 
@@ -1259,10 +1287,12 @@ f6_aterritorial <- function(directorio,
   sheet <- sheets[[12]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes+1]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[mes+1]," ",anio-2,"-",meses[mes]," ", anio-1," ","p")
+  Enunciado<-paste0(meses_enu[mes+1]," ",anio-1," - ",meses_enu[mes]," ",anio," / ",meses_enu[mes+1]," ",anio-2," - ",meses_enu[mes]," ", anio-1,"p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
-
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 93, startColumn = 1)
 
   # 11.Var y Cont docemeses Áreas -------------------------------------------
 
@@ -1327,9 +1357,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes+1]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[mes+1]," ",anio-2,"-",meses[mes+1]," ", anio-1," ","p")
+  Enunciado<-paste0(meses_enu[mes+1]," ",anio-1," - ",meses_enu[mes]," ",anio," / ",meses_enu[mes+1]," ",anio-2," - ",meses_enu[mes+1]," ", anio-1,"p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 18, startColumn = 1)
 
   # 12. Var y Cont docemeses Ciu --------------------------------------------
 
@@ -1392,9 +1425,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes+1]," ",anio-1,"-",meses[mes]," ",anio,"/",meses[mes+1]," ",anio-2,"-",meses[mes]," ", anio-1," ","p")
+  Enunciado<-paste0(meses_enu[mes+1]," ",anio-1," - ",meses_enu[mes]," ",anio," / ",meses_enu[mes+1]," ",anio-2,"-",meses_enu[mes]," ", anio-1,"p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 24, startColumn = 1)
 
   # 13. Índices Departamentos -----------------------------------------------
 
@@ -1510,8 +1546,64 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"2018","-",meses[mes],anio)
+  Enunciado<-paste0("Enero 2018 - ",meses_enu[mes]," ",anio)
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
+
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+13), startColumn = 1)
+
+  Enunciado<-paste0("Fuente. DANE - EMMET")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+14), startColumn = 1)
+
+  Enunciado<-paste0("p: provisionales")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+15), startColumn = 1)
+
+  Enunciado<-paste0("Nota: La diferencia entre el total y la suma de los dominios se debe a aproximaciones decimales.")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+16), startColumn = 1)
+
+  Enunciado<-paste0("Otros departamentos: Amazonas, Arauca, Caquetá, Casanare, Cesar, Chocó, Huila, La Guajira, Magdalena, Meta, Nariño, Norte de Santander, Putumayo, Quindío, San Andrés, Sucre")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+17), startColumn = 1)
+
+  Enunciado<-paste0("Alimentos y bebidas incluye las divisiones CIIU4 10 y 11")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+18), startColumn = 1)
+
+  Enunciado<-paste0("Textiles y confecciones  incluye las divisiones CIIU4 13 y 14")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+19), startColumn = 1)
+
+  Enunciado<-paste0("Curtido de cuero y calzado incluye la división CIIU4 15")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+20), startColumn = 1)
+
+  Enunciado<-paste0("Madera y muebles  incluye las divisiones CIIU4 16 y 31")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+21), startColumn = 1)
+
+  Enunciado<-paste0("Papel e imprentas  incluye las divisiones CIIU4 17 y 18")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+22), startColumn = 1)
+
+  Enunciado<-paste0("Sustancias y productos químicos, farmacéuticos, de caucho y plástico  incluye las divisiones CIIU4 20 a 22")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+23), startColumn = 1)
+
+  Enunciado<-paste0("Minerales no metálicos  division CIIU4 23")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+24), startColumn = 1)
+
+  Enunciado<-paste0("Productos metálicos  incluye las divisiones CIIU4 24 y 25")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+25), startColumn = 1)
+
+  Enunciado<-paste0("Vehículos de transporte, carrocerías, autopartes y otro equipo de transporte  incluye las divisiones CIIU4 29 y 30")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+26), startColumn = 1)
 
 
   # 14. Índices Áreas Metropolitana -----------------------------------------
@@ -1582,8 +1674,24 @@ f6_aterritorial <- function(directorio,
   sheet <- sheets[[16]]
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
-  Enunciado<-paste0(meses[mes],"2018","-",meses[mes],anio)
+  Enunciado<-paste0("Enero 2018 - ",meses_enu[mes]," ",anio)
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
+
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+13), startColumn = 1)
+
+  Enunciado<-paste0("Fuente. DANE - EMMET")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+14), startColumn = 1)
+
+  Enunciado<-paste0("p: provisionales")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+15), startColumn = 1)
+
+  Enunciado<-paste0("Nota: La diferencia entre el total y la suma de los dominios se debe a aproximaciones decimales")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+16), startColumn = 1)
 
 
   # 15. Índices Ciudades ----------------------------------------------------
@@ -1654,9 +1762,24 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"2018","-",meses[mes],anio)
+  Enunciado<-paste0("Enero 2018 - ",meses_enu[mes]," ",anio)
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+13), startColumn = 1)
+
+  Enunciado<-paste0("Fuente. DANE - EMMET")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+14), startColumn = 1)
+
+  Enunciado<-paste0("p: provisionales")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+15), startColumn = 1)
+
+  Enunciado<-paste0("Nota: La diferencia entre el total y la suma de los dominios se debe a aproximaciones decimales")
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = (nrow(tabla1)+16), startColumn = 1)
 
   # 16. Var y Cont Trienal Dpto  --------------------------------------------
 
@@ -1752,8 +1875,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1_1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-2,")")
+  Enunciado<-paste0(meses_enu[mes]," (",anio,"/","2019)p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
+
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 28, startColumn = 1)
 
   # 17. Var y Cont Trienal Desagre  -----------------------------------------
 
@@ -1838,9 +1965,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-2,")")
+  Enunciado<-paste0(meses_enu[mes]," (",anio,"/","2019)p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 93, startColumn = 1)
 
   # 18.Var y Cont Trienal Áreas me ------------------------------------------
 
@@ -1904,9 +2034,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-2,")")
+  Enunciado<-paste0(meses_enu[mes]," (",anio,"/","2019)p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 18, startColumn = 1)
 
   # 19. Var y Cont Trienal Ciudad ------------------------------------------
 
@@ -1966,9 +2099,12 @@ f6_aterritorial <- function(directorio,
   addDataFrame(data.frame(tabla1), sheet, col.names=FALSE, row.names=FALSE, startRow = 12, startColumn = 1)
 
 
-  Enunciado<-paste0(meses[mes],"(",anio,"/",anio-2,")")
+  Enunciado<-paste0(meses_enu[mes]," (",anio,"/","2019)p")
   addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE, startRow = 8, startColumn = 1)
 
+  Enunciado<-paste0("Fecha de publicación ",meses_enu[mes]," de ",anio)
+  addDataFrame(data.frame(Enunciado), sheet, col.names=FALSE, row.names=FALSE,
+               startRow = 24, startColumn = 1)
 
   # Guardar archivo de salida -----------------------------------------------
 
