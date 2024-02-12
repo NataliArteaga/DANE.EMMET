@@ -2164,7 +2164,7 @@ f5_anacional <- function(directorio,
   # 8. Desestacionalizacion -------------------------------------------------
 
   CALENDAR.FN <- function(From_year,To_year){
-    festivos<-read_xlsx(paste0(directorio,"/data/festivos.xlsx"))
+    festivos<-read_xlsx(paste0(directorio,"/data/festivos/festivos.xlsx"))
     days <- c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
     #days <- c("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado")
     calendar   <- data.frame(dates=seq(as.POSIXct(paste0(From_year,"-01-01"),tz="GMT"),as.POSIXct(paste0(To_year,"-12-31"),tz="GMT"),"days"))
