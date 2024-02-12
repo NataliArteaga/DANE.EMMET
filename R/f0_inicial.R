@@ -49,14 +49,14 @@ f0_inicial<-function(directorio){
 
 #Descargar archivo necesario
 
-  url_excel <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/festivos.xlsx"
+  url_excel <- "https://github.com/NataliArteaga/DANE.EMMET/raw/main/festivos.zip"
 
   # Definir el nombre y la ubicación del archivo de Excel descargado
-  archivo_excel <- file.path(directorio, "data/festivos.xlsx")
+  archivo_excel <- file.path(directorio, "data/festivos.zip")
 
   # Descargar el archivo de Excel desde GitHub
   download.file(url_excel, destfile = archivo_excel)
-
+  unzip(archivo_excel, exdir = file.path(directorio, "data/festivos"))
 
   #crear la función que revisa si la carpeta existe, de lo contrario la crea
   crearCarpeta <- function(ruta) {
