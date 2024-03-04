@@ -19,7 +19,7 @@
 #'
 #'
 #'
-#' @examples f7_boletin(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022,tipo="pdf")
+#' @examples f9_boletin(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022,tipo="pdf")
 #'
 #' @details
 #' Esta función requiere del uso de Google Chrome, pues para la creación de
@@ -44,7 +44,7 @@
 
 
 
-f7_boletin <- function(directorio, mes, anio, tipo = "word") {
+f9_boletin <- function(directorio, mes, anio, tipo = "word") {
   library(rmarkdown)
   library(installr)
   library(readxl)

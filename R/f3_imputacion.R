@@ -130,7 +130,7 @@ f3_imputacion <- function(directorio,mes,anio,avance=100) {
   #base_imputar=rbind(datos,wowimp)
   base_imputar2=base_imputar %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio))
 
-
+set.seed(11)
   for (i in cap3) {
     ids=wowimp[which(!(complete.cases(wowimp[,paste0(i)]))),"NORDEST"]
     for (j in ids) {

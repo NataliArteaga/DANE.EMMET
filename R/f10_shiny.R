@@ -29,13 +29,13 @@
 #'
 #'
 #'
-#' @examples f8_shiny(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022)
+#' @examples f10_shiny(directorio"Documents/DANE/Procesos DIMPE /PilotoEMMET",mes = 11  ,anio =2022)
 
 
 
 
 
-f8_shiny <- function(directorio, mes, anio) {
+f10_shiny <- function(directorio, mes, anio) {
   library(rmarkdown)
   library(readxl)
   library(lubridate)

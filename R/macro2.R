@@ -41,7 +41,11 @@ macro2<-function(directorio,mes,anio,avance=100,tipo="pdf"){
   print("Se ejecuto la funcion construccion anexo nacional")
   f6_aterritorial(directorio,mes,anio)
   print("Se ejecuto la funcion construccion anexo territorial")
-  f7_boletin(directorio,mes,anio,tipo="pdf")
+  f7_cdominios(directorio,mes,anio)
+  print("Se ejecuto la funcion construccion cuadros dominios")
+  f8_cregiones(directorio,mes,anio)
+  print("Se ejecuto la funcion construccion cuadros regiones")
+  f9_boletin(directorio,mes,anio,tipo="pdf")
   print("Se ejecuto la funcion construccion  boletin")
   print(paste0("por favor consulte ",directorio,"/results encontrara los archivos para la
                publicacion de los resultados EMMET"))
