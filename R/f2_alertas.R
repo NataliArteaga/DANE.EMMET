@@ -217,8 +217,8 @@ f2_identificacion_alertas <- function(directorio,mes,anio,avance=100) {
         mmm2 <- mmm %>% filter(NORDEST==i) %>% filter((MES>=mes & ANIO==anio-2) |(ANIO==anio-1)|(MES<=mes & ANIO==anio)) %>%
           as.data.frame()
         prueba[1,paste0(j,"_metodo_de_imputacion")]="IC"
-        LI <- mean(mmm2[,j],na.rm=T)-1.96*sd(mmm2[,j],na.rm=T)
-        LS <- mean(mmm2[,j],na.rm=T)+1.96*sd(mmm2[,j],na.rm=T)
+        LI <- mean(mmm2[,j],na.rm=T)-1.96*sd(mmm2[,j],na.rm=T)/sqrt(nrow(mmm2))
+        LS <- mean(mmm2[,j],na.rm=T)+1.96*sd(mmm2[,j],na.rm=T)/sqrt(nrow(mmm2))
 
         prueba[1,paste0(j,"_regla_de_imputacion")]=ifelse((mmm2[which(mmm2$MES==mes & mmm2$ANIO==anio),j]<LI |
                                                              mmm2[which(mmm2$MES==mes & mmm2$ANIO==anio),j]>LS),1,0)
